@@ -12,6 +12,7 @@ import App from './App'
 import router from './router'
 import service from './utils/request'
 
+import 'normalize.css/normalize.css'// A modern alternative to CSS resets
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
