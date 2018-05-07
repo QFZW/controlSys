@@ -13,3 +13,17 @@ export function setToken (token) {
 export function removeToken () {
   return Cookies.remove(TokenKey)
 }
+
+const NamePassword = 'NamePassword'
+
+export function getNamePassword () {
+  return Cookies.get(NamePassword)
+}
+
+export function setNamePassword (namePassword) {
+  return Cookies.set(NamePassword, namePassword)
+}
+
+export function removeNamePassword () {
+  return Cookies.remove(NamePassword)
+}

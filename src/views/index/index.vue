@@ -1,46 +1,179 @@
 <template>
-  <el-card class="box-card">
-    <div v-for="item in username" :key="item.number" class="text item">
-        {{ 'Address' + item.address + ' -- Email'+ item.email }}
+  <div class="system-home" v-bind:style="{height:WindowHeight+'px'}">
+    <div class="home-center">
+      <el-row :gutter="20" class="mode-block">
+        <el-col :span="12">
+          <div class="grid-content model-a">
+            <div class="trans-middle">
+              <img src="./resource/icon1.png">
+              <p>GIS地理信息系统</p>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="grid-content model-b">
+            <div class="trans-middle">
+              <img src="./resource/icon2.png">
+              <p>道路照明系统</p>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="grid-content model-c">
+            <div class="trans-middle">
+              <img src="./resource/icon3.png">
+              <p>资产管理系统</p>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20" class="mode-block">
+        <el-col :span="7">
+          <div class="grid-content model-d">
+            <div class="trans-middle">
+              <img src="./resource/icon4.png">
+              <p>能耗分析</p>
+            </div>
+          </div>
+          <div class="grid-content model-d1">
+            <div class="trans-middle">
+              <img src="./resource/icon5.png">
+              <p>用户中心</p>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="5">
+          <div class="grid-content model-e">
+            <div class="trans-middle">
+              <img src="./resource/icon6.png">
+              <p>事件报警</p>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="grid-content model-f">
+            <div class="trans-middle">
+              <img src="./resource/icon7.png">
+              <p>工单管理</p>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="grid-content model-g">
+            <div class="trans-middle">
+              <img src="./resource/icon8.png">
+              <p>项目管理</p>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
-  </el-card>
+  </div>
 </template>
 <script>
 export default {
   name: 'index',
   data () {
     return {
-      username: []
+      WindowHeight: 600
     }
   },
   computed: {},
   created () {
-    this.getSys()
+    this.WindowHeight = window.innerHeight
   },
   methods: {
-    getSys () {
-      this.HTTP.get('/mock/5aeeba99ee70f3596f06e54a/example/mock')
-        .then(res => {
-          let projects = res.data.data.projects
-          this.username = projects
-        }).catch(() => {})
-    }
   }
 }
 </script>
-<style lang="scss">
-.index-test {
-  color: red;
+<style rel="stylesheet/scss" lang="scss">
+/* reset element-ui css */
+.system-home{
+  .el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .el-col {
+  }
+  .grid-content {
+    min-height: 36px;
+  }
 }
-.text {
-    font-size: 14px;
-  }
+</style>
 
-  .item {
-    padding: 18px 0;
+<style rel="stylesheet/scss" lang="scss" scoped>
+#app{
+  width: 100%;
+  height: 100%;
+}
+.system-home{
+  width: 100%;
+  height: 100%;
+  min-width: 1080px;
+  margin: 0 auto;
+  background-image: url('./resource/bg.png');
+  background-size:cover
+}
+.home-center{
+  width:1080px;
+  margin:0 auto;
+  .mode-block{
+    height: 250px;
+    .el-col{
+      height: 250px;
+    }
+    .grid-content{
+      text-align:center;
+      color:#fff;
+      font-size:20px;
+      font-weight:bold;
+      position: relative;
+      p{
+        margin: 10px 0;
+      }
+    }
+    .trans-middle{
+      position: absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      -ms-transform:translate(-50%,-50%);
+    }
+    .model-a{
+      height: 100%;
+      background: #d2c184;
+    }
+    .model-b{
+      height: 100%;
+      background: #4bc26f;
+    }
+    .model-c{
+      height: 100%;
+      background: #33bba8;
+    }
+    .model-d{
+      height: 115px;
+      margin-bottom: 20px;
+      background: #d58a3d;
+    }
+    .model-d1{
+      height: 115px;
+      background: #399eda;
+    }
+    .model-e{
+      height: 100%;
+      background: #85578d;
+    }
+    .model-f{
+      height: 100%;
+      background: #4b48c6;
+    }
+    .model-g{
+      height: 100%;
+      background: #59a1d1;
+    }
   }
-
-  .box-card {
-    width: 480px;
-  }
+}
 </style>

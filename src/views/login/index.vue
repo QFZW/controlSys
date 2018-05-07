@@ -5,11 +5,11 @@
         <h3 class="title">新时空单灯管理系统</h3>
       </div>
       <div class="login-center-block">
-        <el-form-item prop="userName">
-          <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
+        <el-form-item>
+          <el-input name="username" type="text" prop="userName" v-model="loginForm.username" autoComplete="on" placeholder="请输入用户名" />
         </el-form-item>
-        <el-form-item prop="passWord">
-          <el-input name="password" :type="passwordType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="password" />
+        <el-form-item>
+          <el-input name="password" :type="passwordType"  prop="passWord"  @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="请输入密码" />
         </el-form-item>
         <el-checkbox v-model="checked">记住密码</el-checkbox>
         <el-button type="primary" class="sub-button" :loading="loading" @click.native.prevent="handleLogin">登陆</el-button>
@@ -19,10 +19,12 @@
 </template>
 
 <script>
+import { getNamePassword, setNamePassword } from '@/utils/auth.js'
 export default {
   name: 'login',
   data () {
     var checkUserName = (rule, value, callback) => {
+      console.log(value)
       if (!value) {
         return callback(new Error('用户名不得为空'))
       } else {
@@ -71,10 +73,9 @@ export default {
           that.loading = true
           this.HTTP.post('/mock/5aeeba99ee70f3596f06e54a/example/login', this.loginForm).then(function (res) {
             that.loading = false
-            if (that.data.checked) {
-              
+            if (that.checked) {
+              setNamePassword(JSON.stringify(that.loginForm))
             }
-            console.log(res)
           }).catch(function (err) {
             console.log(err)
           })
@@ -86,6 +87,10 @@ export default {
     }
   },
   created () {
+    let _obj = JSON.parse(getNamePassword())
+    if (_obj) {
+      this.loginForm = _obj
+    }
   },
   destroyed () {
   }
