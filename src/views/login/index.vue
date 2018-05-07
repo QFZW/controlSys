@@ -1,18 +1,15 @@
 <template>
   <div class="login-container">
-    <el-form class="login-form" autoComplete="on" :model="loginForm"  ref="loginForm" label-position="left">
+    <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
       <div class="title-container">
         <h3 class="title">新时空单灯管理系统</h3>
       </div>
       <div class="login-center-block">
-        <el-form-item prop="username">
+        <el-form-item prop="userName">
           <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
         </el-form-item>
-        <el-form-item prop="password">
+        <el-form-item prop="passWord">
           <el-input name="password" :type="passwordType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="password" />
-          <!-- <span class="show-pwd" @click="showPwd">
-            <svg-icon icon-class="eye" />
-          </span> -->
         </el-form-item>
         <el-checkbox v-model="checked">记住密码</el-checkbox>
         <el-button type="primary" class="sub-button" :loading="loading" @click.native.prevent="handleLogin">登陆</el-button>
@@ -25,14 +22,38 @@
 export default {
   name: 'login',
   data () {
+    var checkUserName = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('用户名不得为空'))
+      } else {
+        callback()
+      }
+    }
+    var checkPassWord = (rule, value, callback) => {
+      console.log(value)
+      if (!value) {
+        return callback(new Error('密码不得为空'))
+      } else {
+        callback()
+      }
+    }
     return {
       loginForm: {
         username: 'admin',
         password: '1111111'
       },
       passwordType: 'password',
+      loginRules: {
+        userName: [
+          { validator: checkUserName, trigger: 'blur' }
+        ],
+        passWord: [
+          { validator: checkPassWord, trigger: 'blur' }
+        ]
+      },
       loading: false,
-      showDialog: false
+      showDialog: false,
+      checked: false
     }
   },
   methods: {
@@ -44,14 +65,18 @@ export default {
       }
     },
     handleLogin () {
+      let that = this
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
-            this.loading = false
-            this.$router.push({ path: '/' })
-          }).catch(() => {
-            this.loading = false
+          that.loading = true
+          this.HTTP.post('/mock/5aeeba99ee70f3596f06e54a/example/login', this.loginForm).then(function (res) {
+            that.loading = false
+            if (that.data.checked) {
+              
+            }
+            console.log(res)
+          }).catch(function (err) {
+            console.log(err)
           })
         } else {
           console.log('error submit!!')
@@ -88,7 +113,7 @@ export default {
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: #454545;
   }
   .el-checkbox{
