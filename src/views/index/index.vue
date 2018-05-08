@@ -1,5 +1,10 @@
 <template>
   <div class="system-home" v-bind:style="{height:WindowHeight+'px'}">
+    <div class="home-top">
+      <a class="meau-icon">
+        <i class="iconfont">&#xe655;</i>
+      </a>
+    </div>
     <div class="home-center">
       <el-row :gutter="20" class="mode-block">
         <el-col :span="12">
@@ -107,6 +112,16 @@ export default {
 #app{
   width: 100%;
   height: 100%;
+  min-width: 1200px;
+}
+.home-top{
+  padding:30px;
+  .meau-icon{
+    color: #ffffff;
+    i{
+      font-size:24px;
+    }
+  }
 }
 .system-home{
   width: 100%;
@@ -117,8 +132,7 @@ export default {
   background-size:cover
 }
 .home-center{
-  width:1080px;
-  margin:0 auto;
+  padding:50px 130px;
   .mode-block{
     height: 250px;
     .el-col{

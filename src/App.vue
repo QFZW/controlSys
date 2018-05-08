@@ -10,10 +10,5 @@ export default {
 }
 </script>
 <style lang="scss">
-.name{
-  color:red;
-  .x{
-    color: yellow;
-  }
-}
+  @import "./src/assets/index.scss";
 </style>
