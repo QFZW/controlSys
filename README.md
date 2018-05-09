@@ -31,8 +31,25 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
  */
 ```
 
-## 目录结构
+## axios 使用
+
+> 注入到全局
+
+```javascript
+// 更佳优雅的引入
+Object.defineProperty(Vue.prototype, '$HTTP', { value: service })
+
+// 一个例子
+this.$HTTP.get('/mock/5aeeba99ee70f3596f06e54a/example/mock')
+  .then(res => {
+    let projects = res.data.data.projects
+    console.log(projects)
+  }).catch(() => {})
 ```
+
+## 目录结构
+
+```text
     .
     ├── controllSys         // 跟项目目录
     ├── ├── src             // 开发根目录
