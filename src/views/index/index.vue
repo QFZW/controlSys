@@ -88,15 +88,15 @@ export default {
   data () {
     return {
       WindowHeight: 600,
-      blockHeight:250,
-      blockHeight2:115
+      blockHeight: 250,
+      blockHeight2: 115
     }
   },
   computed: {},
   created () {
-    this.WindowHeight = window.innerHeight;
-    this.blockHeight=(this.WindowHeight-113-70-20)/2;
-    this.blockHeight2=(this.blockHeight-20)/2;
+    this.WindowHeight = window.innerHeight
+    this.blockHeight = (this.WindowHeight - 113 - 70 - 20) / 2
+    this.blockHeight2 = (this.blockHeight - 20) / 2
   },
   methods: {
   }
@@ -159,7 +159,7 @@ export default {
   background-size:cover
 }
 .home-center{
-  padding:20px 130px 50px 130px; 
+  padding:20px 130px 50px 130px;
   .mode-block{
     height: 250px;
     .el-col{
