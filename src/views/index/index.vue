@@ -1,14 +1,21 @@
 <template>
   <div class="system-home" v-bind:style="{height:WindowHeight+'px'}">
-    <div class="home-top">
+    <div class="home-top clearfix">
       <a class="meau-icon">
         <i class="iconfont">&#xe655;</i>
       </a>
+      <div class="user-info f-r">
+        <img src="./resource/header.png">
+        <div class="text-info">
+          <p>某某某</p>
+          <p>高级管理员</p>
+        </div>
+      </div>
     </div>
     <div class="home-center">
-      <el-row :gutter="20" class="mode-block">
+      <el-row :gutter="20" class="mode-block" v-bind:style="{height:blockHeight+'px'}">
         <el-col :span="12">
-          <div class="grid-content model-a">
+          <div class="grid-content model-a" v-bind:style="{height:blockHeight+'px'}">
             <div class="trans-middle">
               <img src="./resource/icon1.png">
               <p>GIS地理信息系统</p>
@@ -16,7 +23,7 @@
           </div>
         </el-col>
         <el-col :span="6">
-          <div class="grid-content model-b">
+          <div class="grid-content model-b" v-bind:style="{height:blockHeight+'px'}">
             <div class="trans-middle">
               <img src="./resource/icon2.png">
               <p>道路照明系统</p>
@@ -24,7 +31,7 @@
           </div>
         </el-col>
         <el-col :span="6">
-          <div class="grid-content model-c">
+          <div class="grid-content model-c" v-bind:style="{height:blockHeight+'px'}">
             <div class="trans-middle">
               <img src="./resource/icon3.png">
               <p>资产管理系统</p>
@@ -32,15 +39,15 @@
           </div>
         </el-col>
       </el-row>
-      <el-row :gutter="20" class="mode-block">
+      <el-row :gutter="20" class="mode-block" v-bind:style="{height:blockHeight+'px'}">
         <el-col :span="7">
-          <div class="grid-content model-d">
+          <div class="grid-content model-d" v-bind:style="{height:blockHeight2+'px'}">
             <div class="trans-middle">
               <img src="./resource/icon4.png">
               <p>能耗分析</p>
             </div>
           </div>
-          <div class="grid-content model-d1">
+          <div class="grid-content model-d1" v-bind:style="{height:blockHeight2+'px'}">
             <div class="trans-middle">
               <img src="./resource/icon5.png">
               <p>用户中心</p>
@@ -48,14 +55,14 @@
           </div>
         </el-col>
         <el-col :span="5">
-          <div class="grid-content model-e">
+          <div class="grid-content model-e" v-bind:style="{height:blockHeight+'px'}">
             <div class="trans-middle">
               <img src="./resource/icon6.png">
               <p>事件报警</p>
             </div>
           </div>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="6" v-bind:style="{height:blockHeight+'px'}">
           <div class="grid-content model-f">
             <div class="trans-middle">
               <img src="./resource/icon7.png">
@@ -63,7 +70,7 @@
             </div>
           </div>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="6" v-bind:style="{height:blockHeight+'px'}">
           <div class="grid-content model-g">
             <div class="trans-middle">
               <img src="./resource/icon8.png">
@@ -80,12 +87,16 @@ export default {
   name: 'index',
   data () {
     return {
-      WindowHeight: 600
+      WindowHeight: 600,
+      blockHeight:250,
+      blockHeight2:115
     }
   },
   computed: {},
   created () {
-    this.WindowHeight = window.innerHeight
+    this.WindowHeight = window.innerHeight;
+    this.blockHeight=(this.WindowHeight-113-70-20)/2;
+    this.blockHeight2=(this.blockHeight-20)/2;
   },
   methods: {
   }
@@ -122,6 +133,22 @@ export default {
       font-size:24px;
     }
   }
+  .user-info{
+    img{
+      width: 50px;
+      height: 50px;
+      padding-right:10px;
+    }
+    .text-info{
+      float: right;
+      font-size:14px;
+      color: #fff;
+      line-height: 25px;
+      p{
+        margin: 0;
+      }
+    }
+  }
 }
 .system-home{
   width: 100%;
@@ -132,7 +159,7 @@ export default {
   background-size:cover
 }
 .home-center{
-  padding:50px 130px;
+  padding:20px 130px 50px 130px; 
   .mode-block{
     height: 250px;
     .el-col{
