@@ -163,7 +163,7 @@ export default {
   .mode-block{
     height: 250px;
     .el-col{
-      height: 250px;
+      // height: 250px;
     }
     .grid-content{
       text-align:center;
