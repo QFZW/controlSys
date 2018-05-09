@@ -5,6 +5,8 @@ import Index from '../views/index/index'
 
 import Login from '../views/login/index'
 
+import ProjectIndex from '../views/Project/index'
+
 Vue.use(Router)
 
 export default new Router({
@@ -20,5 +22,11 @@ export default new Router({
     path: '/Login',
     name: 'Login',
     component: Login
+  },
+    // 项目管理
+  {
+    path: '/ProjectIndex',
+    name: 'ProjectIndex',
+    component: ProjectIndex
   }]
 })

@@ -12,7 +12,7 @@
           <el-input name="password" :type="passwordType"  prop="passWord"  @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="请输入密码" />
         </el-form-item>
         <el-checkbox v-model="checked">记住密码</el-checkbox>
-        <el-button type="primary" class="sub-button" :loading="loading" @click.native.prevent="handleLogin">登陆</el-button>
+        <el-button type="primary" class="sub-button" :loading="loading" @click.native.prevent="handleLogin">登录</el-button>
       </div>
     </el-form>
   </div>
