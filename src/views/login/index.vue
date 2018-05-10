@@ -6,9 +6,15 @@
       </div>
       <div class="login-center-block">
         <el-form-item>
+          <span class="svg-container svg-container_login">
+            <svg-icon icon-class="user" />
+          </span>
           <el-input name="username" type="text" prop="userName" v-model="loginForm.username" autoComplete="on" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item>
+          <span class="svg-container svg-container_login">
+            <svg-icon icon-class="user" />
+          </span>
           <el-input name="password" :type="passwordType"  prop="passWord"  @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="请输入密码" />
         </el-form-item>
         <el-checkbox v-model="checked">记住密码</el-checkbox>
@@ -103,7 +109,7 @@ export default {
   .el-input {
     display: inline-block;
     height: 47px;
-    width: 100%;
+    width: 85%;
     input {
       background: #ffffff;
       border: 0px;

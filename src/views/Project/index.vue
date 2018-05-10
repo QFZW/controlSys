@@ -188,7 +188,7 @@ export default {
             line-height: 48px;
             border:1px solid #e4e7ed;
             text-align: center;
-            font-size:14px;            
+            font-size:14px;
             background: #f8f9fd;
             position: relative;
             -webkit-box-sizing: border-box;
@@ -234,6 +234,6 @@ export default {
           }
         }
       }
-    }  
+    }
   }
 </style>
