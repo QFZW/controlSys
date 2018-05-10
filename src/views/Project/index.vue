@@ -1,13 +1,5 @@
 <template>
     <div class="app-wrapper">
-      <div class="app-module-top">
-        <span class="module-name">项目管理</span>
-        <ul class="module-menu">
-          <li><a class="active">总览</a></li>
-          <li><a>管理</a></li>
-          <li><a>设置</a></li>
-        </ul>
-      </div>
       <div class="module-main-container">
         <div class="project-container">
           <div class="module-item module-item1">
@@ -83,39 +75,6 @@ export default {
   .app-wrapper{
     width:100%;
     height: 100%;
-  }
-  .app-module-top{
-    width:100%;
-    height: 75px;
-    line-height: 75px;
-    background: #12203d;
-    padding: 0 60px;
-    color:#fff;
-    .module-name{
-      font-size:18px
-    }
-    .module-menu{
-      // display: inline-block;
-      display: inline-block;
-      padding-left: 20px;
-      li,ol{
-        display:inline;
-        list-style:none;
-      }
-      li{
-        a{
-          padding:0 20px;
-          display: inline-block;
-          color:#fff;
-          &:hover{
-            color:#3b5fad;
-          }
-        }
-        .active{
-          color:#3b5fad
-        }
-      }
-    }
   }
   .module-main-container{
     padding:40px;
