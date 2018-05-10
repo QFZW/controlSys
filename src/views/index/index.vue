@@ -139,7 +139,7 @@ export default {
     img{
       width: 50px;
       height: 50px;
-      padding-right:10px;
+      margin-right:10px;
     }
     .text-info{
       float: right;

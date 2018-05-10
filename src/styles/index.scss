@@ -4,7 +4,20 @@
 @import './transition.scss';
 @import './element-ui.scss';
 @import './sidebar.scss';
-
+html,body,h1,h2,h3,h4,h5,h6,div,dl,dt,dd,ul,ol,li,p,pre,hr,table,caption,th,td,form,input,button,textarea{
+  margin:0;
+  padding:0;
+  border: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  // word-break: break-all;
+  
+}
+header,footer,section,article,aside,nav,hgroup,address,figure,figcaption,menu,details{
+  display:block;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;

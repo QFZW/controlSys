@@ -7,13 +7,13 @@
       <div class="login-center-block">
         <el-form-item>
           <span class="svg-container svg-container_login">
-            <svg-icon icon-class="user" />
+            <i class="iconfont">&#xe601;</i>
           </span>
           <el-input name="username" type="text" prop="userName" v-model="loginForm.username" autoComplete="on" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item>
           <span class="svg-container svg-container_login">
-            <svg-icon icon-class="user" />
+            <i class="iconfont">&#xe64e;</i>
           </span>
           <el-input name="password" :type="passwordType"  prop="passWord"  @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="请输入密码" />
         </el-form-item>
@@ -65,13 +65,6 @@ export default {
     }
   },
   methods: {
-    showPwd () {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-    },
     handleLogin () {
       let that = this
       this.$refs.loginForm.validate(valid => {
@@ -129,7 +122,7 @@ export default {
   }
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
+    background: #fff;
     border-radius: 5px;
     margin-bottom: 20px;
     color: #454545;
@@ -151,11 +144,13 @@ export default {
     margin-bottom: 30px;
     font-size: 16px;
     background: #5789fa;
+    border-color: #5789fa;
   }
 }
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+$blue:#5789fa;
 $dark_gray:#889aa4;
 $light_gray:#eee;
 div{
@@ -165,7 +160,7 @@ div{
   position: fixed;
   height: 100%;
   width: 100%;
-  background:url('./bg.png');
+  background:url('../../assets/index/bg.png');
   .login-form {
     position: absolute;
     left: 50%;
@@ -177,12 +172,14 @@ div{
   }
   .svg-container {
     padding: 6px 5px 6px 15px;
-    color: $dark_gray;
+    color: $blue;
     vertical-align: middle;
     width: 30px;
     display: inline-block;
     &_login {
-      font-size: 20px;
+      i{
+        font-size: 20px;
+      }
     }
   }
   .title-container {
