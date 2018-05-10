@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { getNamePassword, setNamePassword } from '@/utils/auth.js'
+// import { getNamePassword, setNamePassword } from '@/utils/auth.js'
 export default {
   name: 'login',
   data () {
@@ -71,14 +71,21 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           that.loading = true
-          this.HTTP.post('/mock/5aeeba99ee70f3596f06e54a/example/login', this.loginForm).then(function (res) {
-            that.loading = false
-            if (that.checked) {
-              setNamePassword(JSON.stringify(that.loginForm))
-            }
-          }).catch(function (err) {
+          this.$store.dispatch('Login', this.loginForm).then(() => {
+            this.loading = false
+            this.$router.push({ path: '/' })
+          }).catch((err) => {
             console.log(err)
+            this.loading = false
           })
+          // this.$HTTP.post('/login', this.loginForm).then(function (res) {
+          //   that.loading = false
+          //   if (that.checked) {
+          //     setNamePassword(JSON.stringify(that.loginForm))
+          //   }
+          // }).catch(function (err) {
+          //   console.log(err)
+          // })
         } else {
           console.log('error submit!!')
           return false
@@ -87,10 +94,10 @@ export default {
     }
   },
   created () {
-    let _obj = JSON.parse(getNamePassword())
-    if (_obj) {
-      this.loginForm = _obj
-    }
+    // let _obj = JSON.parse(getNamePassword())
+    // if (_obj) {
+    //   this.loginForm = _obj
+    // }
   },
   destroyed () {
   }
