@@ -160,7 +160,7 @@ div{
   position: fixed;
   height: 100%;
   width: 100%;
-  background:url('../../assets/index/bg.png');
+  background:url('../../assets/index/bg.png') top center;
   background-size:cover;
   .login-form {
     position: absolute;
