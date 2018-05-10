@@ -67,8 +67,6 @@
 <script>
 export default {
   name: 'login',
-  data () {
-  },
   methods: {
   },
   created () {
@@ -97,7 +95,13 @@ export default {
       font-size:18px
     }
     .module-menu{
+      // display: inline-block;
+      display: inline-block;
       padding-left: 20px;
+      li,ol{
+        display:inline;
+        list-style:none;
+      }
       li{
         a{
           padding:0 20px;
