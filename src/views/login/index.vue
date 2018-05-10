@@ -161,6 +161,7 @@ div{
   height: 100%;
   width: 100%;
   background:url('../../assets/index/bg.png');
+  background-size:cover;
   .login-form {
     position: absolute;
     left: 50%;
