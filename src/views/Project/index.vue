@@ -67,8 +67,6 @@
 <script>
 export default {
   name: 'login',
-  data () {
-  },
   methods: {
   },
   created () {
@@ -97,7 +95,13 @@ export default {
       font-size:18px
     }
     .module-menu{
+      // display: inline-block;
+      display: inline-block;
       padding-left: 20px;
+      li,ol{
+        display:inline;
+        list-style:none;
+      }
       li{
         a{
           padding:0 20px;
@@ -188,7 +192,7 @@ export default {
             line-height: 48px;
             border:1px solid #e4e7ed;
             text-align: center;
-            font-size:14px;            
+            font-size:14px;
             background: #f8f9fd;
             position: relative;
             -webkit-box-sizing: border-box;
@@ -234,6 +238,6 @@ export default {
           }
         }
       }
-    }  
+    }
   }
 </style>

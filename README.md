@@ -54,11 +54,11 @@ this.$HTTP.get('/mock/5aeeba99ee70f3596f06e54a/example/mock')
     ├── controllSys         // 跟项目目录
     ├── ├── src             // 开发根目录
     ├── ├── ├── assets      // 静态资源、图片等
-    ├── ├── ├── components  // 公共组件
+    ├── ├── ├── components  // 常规组件
     ├── ├── ├── mock        // mock 数据
     ├── ├── ├── router      // 路由
     ├── ├── ├── store       // store
     ├── ├── ├── styles      // 公共的样式文件
     ├── ├── ├── utils       // 一些工具类
-    ├── ├── ├── views       // 页面文件
+    ├── ├── ├── views       // 页面视图组件
 ```

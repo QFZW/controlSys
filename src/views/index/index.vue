@@ -5,7 +5,7 @@
         <i class="iconfont">&#xe655;</i>
       </a>
       <div class="user-info f-r">
-        <img src="./resource/header.png">
+        <img src="@/assets/index/header.png">
         <div class="text-info">
           <p>某某某</p>
           <p>高级管理员</p>
@@ -17,7 +17,7 @@
         <el-col :span="12">
           <div class="grid-content model-a" v-bind:style="{height:blockHeight+'px'}">
             <div class="trans-middle">
-              <img src="./resource/icon1.png">
+              <img src="@/assets/index/icon1.png">
               <p>GIS地理信息系统</p>
             </div>
           </div>
@@ -25,7 +25,7 @@
         <el-col :span="6">
           <div class="grid-content model-b" v-bind:style="{height:blockHeight+'px'}">
             <div class="trans-middle">
-              <img src="./resource/icon2.png">
+              <img src="@/assets/index/icon2.png">
               <p>道路照明系统</p>
             </div>
           </div>
@@ -33,7 +33,7 @@
         <el-col :span="6">
           <div class="grid-content model-c" v-bind:style="{height:blockHeight+'px'}">
             <div class="trans-middle">
-              <img src="./resource/icon3.png">
+              <img src="@/assets/index/icon3.png">
               <p>资产管理系统</p>
             </div>
           </div>
@@ -43,13 +43,13 @@
         <el-col :span="7">
           <div class="grid-content model-d" v-bind:style="{height:blockHeight2+'px'}">
             <div class="trans-middle">
-              <img src="./resource/icon4.png">
+              <img src="@/assets/index/icon4.png">
               <p>能耗分析</p>
             </div>
           </div>
           <div class="grid-content model-d1" v-bind:style="{height:blockHeight2+'px'}">
             <div class="trans-middle">
-              <img src="./resource/icon5.png">
+              <img src="@/assets/index/icon5.png">
               <p>用户中心</p>
             </div>
           </div>
@@ -57,7 +57,7 @@
         <el-col :span="5">
           <div class="grid-content model-e" v-bind:style="{height:blockHeight+'px'}">
             <div class="trans-middle">
-              <img src="./resource/icon6.png">
+              <img src="@/assets/index/icon6.png">
               <p>事件报警</p>
             </div>
           </div>
@@ -65,18 +65,20 @@
         <el-col :span="6" v-bind:style="{height:blockHeight+'px'}">
           <div class="grid-content model-f">
             <div class="trans-middle">
-              <img src="./resource/icon7.png">
+              <img src="@/assets/index/icon7.png">
               <p>工单管理</p>
             </div>
           </div>
         </el-col>
         <el-col :span="6" v-bind:style="{height:blockHeight+'px'}">
-          <div class="grid-content model-g">
-            <div class="trans-middle">
-              <img src="./resource/icon8.png">
-              <p>项目管理</p>
+          <router-link to="/project">
+            <div class="grid-content model-g">
+              <div class="trans-middle">
+                <img src="@/assets/index/icon8.png">
+                <p>项目管理</p>
+              </div>
             </div>
-          </div>
+          </router-link>
         </el-col>
       </el-row>
     </div>
@@ -155,7 +157,7 @@ export default {
   height: 100%;
   min-width: 1080px;
   margin: 0 auto;
-  background-image: url('./resource/bg.png');
+  background-image: url('../../assets/index/bg.png');
   background-size:cover
 }
 .home-center{

@@ -2,7 +2,7 @@
  * @Author: Vincent
  * @Date: 2018-05-06 14:46:35
  * @Last Modified by: Vincent
- * @Last Modified time: 2018-05-09 15:43:13
+ * @Last Modified time: 2018-05-10 13:17:48
  */
 
 // The Vue build version to load with the `import` command
@@ -12,12 +12,15 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store'
 import service from './utils/request'
 // style
 import 'normalize.css/normalize.css'// A modern alternative to CSS resets
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/styles/index.scss' // global css
+
+import '@/permission' // permission control
 
 Vue.config.productionTip = false
 
@@ -30,6 +33,7 @@ Object.defineProperty(Vue.prototype, '$HTTP', { value: service })
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
