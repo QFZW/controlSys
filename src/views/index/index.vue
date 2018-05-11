@@ -1,86 +1,64 @@
 <template>
-  <div class="system-home" v-bind:style="{height:WindowHeight+'px'}">
-    <div class="home-top clearfix">
-      <a class="meau-icon">
-        <i class="iconfont">&#xe655;</i>
-      </a>
-      <div class="user-info f-r">
-        <img src="@/assets/index/header.png">
-        <div class="text-info">
-          <p>某某某</p>
-          <p>高级管理员</p>
+  <div class="system-home">
+    <div class="home-absolute">
+      <div class="home-top clearfix">
+        <a class="meau-icon">
+          <i class="iconfont">&#xe655;</i>
+        </a>
+        <div class="user-info f-r">
+          <img src="@/assets/index/header.png">
+          <div class="text-info">
+            <p>某某某</p>
+            <p>高级管理员</p>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="home-center">
-      <el-row :gutter="20" class="mode-block" v-bind:style="{height:blockHeight+'px'}">
-        <el-col :span="12">
-          <div class="grid-content model-a" v-bind:style="{height:blockHeight+'px'}">
-            <div class="trans-middle">
-              <img src="@/assets/index/icon1.png">
-              <p>GIS地理信息系统</p>
+      <div class="home-center">
+        <el-row :gutter="20" class="mode-block">
+          <el-col :span="12">
+            <div class="grid-content model-a">
+                <img src="@/assets/index/1.png">
             </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="grid-content model-b" v-bind:style="{height:blockHeight+'px'}">
-            <div class="trans-middle">
-              <img src="@/assets/index/icon2.png">
-              <p>道路照明系统</p>
+          </el-col>
+          <el-col :span="6">
+            <div class="grid-content model-b">
+                <img src="@/assets/index/2.png">
             </div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="grid-content model-c" v-bind:style="{height:blockHeight+'px'}">
-            <div class="trans-middle">
-              <img src="@/assets/index/icon3.png">
-              <p>资产管理系统</p>
+          </el-col>
+          <el-col :span="6">
+            <div class="grid-content model-c">
+                <img src="@/assets/index/3.png">
             </div>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20" class="mode-block" v-bind:style="{height:blockHeight+'px'}">
-        <el-col :span="7">
-          <div class="grid-content model-d" v-bind:style="{height:blockHeight2+'px'}">
-            <div class="trans-middle">
-              <img src="@/assets/index/icon4.png">
-              <p>能耗分析</p>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20" class="mode-block">
+          <el-col :span="7">
+            <div class="grid-content model-d">
+                <img src="@/assets/index/4.png">
             </div>
-          </div>
-          <div class="grid-content model-d1" v-bind:style="{height:blockHeight2+'px'}">
-            <div class="trans-middle">
-              <img src="@/assets/index/icon5.png">
-              <p>用户中心</p>
+            <div class="grid-content model-d1">
+                <img src="@/assets/index/5.png">
             </div>
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <div class="grid-content model-e" v-bind:style="{height:blockHeight+'px'}">
-            <div class="trans-middle">
-              <img src="@/assets/index/icon6.png">
-              <p>事件报警</p>
+          </el-col>
+          <el-col :span="5">
+            <div class="grid-content model-e">
+                <img src="@/assets/index/6.png">
             </div>
-          </div>
-        </el-col>
-        <el-col :span="6" v-bind:style="{height:blockHeight+'px'}">
-          <div class="grid-content model-f">
-            <div class="trans-middle">
-              <img src="@/assets/index/icon7.png">
-              <p>工单管理</p>
+          </el-col>
+          <el-col :span="6" >
+            <div class="grid-content model-f">
+                <img src="@/assets/index/7.png">
             </div>
-          </div>
-        </el-col>
-        <el-col :span="6" v-bind:style="{height:blockHeight+'px'}">
-          <router-link to="/project">
-            <div class="grid-content model-g">
-              <div class="trans-middle">
-                <img src="@/assets/index/icon8.png">
-                <p>项目管理</p>
+          </el-col>
+          <el-col :span="6">
+            <router-link to="/project">
+              <div class="grid-content model-g">
+                  <img src="@/assets/index/8.png">
               </div>
-            </div>
-          </router-link>
-        </el-col>
-      </el-row>
+            </router-link>
+          </el-col>
+        </el-row>
+      </div>
     </div>
   </div>
 </template>
@@ -127,6 +105,15 @@ export default {
   height: 100%;
   min-width: 1200px;
 }
+.home-absolute{
+  position: absolute;
+  top:0;
+  left:0;
+  bottom: 0;
+  right: 0;
+  overflow-y: scroll;
+}
+
 .home-top{
   padding:30px;
   .meau-icon{
@@ -157,8 +144,9 @@ export default {
   height: 100%;
   min-width: 1080px;
   margin: 0 auto;
-  background-image: url('../../assets/index/bg.png');
-  background-size:cover
+  background: url('../../assets/index/bg.png') fixed center top;
+  background-size:cover;
+  position: relative;
 }
 .home-center{
   padding:20px 130px 50px 130px;
@@ -170,22 +158,14 @@ export default {
     .grid-content{
       text-align:center;
       color:#fff;
-      font-size:20px;
-      font-weight:bold;
+      font-size:0;
       position: relative;
       p{
         margin: 10px 0;
       }
-    }
-    .trans-middle{
-      position: absolute;
-      top:50%;
-      left:50%;
-      transform:translate(-50%,-50%);
-      -ms-transform:translate(-50%,-50%);
-      p{
-        margin-top: 10px;
-        margin:0;
+      img{
+        width:100%;
+        height: 100%;
       }
     }
     .model-a{
