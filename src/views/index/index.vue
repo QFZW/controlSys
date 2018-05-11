@@ -17,43 +17,67 @@
         <el-row :gutter="20" class="mode-block">
           <el-col :span="12">
             <div class="grid-content model-a">
-                <img src="@/assets/index/1.png">
+              <div class="trans-middle">
+                <p class="p1"><i class="iconfont"></i></p>
+                <p>GIS地理信息系统</p>
+              </div>
             </div>
           </el-col>
           <el-col :span="6">
             <div class="grid-content model-b">
-                <img src="@/assets/index/2.png">
+              <div class="trans-middle">
+                <p class="p1"><i class="iconfont"></i></p>
+                <p>道路照明系统</p>
+              </div>
             </div>
           </el-col>
           <el-col :span="6">
             <div class="grid-content model-c">
-                <img src="@/assets/index/3.png">
+              <div class="trans-middle">
+                <p class="p1"><i class="iconfont"></i></p>
+                <p>资产管理系统</p>
+              </div>
             </div>
           </el-col>
         </el-row>
         <el-row :gutter="20" class="mode-block">
           <el-col :span="7">
             <div class="grid-content model-d">
-                <img src="@/assets/index/4.png">
+              <div class="trans-middle">
+                <p class="p1"><i class="iconfont"></i></p>
+                <p>能耗分析</p>
+              </div>
             </div>
             <div class="grid-content model-d1">
-                <img src="@/assets/index/5.png">
+              <div class="trans-middle">
+                <p class="p1"><i class="iconfont"></i></p>
+                <p>用户中心</p>
+              </div>
             </div>
           </el-col>
           <el-col :span="5">
             <div class="grid-content model-e">
-                <img src="@/assets/index/6.png">
+              <div class="trans-middle">
+                <p class="p1"><i class="iconfont"></i></p>
+                <p>事件报警</p>
+              </div>
             </div>
           </el-col>
           <el-col :span="6" >
             <div class="grid-content model-f">
-                <img src="@/assets/index/7.png">
+              <div class="trans-middle">
+                <p class="p1"><i class="iconfont"></i></p>
+                <p>工单管理</p>
+              </div>
             </div>
           </el-col>
           <el-col :span="6">
             <router-link to="/project">
               <div class="grid-content model-g">
-                  <img src="@/assets/index/8.png">
+               <div class="trans-middle">
+                <p class="p1"><i class="iconfont"></i></p>
+                <p>项目管理</p>
+              </div>
               </div>
             </router-link>
           </el-col>
@@ -106,12 +130,8 @@ export default {
   min-width: 1200px;
 }
 .home-absolute{
-  position: absolute;
-  top:0;
-  left:0;
-  bottom: 0;
-  right: 0;
-  overflow-y: scroll;
+  width:1200px;
+  margin:0 auto;
 }
 
 .home-top{
@@ -141,7 +161,6 @@ export default {
 }
 .system-home{
   width: 100%;
-  height: 100%;
   min-width: 1080px;
   margin: 0 auto;
   background: url('../../assets/index/bg.png') fixed center top;
@@ -153,53 +172,63 @@ export default {
   .mode-block{
     height: 250px;
     .el-col{
-      // height: 250px;
+      height: 250px;
     }
     .grid-content{
       text-align:center;
       color:#fff;
-      font-size:0;
+      background-size:cover;
+      font-size:20px;
       position: relative;
       p{
         margin: 10px 0;
       }
-      img{
+      .trans-middle{
+        position: absolute;
+        top:50%;
+        left:50%;
         width:100%;
-        height: 100%;
+        text-align:center;
+        transform:translate(-50%,-50%);
+        -ms-transform:translate(-50%,-50%);
+        p{
+          margin-top: 10px;
+          margin:0;
+        }
       }
     }
     .model-a{
       height: 100%;
-      background: #d2c184;
+      background-image: url('../../assets/index/1.png');
     }
     .model-b{
       height: 100%;
-      background: #4bc26f;
+      background-image: url('../../assets/index/2.png');
     }
     .model-c{
       height: 100%;
-      background: #33bba8;
+      background-image: url('../../assets/index/3.png');
     }
     .model-d{
       height: 115px;
       margin-bottom: 20px;
-      background: #d58a3d;
+      background-image: url('../../assets/index/4.png');
     }
     .model-d1{
       height: 115px;
-      background: #399eda;
+      background-image: url('../../assets/index/5.png');
     }
     .model-e{
       height: 100%;
-      background: #85578d;
+      background-image: url('../../assets/index/6.png');
     }
     .model-f{
       height: 100%;
-      background: #4b48c6;
+      background-image: url('../../assets/index/7.png');
     }
     .model-g{
       height: 100%;
-      background: #59a1d1;
+      background-image: url('../../assets/index/8.png');
     }
   }
 }
