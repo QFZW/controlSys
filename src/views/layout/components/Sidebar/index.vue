@@ -9,6 +9,9 @@
       text-color="#bfcbd9"
       active-text-color="#409EFF"
     >
+      <router-link to="/">
+        <div class="app-name"><span>单灯控制系统</span></div>
+      </router-link>
       <sidebar-item :routes="routes"></sidebar-item>
     </el-menu>
   </el-scrollbar>
@@ -33,3 +36,20 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.app-name{
+  height: 76px;
+  line-height: 76px;
+  color: #ffffff;
+  text-align: center;
+  font-size: 20px;
+  border-bottom: solid 1px #2d3647;
+}
+.el-menu--collapse{
+  .app-name{
+    span{
+      display: none;
+    }
+  }
+}
+</style>

@@ -57,3 +57,28 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+  .iconfont{
+    font-size: 18px;
+    color: #ffffff;
+  }
+  .el-menu-item {
+    height: 44px;
+    line-height: 44px;
+    &.is-active{
+      position: relative;
+      &:before{
+        content: '';
+        position: absolute;
+        height: 44px;
+        width: 4px;
+        top: 0;
+        left: 0;
+        background: #5789fa
+      }
+      span{
+        color: #ffffff;
+      }
+    }
+  }
+</style>

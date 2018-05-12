@@ -18,7 +18,7 @@
           <el-col :span="12">
             <div class="grid-content model-a">
               <div class="trans-middle">
-                <p class="p1"><i class="iconfont"></i></p>
+                <p class="p1"><i class="iconfont">&#xe7b9;</i></p>
                 <p>GIS地理信息系统</p>
               </div>
             </div>
@@ -26,7 +26,7 @@
           <el-col :span="6">
             <div class="grid-content model-b">
               <div class="trans-middle">
-                <p class="p1"><i class="iconfont"></i></p>
+                <p class="p1"><i class="iconfont">&#xe691;</i></p>
                 <p>道路照明系统</p>
               </div>
             </div>
@@ -34,7 +34,7 @@
           <el-col :span="6">
             <div class="grid-content model-c">
               <div class="trans-middle">
-                <p class="p1"><i class="iconfont"></i></p>
+                <p class="p1"><i class="iconfont">&#xe613;</i></p>
                 <p>资产管理系统</p>
               </div>
             </div>
@@ -44,13 +44,13 @@
           <el-col :span="7">
             <div class="grid-content model-d">
               <div class="trans-middle">
-                <p class="p1"><i class="iconfont"></i></p>
+                <p class="p1"><i class="iconfont f-mid">&#xe6f5;</i></p>
                 <p>能耗分析</p>
               </div>
             </div>
             <div class="grid-content model-d1">
               <div class="trans-middle">
-                <p class="p1"><i class="iconfont"></i></p>
+                <p class="p1"><i class="iconfont f-mid">&#xe603;</i></p>
                 <p>用户中心</p>
               </div>
             </div>
@@ -58,7 +58,7 @@
           <el-col :span="5">
             <div class="grid-content model-e">
               <div class="trans-middle">
-                <p class="p1"><i class="iconfont"></i></p>
+                <p class="p1"><i class="iconfont">&#xe615;</i></p>
                 <p>事件报警</p>
               </div>
             </div>
@@ -66,7 +66,7 @@
           <el-col :span="6" >
             <div class="grid-content model-f">
               <div class="trans-middle">
-                <p class="p1"><i class="iconfont"></i></p>
+                <p class="p1"><i class="iconfont">&#xe664;</i></p>
                 <p>工单管理</p>
               </div>
             </div>
@@ -75,7 +75,7 @@
             <router-link to="/project">
               <div class="grid-content model-g">
                <div class="trans-middle">
-                <p class="p1"><i class="iconfont"></i></p>
+                <p class="p1"><i class="iconfont">&#xe63b;</i></p>
                 <p>项目管理</p>
               </div>
               </div>
@@ -161,6 +161,7 @@ export default {
 }
 .system-home{
   width: 100%;
+  min-height: 100%;
   min-width: 1080px;
   margin: 0 auto;
   background: url('../../assets/index/bg.png') fixed center top;
@@ -175,11 +176,11 @@ export default {
       height: 250px;
     }
     .grid-content{
+      position: relative;
       text-align:center;
       color:#fff;
       background-size:cover;
-      font-size:20px;
-      position: relative;
+      font-size: 18px;
       p{
         margin: 10px 0;
       }
@@ -230,6 +231,18 @@ export default {
       height: 100%;
       background-image: url('../../assets/index/8.png');
     }
+    .p1{
+      padding-bottom: 5px;
+    }
+    .iconfont{
+      font-size: 60px;
+      &.f-mid{
+        font-size: 48px;
+      }
+    }
+  }
+  .grid-content{
+    cursor: pointer;
   }
 }
 </style>

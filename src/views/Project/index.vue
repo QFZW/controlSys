@@ -8,12 +8,12 @@
             </p>
             <div class="item-list">
               <span class="item">
-                中国
-                <span>1</span>
+                <span>中国</span>
+                <span class="sub-num">1</span>
               </span>
               <span class="item">
-                中国
-                <span>1</span>
+                <span>中国</span>
+                <span class="sub-num">1</span>
               </span>
             </div>
             <div class="children-module">
@@ -22,16 +22,16 @@
               </p>
               <div class="item-list">
                 <span class="item">
-                  中国
-                  <span>1</span>
+                  <span>中国</span>
+                  <span class="sub-num">1</span>
                 </span>
                 <span class="item">
-                  中国
-                  <span>1</span>
+                  <span>中国</span>
+                  <span class="sub-num">1</span>
                 </span>
                 <span class="item">
-                  中国
-                  <span>1</span>
+                  <span>中国</span>
+                  <span class="sub-num">1</span>
                 </span>
               </div>
             </div>
@@ -42,12 +42,19 @@
             </p>
             <div class="item-list">
               <span class="item">
-                中国
-                <span>1</span>
+                <i class="iconfont">&#xe638;</i>
+                <span>项目</span>
+                <span class="sub-num">1</span>
               </span>
               <span class="item">
-                中国
-                <span>1</span>
+                <i class="iconfont">&#xe602;</i>
+                <span>控制柜</span>
+                <span class="sub-num">1</span>
+              </span>
+              <span class="item">
+                <i class="iconfont">&#xe62b;</i>
+                <span>灯具</span>
+                <span class="sub-num">1</span>
               </span>
             </div>
           </div>
@@ -77,16 +84,16 @@ export default {
     height: 100%;
   }
   .module-main-container{
-    padding:40px;
-    background: #ffffff;
+    padding: 32px;
   }
   .project-container{
     .module-item{
       &>.title{
-        font-size:20px;
-        color: #030303;
         position: relative;
         padding-left: 20px;
+        font-size:18px;
+        color: #333333;
+        font-weight: bold;
         &:before{
           position: absolute;
           content: '';
@@ -107,7 +114,7 @@ export default {
         color:#090909;
         .item{
           display: inline-block;
-          min-width: 240px;
+          min-width: 250px;
           padding: 0 50px;
           margin-right: 20px;
           margin-bottom: 20px;
@@ -116,12 +123,13 @@ export default {
           border:1px solid #e4e7ed;
           text-align: center;
           font-size:16px;
-          background: #f8f9fd;
+          background: #ffffff;
           position: relative;
           -webkit-box-sizing: border-box;
           box-sizing: border-box;
-          border-radius:5px;
-          span{
+          // border-radius:5px;
+          box-shadow: 0 0 5px 1px rgba(0, 0, 0, .06);
+          .sub-num{
             position: absolute;
             font-size:14px;
             bottom:10px;
@@ -151,13 +159,13 @@ export default {
             line-height: 48px;
             border:1px solid #e4e7ed;
             text-align: center;
-            font-size:14px;
-            background: #f8f9fd;
+            font-size:16px;
+            background: #ffffff;
             position: relative;
             -webkit-box-sizing: border-box;
             box-sizing: border-box;
-            border-radius:2px;
-            span{
+            box-shadow: 0 0 5px 1px rgba(0, 0, 0, .06);
+            .sub-num{
               position: absolute;
               font-size:12px;
               bottom:5px;
@@ -183,17 +191,25 @@ export default {
           line-height: 90px;
           text-align: center;
           font-size:16px;
-          background: #262d47;
+          color: #666666;
+          background: #ebf1f5;
           position: relative;
           -webkit-box-sizing: border-box;
           box-sizing: border-box;
-          border-radius:5px;
-          span{
+          // border-radius:5px;
+          box-shadow: 0 0 5px 1px rgba(0, 0, 0, .06);
+          .sub-num{
             position: absolute;
             font-size:14px;
             bottom:10px;
             right:10px;
             line-height: normal;
+          }
+          .iconfont{
+            font-size: 28px;
+            color: #616e80;
+            position: relative;
+            top: 4px;
           }
         }
       }

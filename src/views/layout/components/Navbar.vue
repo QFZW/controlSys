@@ -2,10 +2,11 @@
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <breadcrumb></breadcrumb>
-    <el-dropdown class="avatar-container" trigger="click">
-      <div class="avatar-wrapper">
+    <el-dropdown class="avatar-container" trigger="hover">
+      <div class="avatar-wrapper clearfix">
         <img class="user-avatar" :src='"@/assets/index/header.png"'>
-        <i class="el-icon-caret-bottom"></i>
+        <div class="user-name">{{username}}</div>
+        <i class="el-icon-arrow-down"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
         <router-link class="inlineBlock" to="/">
@@ -34,7 +35,8 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'username'
     ])
   },
   methods: {
@@ -52,14 +54,14 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {
-  height: 50px;
-  line-height: 50px;
+  height: 76px;
+  line-height: 76px;
   border-radius: 0px !important;
   .hamburger-container {
-    line-height: 58px;
-    height: 50px;
+    line-height: 84px;
+    height: 76px;
     float: left;
-    padding: 0 10px;
+    padding: 0 10px 0 32px;
   }
   .screenfull {
     position: absolute;
@@ -68,24 +70,34 @@ export default {
     color: red;
   }
   .avatar-container {
-    height: 50px;
     display: inline-block;
     position: absolute;
-    right: 35px;
+    top: 17px;
+    height: 42px;
+    right: 52px;
     .avatar-wrapper {
       cursor: pointer;
-      margin-top: 5px;
+      padding-right: 10px;
       position: relative;
       .user-avatar {
-        width: 40px;
-        height: 40px;
+        float: left;
+        width: 42px;
+        height: 42px;
         border-radius: 10px;
       }
-      .el-icon-caret-bottom {
+      .user-name{
+        float: left;
+        margin: 0 10px;
+        width: 42px;
+        height: 42px;
+        line-height: 42px;
+        font-size: 14px;
+      }
+      .el-icon-arrow-down {
         position: absolute;
-        right: -20px;
-        top: 25px;
-        font-size: 12px;
+        right: 0px;
+        top: 14px;
+        font-size: 16px;
       }
     }
   }
