@@ -1,63 +1,59 @@
 <template>
-    <div class="app-wrapper">
-      <div class="module-main-container">
-        <div class="project-container">
-          <div class="module-item module-item1">
-            <p class="title">
-              全球项目概况
-            </p>
-            <div class="item-list">
-              <span class="item">
-                <span>中国</span>
-                <span class="sub-num">1</span>
-              </span>
-              <span class="item">
-                <span>中国</span>
-                <span class="sub-num">1</span>
-              </span>
-            </div>
-            <div class="children-module">
-              <p class="title">
-                全球
-              </p>
-              <div class="item-list">
-                <span class="item">
-                  <span>中国</span>
-                  <span class="sub-num">1</span>
-                </span>
-                <span class="item">
-                  <span>中国</span>
-                  <span class="sub-num">1</span>
-                </span>
-                <span class="item">
-                  <span>中国</span>
-                  <span class="sub-num">1</span>
-                </span>
-              </div>
-            </div>
+    <div class="project-container">
+      <div class="module-item module-item1">
+        <p class="title">
+          全球项目概况
+        </p>
+        <div class="item-list">
+          <span class="item">
+            <span>中国</span>
+            <span class="sub-num">1</span>
+          </span>
+          <span class="item">
+            <span>中国</span>
+            <span class="sub-num">1</span>
+          </span>
+        </div>
+        <div class="children-module">
+          <p class="title">
+            全球
+          </p>
+          <div class="item-list">
+            <span class="item">
+              <span>中国</span>
+              <span class="sub-num">1</span>
+            </span>
+            <span class="item">
+              <span>中国</span>
+              <span class="sub-num">1</span>
+            </span>
+            <span class="item">
+              <span>中国</span>
+              <span class="sub-num">1</span>
+            </span>
           </div>
-          <div class="module-item module-item2">
-            <p class="title">
-              全球统计数据
-            </p>
-            <div class="item-list">
-              <span class="item">
-                <i class="iconfont">&#xe638;</i>
-                <span>项目</span>
-                <span class="sub-num">1</span>
-              </span>
-              <span class="item">
-                <i class="iconfont">&#xe602;</i>
-                <span>控制柜</span>
-                <span class="sub-num">1</span>
-              </span>
-              <span class="item">
-                <i class="iconfont">&#xe62b;</i>
-                <span>灯具</span>
-                <span class="sub-num">1</span>
-              </span>
-            </div>
-          </div>
+        </div>
+      </div>
+      <div class="module-item module-item2">
+        <p class="title">
+          全球统计数据
+        </p>
+        <div class="item-list">
+          <span class="item">
+            <i class="iconfont">&#xe638;</i>
+            <span>项目</span>
+            <span class="sub-num">1</span>
+          </span>
+          <span class="item">
+            <i class="iconfont">&#xe602;</i>
+            <span>控制柜</span>
+            <span class="sub-num">1</span>
+          </span>
+          <span class="item">
+            <i class="iconfont">&#xe62b;</i>
+            <span>灯具</span>
+            <span class="sub-num">1</span>
+          </span>
         </div>
       </div>
     </div>
@@ -65,7 +61,7 @@
 
 <script>
 export default {
-  name: 'login',
+  name: '',
   methods: {
   },
   created () {
@@ -79,14 +75,8 @@ export default {
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .app-wrapper{
-    width:100%;
-    height: 100%;
-  }
-  .module-main-container{
-    padding: 32px;
-  }
   .project-container{
+    padding: 32px;
     .module-item{
       &>.title{
         position: relative;

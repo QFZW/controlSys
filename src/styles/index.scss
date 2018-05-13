@@ -96,3 +96,18 @@ a:hover {
 .app-container {
   padding: 20px;
 }
+.main-container{
+  min-width:950px;
+}
+.danger-text-btn{
+  color: #f56c6c
+}
+// 数据列表头部样式
+.datalist-header{
+  background-color: #f7f7f7 !important;
+  color: #333;
+  font-weight: bold;
+  th{
+    background-color: #f7f7f7 !important;
+  }
+}

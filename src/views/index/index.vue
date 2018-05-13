@@ -72,7 +72,7 @@
             </div>
           </el-col>
           <el-col :span="6">
-            <router-link to="/project">
+            <router-link to="/ProjectAdmin">
               <div class="grid-content model-g">
                <div class="trans-middle">
                 <p class="p1"><i class="iconfont">&#xe63b;</i></p>
