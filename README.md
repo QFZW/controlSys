@@ -20,6 +20,8 @@ npm run build --report
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
+## easy mock
+
 > 可以在以下地址模拟数据接口
 
 ``` javascript
@@ -46,6 +48,10 @@ this.$HTTP.get('/mock/5aeeba99ee70f3596f06e54a/example/mock')
     console.log(projects)
   }).catch(() => {})
 ```
+
+## 项目预览地址
+
+http://111.230.236.185/
 
 ## 目录结构
 
