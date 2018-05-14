@@ -271,10 +271,8 @@ export default {
         mem: '',
         state: true
       },
-      //控制新增显示弹出隐藏
-      dialogFormVisible: false,
-      //控制修改显示弹出隐藏
-      dialogFormVisibleEdit: false,
+      dialogFormVisible: false, //控制新增显示弹出隐藏
+      dialogFormVisibleEdit: false, //控制修改显示弹出隐藏
       countryList: [],
       provinceList: [],
       cityList: [],
@@ -282,7 +280,7 @@ export default {
         value: 1,
         label: '道路照明系统'
       }],
-      _editIndex: 0
+      editIndex: 0
     }
   },
   methods: {
@@ -304,7 +302,7 @@ export default {
     },
     // 编辑
     editRow (e) {
-      this._editIndex = e
+      this.editIndex = e
       this.newProject = this.projectList[e]
       if (this.newProject.state === 1) {
         this.newProject.state = true
@@ -388,7 +386,7 @@ export default {
           type: 'success',
           message: '修改成功!'
         })
-        this.projectList[this._editIndex] = newProject
+        this.projectList[this.editIndex] = this.newProject
       }).catch(error => {
         console(error)
       })
