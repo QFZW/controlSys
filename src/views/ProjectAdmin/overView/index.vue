@@ -220,7 +220,7 @@
             <span class="text">{{newProject.cityName}}</span>
           </el-form-item>
           <el-form-item label="类型" required>
-            <span class="text" v-if="{{newProject.type == 1}}">道路照明系统</span>
+            <span class="text" v-if="newProject.type == 1">道路照明系统</span>
           </el-form-item>
           <el-form-item label="名称" required>
             <el-input class="width350" v-model="newProject.projectName"></el-input>
