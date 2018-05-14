@@ -73,3 +73,33 @@ export function listCity (pageNumber, pageSize) {
     }
   })
 }
+
+export function addOrUpdateCountry (project) {
+  return request({
+    url: '/api/project/addorupdatecountry',
+    method: 'post',
+    data: {
+      project
+    }
+  })
+}
+
+export function addOrUpdateProvince (project) {
+  return request({
+    url: '/api/project/addorupdateProvince',
+    method: 'post',
+    data: {
+      project
+    }
+  })
+}
+
+export function addOrUpdateCity (project) {
+  return request({
+    url: '/api/project/addorupdatecity',
+    method: 'post',
+    data: {
+      project
+    }
+  })
+}

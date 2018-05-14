@@ -8,8 +8,8 @@
           <div class="data-block">
             <div class="data-block-title">
               国家
-              <a class="f-r danger-a"><i class="iconfont ">&#xe648;</i>删除</a>
-              <a class="f-r"><i class="iconfont">&#xe632;</i>添加</a>
+              <a class="f-r danger-a"><i class="iconfont">&#xe632;</i>删除</a>
+              <a class="f-r"  @click="addNewObj(0)"><i class="iconfont ">&#xe648;</i>添加</a>
             </div>
             <el-table
               ref="countryMultipleTable"
@@ -56,8 +56,8 @@
           <div class="data-block">
             <div class="data-block-title">
               省份
-              <a class="f-r danger-a"><i class="iconfont ">&#xe648;</i>删除</a>
-              <a class="f-r"><i class="iconfont">&#xe632;</i>添加</a>
+              <a class="f-r danger-a"><i class="iconfont">&#xe632;</i>删除</a>
+              <a class="f-r"  @click="addNewObj(1)"><i class="iconfont ">&#xe648;</i>添加</a>
             </div>
             <el-table
               ref="provinceMultipleTable"
@@ -106,8 +106,8 @@
           <div class="data-block">
             <div class="data-block-title">
               城市
-              <a class="f-r danger-a"><i class="iconfont ">&#xe648;</i>删除</a>
-              <a class="f-r"><i class="iconfont">&#xe632;</i>添加</a>
+              <a class="f-r danger-a"><i class="iconfont">&#xe632;</i>删除</a>
+              <a class="f-r" @click="addNewObj(2)"><i class="iconfont ">&#xe648;</i>添加</a>
             </div>
             <el-table
               ref="cityyMultipleTable"
@@ -153,11 +153,31 @@
           </div>
         </div>
       </div>
+      <!-- 弹窗 -->
+      <el-dialog :title="'添加'+dialogTitle[dialogType]"
+       :visible.sync="addNewObjShow" :close-on-click-modal='false' :close-on-press-escape='false' center
+       :before-close="handleCloseDialog">
+        <el-form ref="form" label-width="50px">
+          <el-form-item :label="dialogTitle[dialogType]" required>
+            <el-input v-model="addObj.name" placeholder="请输入内容"></el-input>
+          </el-form-item>
+          <el-form-item label="编码" required>
+            <el-input v-model="addObj.code" placeholder="请输入内容"></el-input>
+          </el-form-item>
+          <el-form-item label="备注" required>
+            <el-input v-model="addObj.mem" placeholder="请输入内容"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addNewObjShow = false">取 消</el-button>
+          <el-button type="primary" @click="onSubmit">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
 </template>
 
 <script>
-import { listCountry, listProvince, listCity } from '@/api/project'
+import { listCountry, listProvince, listCity, addOrUpdateCountry, addOrUpdateProvince, addOrUpdateCity } from '@/api/project'
 export default {
   name: 'GlobalRegion',
   data () {
@@ -167,10 +187,20 @@ export default {
       listCity: [],
       countryMultipleTable: [],
       provinceMultipleTable: [],
-      cityyMultipleTable: []
+      cityyMultipleTable: [],
+      addNewObjShow: false, // 控制弹窗
+      dialogTitle: ['国家', '省份', '城市'],
+      dialogType: 0,
+      addObj: {
+        name: ' ',
+        code: ' ',
+        mem: ''
+      }
     }
   },
   methods: {
+    handleSelectionChange (val) {
+    },
     getListCountry () {
       let that = this
       listCountry(that.pageNumber, that.pageSize).then(response => {
@@ -198,6 +228,69 @@ export default {
     editRow () {
     },
     deleteRow () {
+    },
+    addNewObj (type) {
+      this.dialogType = type
+      this.addNewObjShow = true
+    },
+    // 提交
+    onSubmit () {
+      let _obj = {}
+      if (this.dialogType === 0) {
+        // 提交国家
+        _obj.countryName = this.addObj.name
+        _obj.codeNumber = this.addObj.code
+        _obj.mem = this.addObj.mem
+        addOrUpdateCountry(_obj).then(response => {
+          this.$message({
+            type: 'success',
+            message: '添加成功!'
+          })
+          this.getListCountry()
+          this.addNewObjShow = false
+        }).catch(error => {
+          console(error)
+        })
+      } else if (this.dialogType === 1) {
+        // 提交省份
+        _obj.provinceName = this.addObj.name
+        _obj.codeNumber = this.addObj.code
+        _obj.mem = this.addObj.mem
+        addOrUpdateProvince(_obj).then(response => {
+          this.$message({
+            type: 'success',
+            message: '添加成功!'
+          })
+          this.getListProvince()
+          this.addNewObjShow = false
+        }).catch(error => {
+          console(error)
+        })
+      } else if (this.dialogType === 2) {
+        // 提交城市
+        _obj.cityName = this.addObj.name
+        _obj.codeNumber = this.addObj.code
+        _obj.mem = this.addObj.mem
+        addOrUpdateCity(_obj).then(response => {
+          this.$message({
+            type: 'success',
+            message: '添加成功!'
+          })
+          this.getListCity()
+          this.addNewObjShow = false
+        }).catch(error => {
+          console(error)
+        })
+      }
+    },
+    // 弹窗关闭时将数据清空
+    handleCloseDialog (done) {
+      this.addObj = {
+        name: ' ',
+        code: ' ',
+        mem: ''
+      }
+      done()
     }
   },
   created () {
@@ -211,19 +304,6 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-  .el-button--primary{
-    background: #5789fa;
-  }
-  .el-dialog{
-    width: 500px;
-    margin-top: 10vh !important;
-  }
-  .el-dialog__body{
-    padding: 20px 20px 0 20px !important;
-  }
-  .el-form-item{
-    margin-bottom: 15px;
-  }
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

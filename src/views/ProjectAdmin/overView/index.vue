@@ -7,12 +7,12 @@
         <div class="item-block f-l">
           <span class="title">名称</span><el-input  placeholder="请输入内容"></el-input>
         </div>
-        <div class="item-block f-l">
+        <!-- <div class="item-block f-l">
           <span class="title">类型</span><el-input  placeholder="请输入内容"></el-input>
-        </div>
+        </div> -->
         <div class="btn-block f-r">
           <el-button type="primary">查询</el-button>
-          <el-button>重置</el-button>
+          <!-- <el-button>重置</el-button> -->
         </div>
       </div>
       <div class="overview-center">
@@ -88,11 +88,11 @@
             <el-table-column
               label="状态">
               <template slot-scope="scope">
-                <span v-if="scope.row.state==0">
-                  未开启
-                </span>
-                <span>
+                <span v-if="scope.row.state">
                   已启用
+                </span>
+                <span v-else>
+                  未开启
                 </span>
               </template>
             </el-table-column>
@@ -138,7 +138,7 @@
         </div>
       </div>
       <!-- 弹窗 -->
-      <el-dialog :title="新建项目"
+      <el-dialog title="新建项目"
        :visible.sync="dialogFormVisible" :close-on-click-modal='false' :close-on-press-escape='false' center
        :before-close="handleCloseDialog">
         <el-form ref="form" label-width="50px">
@@ -206,7 +206,7 @@
         </div>
       </el-dialog>
       <!-- 修改项目 -->
-      <el-dialog :title="修改项目"
+      <el-dialog title="修改项目"
        :visible.sync="dialogFormVisibleEdit" :close-on-click-modal='false' :close-on-press-escape='false' center
        :before-close="handleCloseDialog">
         <el-form ref="form" label-width="50px">
@@ -371,6 +371,7 @@ export default {
           message: '添加成功!'
         })
         this.getListProject()
+        this.dialogFormVisible = false
       }).catch(error => {
         console(error)
       })
@@ -387,6 +388,7 @@ export default {
           message: '修改成功!'
         })
         this.projectList[this.editIndex] = this.newProject
+        this.dialogFormVisibleEdit = false
       }).catch(error => {
         console(error)
       })
@@ -421,11 +423,14 @@ export default {
     width: 500px;
     margin-top: 10vh !important;
   }
+  .el-dialog__title{
+    font-size:20px
+  }
   .el-dialog__body{
     padding: 20px 20px 0 20px !important;
   }
   .el-form-item{
-    margin-bottom: 15px;
+    margin-bottom: 10px;
   }
 </style>
 
