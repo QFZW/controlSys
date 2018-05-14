@@ -8,8 +8,8 @@
           <div class="data-block">
             <div class="data-block-title">
               国家
-              <a class="f-r"><i class="iconfont ">&#xe648;</i>删除</a>
-              <a class="f-r danger-a"><i class="iconfont">&#xe632;</i>添加</a>
+              <a class="f-r danger-a"><i class="iconfont ">&#xe648;</i>删除</a>
+              <a class="f-r"><i class="iconfont">&#xe632;</i>添加</a>
             </div>
             <el-table
               ref="countryMultipleTable"
@@ -56,8 +56,8 @@
           <div class="data-block">
             <div class="data-block-title">
               省份
-              <a class="f-r"><i class="iconfont ">&#xe648;</i>删除</a>
-              <a class="f-r danger-a"><i class="iconfont">&#xe632;</i>添加</a>
+              <a class="f-r danger-a"><i class="iconfont ">&#xe648;</i>删除</a>
+              <a class="f-r"><i class="iconfont">&#xe632;</i>添加</a>
             </div>
             <el-table
               ref="provinceMultipleTable"
@@ -106,8 +106,8 @@
           <div class="data-block">
             <div class="data-block-title">
               城市
-              <a class="f-r"><i class="iconfont ">&#xe648;</i>删除</a>
-              <a class="f-r danger-a"><i class="iconfont">&#xe632;</i>添加</a>
+              <a class="f-r danger-a"><i class="iconfont ">&#xe648;</i>删除</a>
+              <a class="f-r"><i class="iconfont">&#xe632;</i>添加</a>
             </div>
             <el-table
               ref="cityyMultipleTable"

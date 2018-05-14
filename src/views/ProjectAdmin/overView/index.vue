@@ -138,11 +138,11 @@
         </div>
       </div>
       <!-- 弹窗 -->
-      <el-dialog :title="textMap[dialogStatus]"
+      <el-dialog :title="新建项目"
        :visible.sync="dialogFormVisible" :close-on-click-modal='false' :close-on-press-escape='false' center
        :before-close="handleCloseDialog">
         <el-form ref="form" label-width="50px">
-          <el-form-item label="国家">
+          <el-form-item label="国家" required>
             <el-select class="width350" v-model="newProject.countryName">
               <el-option
                 v-for="(item , index) in countryList"
@@ -153,7 +153,7 @@
             </el-select>
             <span class="add-city-span"><i class="iconfont">&#xe648;</i>添加</span>
           </el-form-item>
-          <el-form-item label="省份">
+          <el-form-item label="省份" required>
             <el-select class="width350" v-model="newProject.provinceName">
               <el-option
                 v-for="(item , index) in provinceList"
@@ -164,7 +164,7 @@
             </el-select>
             <span class="add-city-span"><i class="iconfont">&#xe648;</i>添加</span>
           </el-form-item>
-          <el-form-item label="城市">
+          <el-form-item label="城市" required>
             <el-select class="width350" v-model="newProject.cityName">
               <el-option
                 v-for="(item , index) in cityList"
@@ -175,7 +175,7 @@
             </el-select>
             <span class="add-city-span"><i class="iconfont">&#xe648;</i>添加</span>
           </el-form-item>
-          <el-form-item label="类型">
+          <el-form-item label="类型" required>
             <el-select class="width350" v-model="newProject.type">
               <el-option
                 v-for="(item , index) in typeList"
@@ -185,7 +185,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="名称">
+          <el-form-item label="名称" required>
             <el-input class="width350" v-model="newProject.projectName"></el-input>
           </el-form-item>
           <el-form-item label="备注">
@@ -205,11 +205,54 @@
           <el-button type="primary" @click="onSubmit">确 定</el-button>
         </div>
       </el-dialog>
+      <!-- 修改项目 -->
+      <el-dialog :title="修改项目"
+       :visible.sync="dialogFormVisibleEdit" :close-on-click-modal='false' :close-on-press-escape='false' center
+       :before-close="handleCloseDialog">
+        <el-form ref="form" label-width="50px">
+          <el-form-item label="国家" required>
+            <span class="text">{{newProject.countryName}}</span>
+          </el-form-item>
+          <el-form-item label="省份" required>
+            <span class="text">{{newProject.provinceName}}</span>
+          </el-form-item>
+          <el-form-item label="城市" required>
+            <span class="text">{{newProject.cityName}}</span>
+          </el-form-item>
+          <el-form-item label="类型" required>
+            <span class="text" v-if="{{newProject.type == 1}}">道路照明系统</span>
+          </el-form-item>
+          <el-form-item label="名称" required>
+            <el-input class="width350" v-model="newProject.projectName"></el-input>
+          </el-form-item>
+          <el-form-item label="纬度" required>
+            <el-input class="width350" v-model="newProject.latitude"></el-input>
+          </el-form-item>
+          <el-form-item label="经度" required>
+            <el-input class="width350" v-model="newProject.longitude"></el-input>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 4}"
+              placeholder="请输入内容"
+              v-model="newProject.mem">
+            </el-input>
+          </el-form-item>
+          <el-form-item>
+              <el-checkbox v-model="newProject.state">启用</el-checkbox>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+          <el-button type="primary" @click="onEditSubmit">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
 </template>
 
 <script>
-import { listProject, DelectProject } from '@/api/project'
+import { listProject, DelectProject, addProject, updateProject } from '@/api/project'
 export default {
   name: 'OverView',
   data () {
@@ -228,16 +271,18 @@ export default {
         mem: '',
         state: true
       },
-      textMap: ['新建项目', '编辑项目'],
-      dialogStatus: 1,
+      //控制新增显示弹出隐藏
       dialogFormVisible: false,
+      //控制修改显示弹出隐藏
+      dialogFormVisibleEdit: false,
       countryList: [],
       provinceList: [],
       cityList: [],
       typeList: [{
         value: 1,
         label: '道路照明系统'
-      }]
+      }],
+      _editIndex: 0
     }
   },
   methods: {
@@ -259,17 +304,16 @@ export default {
     },
     // 编辑
     editRow (e) {
+      this._editIndex = e
       this.newProject = this.projectList[e]
       if (this.newProject.state === 1) {
         this.newProject.state = true
       } else {
         this.newProject.state = false
       }
-      this.dialogStatus = 2
-      this.dialogFormVisible = true
+      this.dialogFormVisibleEdit = true
     },
     addProject () {
-      this.dialogStatus = 1
       this.dialogFormVisible = true
     },
     // 删除
@@ -323,10 +367,31 @@ export default {
       } else {
         this.newProject.state = 0
       }
-      if (this.dialogStatus === 1) {
-        // 新增加
-      } else if (this.dialogStatus === 2) {
+      addProject(this.newProject).then(response => {
+        this.$message({
+          type: 'success',
+          message: '添加成功!'
+        })
+        this.getListProject()
+      }).catch(error => {
+        console(error)
+      })
+    },
+    onEditSubmit () {
+      if (this.newProject.state) {
+        this.newProject.state = 1
+      } else {
+        this.newProject.state = 0
       }
+      updateProject(this.newProject).then(response => {
+        this.$message({
+          type: 'success',
+          message: '修改成功!'
+        })
+        this.projectList[this._editIndex] = newProject
+      }).catch(error => {
+        console(error)
+      })
     },
     // 弹窗关闭时将数据清空
     handleCloseDialog (done) {
