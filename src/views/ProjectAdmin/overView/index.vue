@@ -271,8 +271,8 @@ export default {
         mem: '',
         state: true
       },
-      dialogFormVisible: false, //控制新增显示弹出隐藏
-      dialogFormVisibleEdit: false, //控制修改显示弹出隐藏
+      dialogFormVisible: false,
+      dialogFormVisibleEdit: false,
       countryList: [],
       provinceList: [],
       cityList: [],
