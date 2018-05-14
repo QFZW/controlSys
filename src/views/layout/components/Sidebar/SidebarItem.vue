@@ -1,7 +1,7 @@
 <template>
   <div class="menu-wrapper">
     <template v-for="item in routes" v-if="!item.hidden&&item.children">
-
+      <!-- 只有一级菜单 -->
       <router-link v-if="hasOneShowingChildren(item.children) && !item.children[0].children&&!item.alwaysShow" :to="item.path+'/'+item.children[0].path"
         :key="item.children[0].name">
         <el-menu-item :index="item.path+'/'+item.children[0].path" :class="{'submenu-title-noDropdown':!isNest}">
@@ -9,7 +9,7 @@
           <span v-if="item.children[0].meta&&item.children[0].meta.title" slot="title">{{item.children[0].meta.title}}</span>
         </el-menu-item>
       </router-link>
-
+      <!-- 子菜单 -->
       <el-submenu v-else :index="item.name||item.path" :key="item.name">
         <template slot="title">
           <i v-if="item.meta&&item.meta.icon" class="iconfont"><span v-html="item.meta.icon"></span></i>
@@ -67,6 +67,7 @@ export default {
     line-height: 44px;
     &.is-active{
       position: relative;
+      background: #2F3949 !important;
       &:before{
         content: '';
         position: absolute;

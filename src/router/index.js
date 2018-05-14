@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 /* Layout */
-import Layout from '../views/layout/Layout'
+import Layout from '../views/Layout/Layout'
 
 Vue.use(Router)
 
@@ -10,12 +10,12 @@ export const constantRouterMap = [
   {
     path: '/',
     name: 'Index',
-    component: () => import('@/views/index/index')
+    component: () => import('@/views/Index/index')
   },
   {
     path: '/Login',
     name: 'Login',
-    component: () => import('@/views/login/index')
+    component: () => import('@/views/Login/index')
   },
   // GIS地理信息系统
   {

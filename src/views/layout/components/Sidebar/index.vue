@@ -6,8 +6,8 @@
       :default-active="$route.path"
       :collapse="isCollapse"
       background-color="#304156"
-      text-color="#bfcbd9"
-      active-text-color="#409EFF"
+      text-color="#ffffff"
+      active-text-color="#ffffff"
     >
       <router-link to="/">
         <div class="app-name"><span>单灯控制系统</span></div>
