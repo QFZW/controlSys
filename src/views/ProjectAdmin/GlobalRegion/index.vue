@@ -206,9 +206,6 @@ export default {
       dialogTitle: ['国家', '省份', '城市'],
       dialogType: 0,
       addObj: {
-        name: ' ',
-        code: ' ',
-        mem: ''
       }
     }
   },
