@@ -167,17 +167,20 @@
           <el-form-item label="编码" required>
             <el-input v-model="addObj.code" placeholder="请输入内容"></el-input>
           </el-form-item>
+          <div v-if="dialogType == 2">
+            <el-form-item label="经度" required>
+              <el-input v-model="addObj.longitude" placeholder="请输入内容"></el-input>
+            </el-form-item>
+            <el-form-item label="纬度" required>
+              <el-input v-model="addObj.latitude" placeholder="请输入内容"></el-input>
+            </el-form-item>
+            <el-form-item label="时区" required>
+              <el-input v-model="addObj.timeZone" placeholder="请输入内容"></el-input>
+            </el-form-item>
+          </div>
           <el-form-item label="备注" required>
             <el-input v-model="addObj.mem" placeholder="请输入内容"></el-input>
           </el-form-item>
-          <div>
-            <el-form-item label="编码" required>
-              <el-input v-model="addObj.code" placeholder="请输入内容"></el-input>
-            </el-form-item>
-            <el-form-item label="备注" required>
-              <el-input v-model="addObj.mem" placeholder="请输入内容"></el-input>
-            </el-form-item>
-          </div>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addNewObjShow = false">取 消</el-button>
