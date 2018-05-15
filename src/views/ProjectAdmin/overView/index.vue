@@ -252,7 +252,7 @@
 </template>
 
 <script>
-import { listProject, DelectProject, addProject, updateProject } from '@/api/project'
+import { listProject, DelectProject, addProject, updateProject, getProject } from '@/api/project'
 export default {
   name: 'OverView',
   data () {
@@ -297,19 +297,31 @@ export default {
         that.projectList = response.data
         console.log(response)
       }).catch(error => {
-        console(error)
+        console.log(error)
+      })
+    },
+    // 获取单个项目用以编辑
+    getProject (codeNumber) {
+      return new Promise((resolve, reject) => {
+        getProject(codeNumber).then(response => {
+          resolve(response.data)
+        }).catch(error => {
+          reject(error)
+        })
       })
     },
     // 编辑
     editRow (e) {
       this.editIndex = e
-      this.newProject = this.projectList[e]
-      if (this.newProject.state === 1) {
-        this.newProject.state = true
-      } else {
-        this.newProject.state = false
-      }
-      this.dialogFormVisibleEdit = true
+      this.getProject(this.projectList[e].codeNumber).then(res => {
+        this.newProject = res[0]
+        if (this.newProject.state === 1) {
+          this.newProject.state = true
+        } else {
+          this.newProject.state = false
+        }
+        this.dialogFormVisibleEdit = true
+      })
     },
     addProject () {
       this.dialogFormVisible = true
@@ -344,7 +356,7 @@ export default {
             message: '删除成功!'
           })
         }).catch(error => {
-          console(error)
+          console.log(error)
         })
       }).catch(() => {
         this.$message({
@@ -372,8 +384,9 @@ export default {
         })
         this.getListProject()
         this.dialogFormVisible = false
+        this.handleCloseDialog()
       }).catch(error => {
-        console(error)
+        console.log(error)
       })
     },
     onEditSubmit () {
@@ -389,8 +402,9 @@ export default {
         })
         this.projectList[this.editIndex] = this.newProject
         this.dialogFormVisibleEdit = false
+        this.handleCloseDialog()
       }).catch(error => {
-        console(error)
+        console.log(error)
       })
     },
     // 弹窗关闭时将数据清空

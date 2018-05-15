@@ -16,6 +16,7 @@
               :data="listCountry"
               tooltip-effect="dark"
               style="width: 100%"
+              height="300px"
               header-row-class-name="datalist-header"
               @selection-change="handleSelectionChange">
               <el-table-column
@@ -64,6 +65,7 @@
               :data="listProvince"
               tooltip-effect="dark"
               style="width: 100%"
+              height="300px"
               header-row-class-name="datalist-header"
               @selection-change="handleSelectionChange">
               <el-table-column
@@ -114,6 +116,7 @@
               :data="listCity"
               tooltip-effect="dark"
               style="width: 100%"
+              height="300px"
               header-row-class-name="datalist-header"
               @selection-change="handleSelectionChange">
               <el-table-column
@@ -167,6 +170,14 @@
           <el-form-item label="备注" required>
             <el-input v-model="addObj.mem" placeholder="请输入内容"></el-input>
           </el-form-item>
+          <div>
+            <el-form-item label="编码" required>
+              <el-input v-model="addObj.code" placeholder="请输入内容"></el-input>
+            </el-form-item>
+            <el-form-item label="备注" required>
+              <el-input v-model="addObj.mem" placeholder="请输入内容"></el-input>
+            </el-form-item>
+          </div>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addNewObjShow = false">取 消</el-button>
@@ -206,7 +217,7 @@ export default {
       listCountry(that.pageNumber, that.pageSize).then(response => {
         that.listCountry = response.data
       }).catch(error => {
-        console(error)
+        console.log(error)
       })
     },
     getListProvince () {
@@ -214,7 +225,7 @@ export default {
       listProvince(that.pageNumber, that.pageSize).then(response => {
         that.listProvince = response.data
       }).catch(error => {
-        console(error)
+        console.log(error)
       })
     },
     getListCity () {
@@ -222,7 +233,7 @@ export default {
       listCity(that.pageNumber, that.pageSize).then(response => {
         that.listCity = response.data
       }).catch(error => {
-        console(error)
+        console.log(error)
       })
     },
     editRow () {
@@ -249,7 +260,7 @@ export default {
           this.getListCountry()
           this.addNewObjShow = false
         }).catch(error => {
-          console(error)
+          console.log(error)
         })
       } else if (this.dialogType === 1) {
         // 提交省份
@@ -264,7 +275,7 @@ export default {
           this.getListProvince()
           this.addNewObjShow = false
         }).catch(error => {
-          console(error)
+          console.log(error)
         })
       } else if (this.dialogType === 2) {
         // 提交城市
@@ -279,7 +290,7 @@ export default {
           this.getListCity()
           this.addNewObjShow = false
         }).catch(error => {
-          console(error)
+          console.log(error)
         })
       }
     },
