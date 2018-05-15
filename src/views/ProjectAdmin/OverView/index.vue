@@ -1,6 +1,6 @@
 <template>
-    <div class="project-container">
-      <div class="overview-top clearfix">
+    <div class="system-container">
+      <div class="system-top clearfix">
         <div class="item-block f-l">
           <span class="title">地点</span><el-input  placeholder="请输入内容"></el-input>
         </div>
@@ -15,7 +15,7 @@
           <!-- <el-button>重置</el-button> -->
         </div>
       </div>
-      <div class="overview-center">
+      <div class="system-center">
         <div class="operation-bar">
           <el-button @click="addProject()" type="primary">增加</el-button>
           <el-button @click="importData()">导入</el-button>
@@ -449,44 +449,6 @@ export default {
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .project-container{
-    min-width: 950px;
-    background: #fff;
-    .overview-top{
-      padding:25px 40px 15px 40px;
-      border-bottom: 1px solid #ebeef5;
-      .item-block{
-        width: 27%;
-        position: relative;
-        padding:0 30px 0 37px;
-        .title{
-          position: absolute;
-          left: 0;
-          top:0;
-          margin-top:9px;
-        }
-      }
-    }
-    .overview-center{
-      padding:20px 40px;
-      .operation-bar{
-        margin-bottom: 20px;
-      }
-    }
-  }
-  .pagelist-block{
-    width: 100%;
-    margin-top:20px;
-    .el-pagination{
-      text-align: right;
-    }
-  }
-  .el-pager .active{
-    background: #5789fa !important;
-  }
-  .width350{
-    width: 350px;
-  }
   .add-city-span{
     color:#5789fa;
     display: inline-block;
