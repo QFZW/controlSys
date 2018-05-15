@@ -51,8 +51,8 @@ export const constantRouterMap = [
       meta: { title: '总览', icon: '' }
     },
     {
-      path: 'overView',
-      component: () => import('@/views/ProjectAdmin/overView/index'),
+      path: 'OverView',
+      component: () => import('@/views/ProjectAdmin/OverView/index'),
       name: 'Item2',
       meta: { title: '管理', icon: '' }
     },
