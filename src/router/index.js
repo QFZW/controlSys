@@ -39,10 +39,10 @@ export const constantRouterMap = [
   },
   // 项目管理
   {
-    path: '/projectAdmin',
+    path: '/projectadmin',
     component: Layout,
     name: 'Project',
-    redirect: '/projectAdmin/index',
+    redirect: '/projectadmin/index',
     meta: { title: '项目管理', icon: '&#xe61d;' },
     children: [{
       path: 'index',
@@ -51,13 +51,13 @@ export const constantRouterMap = [
       meta: { title: '总览', icon: '' }
     },
     {
-      path: 'overView',
+      path: 'overview',
       component: () => import('@/views/ProjectAdmin/OverView/index'),
       name: 'Item2',
       meta: { title: '管理', icon: '' }
     },
     {
-      path: 'globalRegion',
+      path: 'globalregion',
       component: () => import('@/views/ProjectAdmin/GlobalRegion/index'),
       name: 'GlobalRegion',
       meta: { title: '全球地区', icon: '' }
