@@ -62,6 +62,45 @@ export const constantRouterMap = [
       name: 'GlobalRegion',
       meta: { title: '全球地区', icon: '' }
     }]
+  },
+  // 用户管理
+  {
+    path: '/ucenter',
+    component: Layout,
+    name: 'Ucenter',
+    redirect: '/ucenter/user/organization',
+    meta: { title: '用户中心', icon: '&#xe601;' },
+    children: [{
+      path: '/ucenter/user',
+      component: () => import('@/views/Ucenter/index'),
+      name: 'User',
+      redirect: '/ucenter/user/organization',
+      meta: { title: '用户', icon: '' },
+      children: [{
+        path: 'organization',
+        component: () => import('@/views/Ucenter/User/organization'),
+        name: 'Organization',
+        meta: { title: '机构管理', icon: '' }
+      },
+      {
+        path: 'department',
+        component: () => import('@/views/Ucenter/User/department'),
+        name: 'Department',
+        meta: { title: '部门岗位', icon: '' }
+      },
+      {
+        path: 'onlineuser',
+        component: () => import('@/views/Ucenter/User/onlineuser'),
+        name: 'OnlineUser',
+        meta: { title: '在线用户', icon: '' }
+      },
+      {
+        path: 'belong',
+        component: () => import('@/views/Ucenter/User/belong'),
+        name: 'Belong',
+        meta: { title: '项目归属', icon: '' }
+      }]
+    }]
   }
 ]
 export default new Router({
