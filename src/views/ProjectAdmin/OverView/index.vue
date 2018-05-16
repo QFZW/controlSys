@@ -313,7 +313,7 @@ export default {
     // 编辑
     editRow (e) {
       this.editIndex = e
-      this.getProject(this.projectList[e].codeNumber).then(res => {
+      getProject(this.projectList[e].codeNumber).then(res => {
         this.newProject = res[0]
         if (this.newProject.state === 1) {
           this.newProject.state = true
