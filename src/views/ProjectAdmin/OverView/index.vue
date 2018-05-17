@@ -143,34 +143,34 @@
        :before-close="handleCloseDialog">
         <el-form ref="form" label-width="50px">
           <el-form-item label="国家" required>
-            <el-select class="width350" v-model="newProject.countryName">
+            <el-select class="width350" v-model="newProject.countryCode">
               <el-option
                 v-for="(item , index) in countryList"
                 :key="index"
-                :label="item.label"
-                :value="item.value">
+                :label="item.countryName"
+                :value="item.countryCode">
               </el-option>
             </el-select>
             <span class="add-city-span"><i class="iconfont">&#xe648;</i>添加</span>
           </el-form-item>
           <el-form-item label="省份" required>
-            <el-select class="width350" v-model="newProject.provinceName">
+            <el-select class="width350" v-model="newProject.provinceCode">
               <el-option
                 v-for="(item , index) in provinceList"
                 :key="index"
-                :label="item.label"
-                :value="item.value">
+                :label="item.provinceName"
+                :value="item.provinceCode">
               </el-option>
             </el-select>
             <span class="add-city-span"><i class="iconfont">&#xe648;</i>添加</span>
           </el-form-item>
           <el-form-item label="城市" required>
-            <el-select class="width350" v-model="newProject.cityName">
+            <el-select class="width350" v-model="newProject.cityCode">
               <el-option
                 v-for="(item , index) in cityList"
                 :key="index"
-                :label="item.label"
-                :value="item.value">
+                :label="item.cityName"
+                :value="item.cityCode">
               </el-option>
             </el-select>
             <span class="add-city-span"><i class="iconfont">&#xe648;</i>添加</span>
@@ -252,7 +252,7 @@
 </template>
 
 <script>
-import { listProject, DelectProject, addProject, updateProject, getProject } from '@/api/project'
+import { listProject, DelectProject, addProject, updateProject, getProject, listCountry, listProvince, listCity } from '@/api/project'
 export default {
   name: 'OverView',
   data () {
@@ -263,9 +263,9 @@ export default {
       multipleSelection: [],
       currentPage: 1,
       newProject: {
-        countryName: '',
-        provinceName: '',
-        cityName: '',
+        countryCode: '',
+        provinceCode: '',
+        cityCode: '',
         type: 1,
         projectName: '',
         mem: '',
@@ -419,10 +419,39 @@ export default {
         state: 1
       }
       done()
-    }
+    },
+    // 获取国家等一系列数据
+    getListCountry () {
+      let that = this
+      listCountry(that.pageNumber, that.pageSize).then(response => {
+        that.countryList = response.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getListProvince () {
+      let that = this
+      listProvince(that.pageNumber, that.pageSize).then(response => {
+        that.provinceList = response.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getListCity () {
+      let that = this
+      listCity(that.pageNumber, that.pageSize).then(response => {
+        that.cityList = response.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+
   },
   created () {
     this.getListProject()
+    this.getListCountry()
+    this.getListProvince()
+    this.getListCity()
   },
   destroyed () {
   }
