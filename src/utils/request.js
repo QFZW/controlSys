@@ -2,13 +2,14 @@
  * @Author: Vincent
  * @Date: 2018-05-06 15:24:27
  * @Last Modified by: Vincent
- * @Last Modified time: 2018-05-10 15:16:08
+ * @Last Modified time: 2018-05-18 11:27:01
  */
 
 import axios from 'axios'
+import qs from 'qs'
 import { Message } from 'element-ui'
 import store from '../store'
-import { getToken } from '@/utils/auth'
+// import { getToken } from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
@@ -18,9 +19,16 @@ const service = axios.create({
 
 // request拦截器
 service.interceptors.request.use(config => {
-  config.headers['Content-Type'] = 'appliction/x-www-form-urlencoded'
+  if (config.method === 'post') {
+    config.data = qs.stringify(config.data)
+    config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+  } else if (config.method === 'get') {
+    config.params = {
+      ...config.params
+    }
+  }
   if (store.getters.token) {
-    config.headers['X-Token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    // config.headers['X-Token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
   }
   return config
 }, error => {
