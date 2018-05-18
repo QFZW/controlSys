@@ -130,45 +130,39 @@ export function listCity (pageNumber, pageSize) {
 /**
  * 添加/修改国家
  * @export
- * @param {any} project
+ * @param {any} obj
  * @returns obj
  */
-export function addOrUpdateCountry (project) {
+export function addOrUpdateCountry (obj) {
   return request({
     url: '/api/project/addorupdatecountry',
     method: 'post',
-    data: {
-      project
-    }
+    data: obj
   })
 }
 /**
  * 添加/修改省份
  * @export
- * @param {any} project
+ * @param {any} obj
  * @returns obj
  */
-export function addOrUpdateProvince (project) {
+export function addOrUpdateProvince (obj) {
   return request({
     url: '/api/project/addorupdateProvince',
     method: 'post',
-    data: {
-      project
-    }
+    data: obj
   })
 }
 /**
  * 添加/修改城市
  * @export
- * @param {any} project
+ * @param {any} obj
  * @returns obj
  */
-export function addOrUpdateCity (project) {
+export function addOrUpdateCity (obj) {
   return request({
     url: '/api/project/addorupdatecity',
     method: 'post',
-    data: {
-      project
-    }
+    data: obj
   })
 }

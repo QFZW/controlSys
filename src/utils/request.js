@@ -18,6 +18,7 @@ const service = axios.create({
 
 // request拦截器
 service.interceptors.request.use(config => {
+  config.headers['Content-Type'] = 'appliction/x-www-form-urlencoded'
   if (store.getters.token) {
     config.headers['X-Token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
   }
@@ -35,7 +36,7 @@ service.interceptors.response.use(
     * code为非1000是抛错 可结合自己业务进行修改
     */
     const res = response.data
-    if (res.header.code != 1000) {
+    if (res.header.code !== '1000') {
       Message({
         message: res.header.msg,
         type: 'error',

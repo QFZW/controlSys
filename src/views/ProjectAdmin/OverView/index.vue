@@ -444,8 +444,7 @@ export default {
       }).catch(error => {
         console.log(error)
       })
-    },
-
+    }
   },
   created () {
     this.getListProject()
