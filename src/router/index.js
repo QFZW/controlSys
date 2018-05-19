@@ -22,11 +22,11 @@ export const constantRouterMap = [
     path: '/gisservice',
     component: Layout,
     name: 'Gisservice',
-    redirect: '/project/index',
+    redirect: '/gisservice/index',
     meta: { title: 'GIS地理信息系统', icon: '&#xe6c1;' },
     children: [{
       path: 'index',
-      component: () => import('@/views/ProjectAdmin/Project/index'),
+      component: () => import('@/views/GisService/index'),
       name: 'index',
       meta: { title: '子菜单1', icon: '' }
     },
