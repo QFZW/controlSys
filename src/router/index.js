@@ -37,6 +37,26 @@ export const constantRouterMap = [
       meta: { title: '子菜单1', icon: '' }
     }]
   },
+  // 道路照明系统
+  {
+    path: '/roadlighting',
+    component: Layout,
+    name: 'RoadLighting',
+    redirect: '/roadlighting/index',
+    meta: { title: '道路照明系统', icon: '&#xe622;' },
+    children: [{
+      path: 'index',
+      component: () => import('@/views/RoadLighting/Deploy/index'),
+      name: 'index',
+      meta: { title: '部署', icon: '' }
+    },
+    {
+      path: 'test',
+      component: () => import('@/views/ProjectAdmin/Project/index'),
+      name: 'test',
+      meta: { title: '调试', icon: '' }
+    }]
+  },
   // 项目管理
   {
     path: '/projectadmin',

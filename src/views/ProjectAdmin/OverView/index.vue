@@ -39,7 +39,7 @@
               fixed
               prop="codeNumber"
               label="编码"
-              width="50">
+              width="180">
             </el-table-column>
              <el-table-column
               prop="projectName"
@@ -73,12 +73,12 @@
             <el-table-column
               prop="longitude"
               label="经度"
-              width="60">
+              width="100">
             </el-table-column>
             <el-table-column
               prop="latitude"
               label="纬度"
-              width="60">
+              width="100">
             </el-table-column>
             <el-table-column
               prop="mem"
@@ -301,20 +301,21 @@ export default {
       })
     },
     // 获取单个项目用以编辑
-    getProject (codeNumber) {
-      return new Promise((resolve, reject) => {
-        getProject(codeNumber).then(response => {
-          resolve(response.data)
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
+    // getProject (codeNumber) {
+    //   return new Promise((resolve, reject) => {
+    //     getProject(codeNumber).then(response => {
+    //       resolve(response.data[0])
+    //     }).catch(error => {
+    //       reject(error)
+    //     })
+    //   })
+    // },
     // 编辑
     editRow (e) {
       this.editIndex = e
       getProject(this.projectList[e].codeNumber).then(res => {
-        this.newProject = res[0]
+        this.newProject = res.data[0]
+        console.log(res)
         if (this.newProject.state === 1) {
           this.newProject.state = true
         } else {
