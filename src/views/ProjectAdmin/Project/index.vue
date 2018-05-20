@@ -7,12 +7,12 @@
         <div class="item-list">
           <span class="item">
             <span>中国</span>
-            <span class="sub-num">1</span>
+            <span class="sub-num">{{allTotal}}</span>
           </span>
-          <span class="item">
+          <!-- <span class="item">
             <span>中国</span>
             <span class="sub-num">1</span>
-          </span>
+          </span> -->
         </div>
         <div class="children-module">
           <p class="title">
@@ -21,16 +21,16 @@
           <div class="item-list">
             <span class="item">
               <span>中国</span>
-              <span class="sub-num">1</span>
+              <span class="sub-num">{{allTotal}}</span>
             </span>
-            <span class="item">
+            <!-- <span class="item">
               <span>中国</span>
               <span class="sub-num">1</span>
             </span>
             <span class="item">
               <span>中国</span>
               <span class="sub-num">1</span>
-            </span>
+            </span> -->
           </div>
         </div>
       </div>
@@ -42,17 +42,17 @@
           <span class="item">
             <i class="iconfont">&#xe638;</i>
             <span>项目</span>
-            <span class="sub-num">1</span>
+            <span class="sub-num">{{allTotal}}</span>
           </span>
           <span class="item">
             <i class="iconfont">&#xe602;</i>
             <span>控制柜</span>
-            <span class="sub-num">1</span>
+            <span class="sub-num">{{kzTotal}}</span>
           </span>
           <span class="item">
             <i class="iconfont">&#xe62b;</i>
             <span>灯具</span>
-            <span class="sub-num">1</span>
+            <span class="sub-num">{{dTotal}}</span>
           </span>
         </div>
       </div>
@@ -60,11 +60,37 @@
 </template>
 
 <script>
+import { listProject } from '@/api/project'
 export default {
-  name: '',
+  name: 'Project',
+  data () {
+    return {
+      allTotal: 0,
+      kzTotal: 0,
+      dTotal: 0
+    }
+  },
   methods: {
+    getListProject () {
+      let that = this
+      listProject(that.pageNumber, that.pageSize).then(response => {
+        that.projectList = response.data
+        if (that.projectList.length > 0) {
+          this.allTotal = response.data[0].total
+          for (var i in response.data) {
+            this.kzTotal = this.kzTotal + response.data[i].eleboxs
+            this.dTotal = this.dTotal + response.data[i].lights
+          }
+        } else {
+          this.allTotal = 0
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
   },
   created () {
+    this.getListProject()
   },
   destroyed () {
   }

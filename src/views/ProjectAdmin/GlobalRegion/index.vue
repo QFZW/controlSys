@@ -17,8 +17,7 @@
               tooltip-effect="dark"
               style="width: 100%"
               height="300px"
-              header-row-class-name="datalist-header"
-              @selection-change="handleSelectionChange">
+              header-row-class-name="datalist-header">
               <!-- <el-table-column
                 type="selection"
                 width="40">
@@ -58,16 +57,6 @@
                 </template>
               </el-table-column>
             </el-table>
-            <!-- <div class="pagelist-block">
-              <el-pagination
-                background
-                @current-change="handleCurrentChange"
-                :current-page="currentPage"
-                :page-size="10"
-                layout="total, prev, pager, next, jumper"
-                :total="400">
-              </el-pagination>
-            </div> -->
           </div>
           <div class="data-block">
             <div class="data-block-title">
@@ -81,8 +70,7 @@
               tooltip-effect="dark"
               style="width: 100%"
               height="300px"
-              header-row-class-name="datalist-header"
-              @selection-change="handleSelectionChange">
+              header-row-class-name="datalist-header">
               <!-- <el-table-column
                 type="selection"
                 width="100">
@@ -137,8 +125,7 @@
               tooltip-effect="dark"
               style="width: 100%"
               height="300px"
-              header-row-class-name="datalist-header"
-              @selection-change="handleSelectionChange">
+              header-row-class-name="datalist-header">
               <!-- <el-table-column
                 type="selection"
                 width="40">
@@ -252,11 +239,9 @@ export default {
     }
   },
   methods: {
-    handleSelectionChange (val) {
-    },
     getListCountry () {
       let that = this
-      listCountry(that.pageNumber, that.pageSize).then(response => {
+      listCountry().then(response => {
         that.listCountry = response.data
       }).catch(error => {
         console.log(error)
@@ -264,7 +249,7 @@ export default {
     },
     getListProvince () {
       let that = this
-      listProvince(that.pageNumber, that.pageSize).then(response => {
+      listProvince().then(response => {
         that.listProvince = response.data
       }).catch(error => {
         console.log(error)
@@ -272,8 +257,8 @@ export default {
     },
     getListCity () {
       let that = this
-      listCity(that.pageNumber, that.pageSize).then(response => {
-        this.listCity = response.data
+      listCity().then(response => {
+        that.listCity = response.data
       }).catch(error => {
         console.log(error)
       })
@@ -288,7 +273,6 @@ export default {
           this.addObj.name = response.data[0].countryName
           this.addObj.code = response.data[0].codeNumber
           this.addObj.mem = response.data[0].mem
-          console.log(this.addObj)
           this.addNewObjShow = true
         }).catch(error => {
           console.log(error)
@@ -348,6 +332,7 @@ export default {
           })
           this.getListCountry()
           this.addNewObjShow = false
+          this.handleCloseDialog()
         }).catch(error => {
           console.log(error)
         })
@@ -363,6 +348,7 @@ export default {
           })
           this.getListProvince()
           this.addNewObjShow = false
+          this.handleCloseDialog()
         }).catch(error => {
           console.log(error)
         })
@@ -381,6 +367,7 @@ export default {
           })
           this.getListCity()
           this.addNewObjShow = false
+          this.handleCloseDialog()
         }).catch(error => {
           console.log(error)
         })
