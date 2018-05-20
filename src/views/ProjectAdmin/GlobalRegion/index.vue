@@ -58,6 +58,16 @@
                 </template>
               </el-table-column>
             </el-table>
+            <!-- <div class="pagelist-block">
+              <el-pagination
+                background
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-size="10"
+                layout="total, prev, pager, next, jumper"
+                :total="400">
+              </el-pagination>
+            </div> -->
           </div>
           <div class="data-block">
             <div class="data-block-title">
