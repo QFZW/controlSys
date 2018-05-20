@@ -166,3 +166,48 @@ export function addOrUpdateCity (obj) {
     data: obj
   })
 }
+/**
+ * 获取单个国家
+ * @export
+ * @param {any} codeNumber
+ * @returns obj
+ */
+export function getOneCountry (codeNumber) {
+  return request({
+    url: '/api/project/getcountry',
+    method: 'get',
+    params: {
+      codeNumber
+    }
+  })
+}
+/**
+ * 获取单个省份
+ * @export
+ * @param {any} codeNumber
+ * @returns codeNumber
+ */
+export function getOneProvince (codeNumber) {
+  return request({
+    url: '/api/project/getProvince',
+    method: 'get',
+    params: {
+      codeNumber
+    }
+  })
+}
+/**
+ * 获取单个城市
+ * @export
+ * @param {any} codeNumber
+ * @returns codeNumber
+ */
+export function getOneCity (codeNumber) {
+  return request({
+    url: '/api/project/getcity',
+    method: 'get',
+    params: {
+      codeNumber
+    }
+  })
+}
