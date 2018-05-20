@@ -41,9 +41,7 @@ export function addProject (project) {
   return request({
     url: '/api/project/addproject',
     method: 'post',
-    data: {
-      project
-    }
+    data: project
   })
 }
 /**
@@ -71,9 +69,7 @@ export function updateProject (project) {
   return request({
     url: '/api/project/updateproject',
     method: 'post',
-    data: {
-      project
-    }
+    data: project
   })
 }
 /**
