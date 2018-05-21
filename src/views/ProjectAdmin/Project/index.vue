@@ -76,7 +76,7 @@ export default {
       listProject(that.pageNumber, that.pageSize).then(response => {
         that.projectList = response.data
         if (that.projectList.length > 0) {
-          this.allTotal = response.data[0].total
+          this.allTotal = response.total
           for (var i in response.data) {
             this.kzTotal = this.kzTotal + response.data[i].eleboxs
             this.dTotal = this.dTotal + response.data[i].lights

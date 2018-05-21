@@ -143,8 +143,8 @@
       <el-dialog title="新建项目"
        :visible.sync="dialogFormVisible" :close-on-click-modal='false' :close-on-press-escape='false' center
        :before-close="handleCloseDialog">
-        <el-form ref="form" label-width="50px">
-          <el-form-item label="国家" required>
+        <el-form ref="projectForm" :model="newProject" :rules="addProjectrules" label-width="50px">
+          <el-form-item label="国家" required prop="nnlightctlProjectCountryId">
             <el-select class="width350" v-model="newProject.nnlightctlProjectCountryId">
               <el-option
                 v-for="(item , index) in countryList"
@@ -155,7 +155,7 @@
             </el-select>
             <span class="add-city-span" @click="addNewObj(0)"><i class="iconfont">&#xe648;</i>添加</span>
           </el-form-item>
-          <el-form-item label="省份" required>
+          <el-form-item label="省份" required prop="nnlightctlProjectProvinceId">
             <el-select class="width350" v-model="newProject.nnlightctlProjectProvinceId">
               <el-option
                 v-for="(item , index) in provinceList"
@@ -166,7 +166,7 @@
             </el-select>
             <span class="add-city-span" @click="addNewObj(1)"><i class="iconfont">&#xe648;</i>添加</span>
           </el-form-item>
-          <el-form-item label="城市" required>
+          <el-form-item label="城市" required prop="nnlightctlProjectCityId">
             <el-select class="width350" v-model="newProject.nnlightctlProjectCityId">
               <el-option
                 v-for="(item , index) in cityList"
@@ -177,7 +177,7 @@
             </el-select>
             <span class="add-city-span" @click="addNewObj(2)"><i class="iconfont">&#xe648;</i>添加</span>
           </el-form-item>
-          <el-form-item label="类型" required>
+          <el-form-item label="类型" required prop="type">
             <el-select class="width350" v-model="newProject.type">
               <el-option
                 v-for="(item , index) in typeList"
@@ -187,10 +187,10 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="编码" required>
+          <el-form-item label="编码" required prop="projectCode">
             <el-input class="width350" v-model="newProject.projectCode"></el-input>
           </el-form-item>
-          <el-form-item label="名称" required>
+          <el-form-item label="名称" required prop="projectName">
             <el-input class="width350" v-model="newProject.projectName"></el-input>
           </el-form-item>
           <el-form-item label="备注">
@@ -207,7 +207,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="onSubmit">确 定</el-button>
+          <el-button type="primary" @click="goRules('projectForm')">确 定</el-button>
         </div>
 
         <!-- 增加国家等弹窗 -->
@@ -215,39 +215,39 @@
           :visible.sync="addNewObjShow" :close-on-click-modal='false' :close-on-press-escape='false' center
           append-to-body
           :before-close="handleCloseAddCity">
-          <el-form ref="form" label-width="50px">
-            <el-form-item :label="dialogTitle[dialogType]" required>
-              <el-input v-model="addObj.name" placeholder="请输入内容"></el-input>
+          <el-form ref="rulesform" :model="addObj" :rules="addCityrules" label-width="50px">
+          <el-form-item :label="dialogTitle[dialogType]" prop="name" required>
+            <el-input v-model="addObj.name" placeholder="请输入内容"></el-input>
+          </el-form-item>
+          <el-form-item label="编码" prop="code" required>
+            <el-input v-model="addObj.code" placeholder="请输入内容"></el-input>
+          </el-form-item>
+          <div v-if="dialogType == 2">
+            <el-form-item label="经度" prop="longitude" required>
+              <el-input v-model="addObj.longitude" placeholder="请输入内容"></el-input>
             </el-form-item>
-            <el-form-item label="编码" required>
-              <el-input v-model="addObj.code" placeholder="请输入内容"></el-input>
+            <el-form-item label="纬度" prop="latitude" required>
+              <el-input v-model="addObj.latitude" placeholder="请输入内容"></el-input>
             </el-form-item>
-            <div v-if="dialogType == 2">
-              <el-form-item label="经度" required>
-                <el-input v-model="addObj.longitude" placeholder="请输入内容"></el-input>
-              </el-form-item>
-              <el-form-item label="纬度" required>
-                <el-input v-model="addObj.latitude" placeholder="请输入内容"></el-input>
-              </el-form-item>
-              <el-form-item label="时区" required>
-                <el-input v-model="addObj.timeZone" placeholder="请输入内容"></el-input>
-              </el-form-item>
-            </div>
-            <el-form-item label="备注" required>
-              <el-input v-model="addObj.mem" placeholder="请输入内容"></el-input>
+            <el-form-item label="时区" prop="timeZone" required>
+              <el-input v-model="addObj.timeZone" placeholder="请输入内容"></el-input>
             </el-form-item>
-          </el-form>
+          </div>
+          <el-form-item label="备注">
+            <el-input type="textarea" v-model="addObj.mem" placeholder="请输入内容"></el-input>
+          </el-form-item>
+        </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="addNewObjShow = false">取 消</el-button>
-            <el-button type="primary" @click="onSubmitCity">确 定</el-button>
+            <el-button type="primary" @click="goCityRules('rulesform')">确 定</el-button>
           </div>
         </el-dialog>
       </el-dialog>
       <!-- 修改项目 -->
       <el-dialog title="修改项目"
        :visible.sync="dialogFormVisibleEdit" :close-on-click-modal='false' :close-on-press-escape='false' center
-       :before-close="handleCloseDialog">
-        <el-form ref="form" label-width="50px">
+       :before-close="handleCloseDialog1">
+        <el-form ref="editProjectForm" :model="newProject" :rules="addProjectrules"  label-width="50px">
           <el-form-item label="国家" required>
             <!-- <span class="text">{{newProject.countryName}}</span> -->
             <el-select class="width350" v-model="newProject.nnlightctlProjectCountryId" disabled>
@@ -284,16 +284,16 @@
           <el-form-item label="类型" required>
             <span class="text" v-if="newProject.ctype==1">道路照明系统</span>
           </el-form-item>
-          <el-form-item label="编码" required>
+          <el-form-item label="编码" required prop="codeNumber">
             <el-input class="width350" v-model="newProject.codeNumber" disabled></el-input>
           </el-form-item>
-          <el-form-item label="名称" required>
+          <el-form-item label="名称" required prop="projectName">
             <el-input class="width350" v-model="newProject.projectName"></el-input>
           </el-form-item>
-          <el-form-item label="纬度" required>
+          <el-form-item label="纬度">
             <el-input class="width350" v-model="newProject.latitude"></el-input>
           </el-form-item>
-          <el-form-item label="经度" required>
+          <el-form-item label="经度">
             <el-input class="width350" v-model="newProject.longitude"></el-input>
           </el-form-item>
           <el-form-item label="备注">
@@ -310,7 +310,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
-          <el-button type="primary" @click="onEditSubmit">确 定</el-button>
+          <el-button type="primary" @click="goEditRules('editProjectForm')">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -328,14 +328,40 @@ export default {
       multipleSelection: [],
       currentPage: 1,
       newProject: {
-        nnlightctlProjectCountryId: '',
-        nnlightctlProjectProvinceId: '',
-        nnlightctlProjectCityId: '',
+        nnlightctlProjectCountryId: null,
+        nnlightctlProjectProvinceId: null,
+        nnlightctlProjectCityId: null,
         type: 1,
-        projectName: '',
-        projectCode: '',
-        mem: '',
+        projectName: null,
+        projectCode: null,
+        mem: null,
         state: true
+      },
+      addProjectrules: {
+        nnlightctlProjectCountryId: [
+          { required: true, message: '选择不得为空', trigger: 'blur' }
+        ],
+        nnlightctlProjectProvinceId: [
+          { required: true, message: '选择不得为空', trigger: 'blur' }
+        ],
+        nnlightctlProjectCityId: [
+          { required: true, message: '选择不得为空', trigger: 'blur' }
+        ],
+        type: [
+          { required: true, message: '选择不得为空', trigger: 'change' }
+        ],
+        projectName: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        projectCode: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ]
+        // latitude: [
+        //   { required: true, message: '填写内容不得为空', trigger: 'change' }
+        // ],
+        // longitude: [
+        //   { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        // ],
       },
       dialogFormVisible: false,
       dialogFormVisibleEdit: false,
@@ -349,9 +375,36 @@ export default {
       editIndex: 0,
       allTotal: 0,
       addNewObjShow: false, // 控制添加国家等弹框
-      addObj: {},
       dialogTitle: ['国家', '省份', '城市'],
-      dialogType: 0
+      dialogType: 0,
+      addObj: {
+        name: null,
+        code: null,
+        mem: null,
+        longitude: null,
+        latitude: null,
+        timeZone: null
+      },
+      addCityrules: {
+        name: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        mem: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        longitude: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        latitude: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        timeZone: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
@@ -371,7 +424,7 @@ export default {
       listProject(that.pageNumber, that.pageSize).then(response => {
         that.projectList = response.data
         if (that.projectList.length > 0) {
-          this.allTotal = response.data[0].total
+          this.allTotal = response.total
         } else {
           this.allTotal = 0
         }
@@ -452,6 +505,15 @@ export default {
     // 数据导入
     importData () {
     },
+    goRules (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.onSubmit()
+        } else {
+          console.log('error submit!!')
+        }
+      })
+    },
     onSubmit () {
       if (this.newProject.state) {
         this.newProject.state = 1
@@ -470,6 +532,15 @@ export default {
         console.log(error)
       })
     },
+    goEditRules (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.onEditSubmit()
+        } else {
+          console.log('error submit!!')
+        }
+      })
+    },
     onEditSubmit () {
       if (this.newProject.state) {
         this.newProject.state = 1
@@ -481,9 +552,9 @@ export default {
           type: 'success',
           message: '修改成功!'
         })
-        this.projectList.splice(this.editIndex, 1, this.newProject)
+        this.getListProject()
         this.dialogFormVisibleEdit = false
-        this.handleCloseDialog()
+        this.handleCloseDialog1()
       }).catch(error => {
         console.log(error)
       })
@@ -499,6 +570,20 @@ export default {
         mem: '',
         state: 1
       }
+      this.$refs['projectForm'].resetFields()
+      done()
+    },
+    handleCloseDialog1 (done) {
+      this.newProject = {
+        countryName: '',
+        provinceName: '',
+        cityName: '',
+        type: 1,
+        projectName: '',
+        mem: '',
+        state: 1
+      }
+      this.$refs['editProjectForm'].resetFields()
       done()
     },
     // 获取国家等一系列数据
@@ -529,6 +614,15 @@ export default {
     addNewObj (type) {
       this.dialogType = type
       this.addNewObjShow = true
+    },
+    goCityRules (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.onSubmitCity()
+        } else {
+          console.log('error submit!!')
+        }
+      })
     },
     onSubmitCity () {
       let _obj = {}
@@ -586,7 +680,15 @@ export default {
       }
     },
     handleCloseAddCity (done) {
-      this.addObj = {}
+      this.addObj = {
+        name: null,
+        code: null,
+        mem: null,
+        longitude: null,
+        latitude: null,
+        timeZone: null
+      }
+      this.$refs['rulesform'].resetFields()
       done()
     }
   },
@@ -616,7 +718,7 @@ export default {
     padding: 20px 20px 0 20px !important;
   }
   .el-form-item{
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
 </style>
 
