@@ -66,7 +66,7 @@
           </div>
         </div>
         <div class="grid-content gird-7">
-          <div class="gird-wrap">
+          <div class="gird-wrap"  @click="linkModule('/roadlighting')">
             <div class="trans-middle">
               <p class="p1"><i class="iconfont">&#xe691;</i></p>
               <p>道路照明系统</p>

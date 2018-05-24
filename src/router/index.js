@@ -51,10 +51,27 @@ export const constantRouterMap = [
       meta: { title: '部署', icon: '' }
     },
     {
-      path: 'test',
-      component: () => import('@/views/ProjectAdmin/Project/index'),
-      name: 'test',
-      meta: { title: '调试', icon: '' }
+      path: '/roadlighting/debugging',
+      component: () => import('@/views/RoadLighting/Debugging/index'),
+      name: 'Debugging',
+      redirect: '/roadlighting/debugging/index',
+      meta: { title: '调试', icon: '' },
+      children: [{
+        path: 'index',
+        component: () => import('@/views/RoadLighting/Debugging/Index/index'),
+        name: 'DebuggingIndex',
+        meta: { title: '设备调试', icon: '' }
+      }, {
+        path: 'electricmeter',
+        component: () => import('@/views/RoadLighting/Debugging/ElectricMeter/index'),
+        name: 'ElectricMeter',
+        meta: { title: '电表', icon: '' }
+      }, {
+        path: 'digital',
+        component: () => import('@/views/RoadLighting/Debugging/Digital/index'),
+        name: 'Digital',
+        meta: { title: '数字量输入', icon: '' }
+      }]
     }]
   },
   // 项目管理
