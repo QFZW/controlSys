@@ -72,6 +72,24 @@ export const constantRouterMap = [
         name: 'Digital',
         meta: { title: '数字量输入', icon: '' }
       }]
+    },
+    {
+      path: '/roadlighting/equipmenttype',
+      component: () => import('@/views/RoadLighting/EquipmentType/index'),
+      name: 'EquipmentType',
+      redirect: '/roadlighting/equipmenttype/index',
+      meta: { title: '设备型号', icon: '' },
+      children: [{
+        path: 'index',
+        component: () => import('@/views/RoadLighting/EquipmentType/Index/index'),
+        name: 'EquipmentTypeIndex',
+        meta: { title: '型号总览', icon: '' }
+      }, {
+        path: 'lighttype',
+        component: () => import('@/views/RoadLighting/EquipmentType/LightType/index'),
+        name: 'LightType',
+        meta: { title: '灯具型号', icon: '' }
+      }]
     }]
   },
   // 项目管理
