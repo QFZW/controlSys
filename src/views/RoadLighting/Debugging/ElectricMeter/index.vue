@@ -322,10 +322,10 @@ export default {
   padding-top: 20px
 }
 .el-form-item__content{
-  line-height: normal
+  line-height: normal !important
 }
 .el-checkbox+.el-checkbox{
-  margin-left: 0;
+  margin-left: 0!important;
   margin-top: 10px;
 }
 </style>
