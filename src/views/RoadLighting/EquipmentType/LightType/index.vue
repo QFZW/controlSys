@@ -159,7 +159,8 @@
   </div>
 </template>
 <script>
-import { listLightModel, deleteLightModel, addOrUpdateLightModel } from '@/api/RoadLighting/EquipmentType'
+// import { listLightModel, deleteLightModel, addOrUpdateLightModel } from '@/api/RoadLighting/EquipmentType'
+import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 
 export default {
   name: 'LightType',
