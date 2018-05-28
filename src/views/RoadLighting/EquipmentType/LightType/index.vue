@@ -65,8 +65,7 @@
           </el-table-column>
           <el-table-column
             fixed="right"
-            label="操作"
-            width="120">
+            label="操作">
             <template slot-scope="scope">
               <el-button
                 @click.native.prevent="editRow(scope.$index)"
@@ -96,7 +95,6 @@
         </el-pagination>
       </div>
     </div>
-
     <!-- 修改 增加灯具-->
     <el-dialog title="添加灯具"
     :visible.sync="addLightDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
@@ -160,8 +158,9 @@
     </el-dialog>
   </div>
 </template>
-
 <script>
+import { listLightModel, deleteLightModel, addOrUpdateLightModel } from '@/api/RoadLighting/EquipmentType'
+
 export default {
   name: 'LightType',
   data () {
@@ -170,6 +169,7 @@ export default {
       pageSize: 100,
       multipleSelection: [],
       currentPage: 1,
+      allTotal: null,
       LightList: [],
       newLight: {},
       addLightDialog: false
@@ -182,6 +182,19 @@ export default {
     handleCurrentChange (val) {
       this.pageNumber = val
       // 翻页请求
+    },
+    getListLightModel () {
+      let that = this
+      listLightModel(that.pageNumber, that.pageSize).then(response => {
+        that.projectList = response.data
+        if (that.LightList.length > 0) {
+          this.allTotal = response.total
+        } else {
+          this.allTotal = 0
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     },
     addCabinet () {
       this.addLightDialog = true
@@ -198,6 +211,7 @@ export default {
     }
   },
   created () {
+    this.getListLightModel()
   },
   destroyed () {
   }

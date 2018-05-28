@@ -71,7 +71,7 @@
           <i class="iconfont i-h">&#xe7aa;</i>
         </div>
       </div>
-      <div class="item">
+      <div class="item"  @click="linkModule('/lighttype')">
         <p class="top">
           灯具型号
         </p>
@@ -91,6 +91,10 @@ export default {
     }
   },
   methods: {
+    linkModule: function (url) {
+      console.log(url)
+      if (url) this.$router.push('/roadlighting/equipmenttype' + url)
+    }
   },
   created () {
   },
