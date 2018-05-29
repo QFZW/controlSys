@@ -19,15 +19,15 @@ export function listLightModel (pageNumber, pageSize) {
 /**
  * 删除灯具型号
  * @export
- * @param {any} idList
+ * @param {any} deleteLightModelList
  * @returns obj
  */
-export function deleteLightModel (idList) {
+export function deleteLightModel (deleteLightModelList) {
   return request({
     url: '/api/roadlighting/deleteLightModel',
     method: 'post',
     data: {
-      idList
+      deleteLightModelList
     }
   })
 }

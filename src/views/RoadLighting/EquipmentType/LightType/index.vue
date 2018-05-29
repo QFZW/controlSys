@@ -14,10 +14,11 @@
     <div class="system-center">
       <div class="operation-bar">
         <el-button @click="addCabinet()" type="primary">增加灯具型号</el-button>
+        <el-button @click="deleteRow(2)">删除</el-button>
       </div>
       <div class="data-list">
         <el-table
-          ref="multipleTable"
+          ref="lightTypeTable"
           :data="LightList"
           tooltip-effect="dark"
           style="width: 100%"
@@ -30,38 +31,33 @@
           </el-table-column>
           <el-table-column
             fixed
-            prop="codeNumber"
-            label="型号"
-            width="100">
-          </el-table-column>
-            <el-table-column
-            prop="projectName"
-            label="类目编号"
+            prop="modelName"
+            label="型号名称"
             width="100">
           </el-table-column>
           <el-table-column
-            prop="countryName"
-            label="灯具类型"
+            prop="ratedVoltage"
+            label="额定电压"
             width="100">
           </el-table-column>
           <el-table-column
-            prop="provinceName"
-            label="灯具寿命"
-            width="100">
-          </el-table-column>
-          <el-table-column
-            prop="cityName"
-            label="灯具功率"
-            width="100">
-          </el-table-column>
-          <el-table-column
+            prop="ratedElectric"
             label="额定电流"
             width="100">
           </el-table-column>
           <el-table-column
-            prop=""
-            label="额定电压"
+            prop="ratedPower"
+            label="额定功率"
             width="120">
+          </el-table-column>
+          <el-table-column
+            prop="ledCount"
+            label="LED数量"
+            width="120">
+          </el-table-column>
+          <el-table-column
+            prop="mem"
+            label="备注">
           </el-table-column>
           <el-table-column
             fixed="right"
@@ -96,51 +92,24 @@
       </div>
     </div>
     <!-- 修改 增加灯具-->
-    <el-dialog title="添加灯具"
+    <el-dialog title="添加灯具类型"
     :visible.sync="addLightDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
     :before-close="handleCloseDialog">
-      <el-form ref="form" label-width="100px">
-        <el-form-item label="型号" required>
-          <el-input class="width350" v-model="newLight.projectName"></el-input>
+      <el-form ref="addEditLightTypeForm" :model="newLight" :rules="addNewLightRules" label-width="100px">
+        <el-form-item label="型号名称" required prop="modelName">
+          <el-input class="width350" v-model="newLight.modelName"></el-input>
         </el-form-item>
-        <el-form-item label="类目编号">
-          <el-input class="width350" v-model="newLight.projectName"></el-input>
+        <el-form-item label="额定电压" required prop="ratedVoltage">
+          <el-input class="width350" v-model="newLight.ratedVoltage"></el-input>
         </el-form-item>
-        <el-form-item label="灯具类型" required>
-          <el-select class="width350" v-model="newLight.nnlightctlProjectCityId">
-            <!-- <el-option
-              v-for="(item , index) in cityList"
-              :key="index"
-              :label="item.cityName"
-              :value="item.id">
-            </el-option> -->
-          </el-select>
+        <el-form-item label="额定电流" required prop="ratedElectric">
+          <el-input class="width350" v-model="newLight.ratedElectric"></el-input>
         </el-form-item>
-        <el-form-item label="电源类型" required>
-          <el-select class="width350" v-model="newLight.nnlightctlProjectCityId">
-            <!-- <el-option
-              v-for="(item , index) in cityList"
-              :key="index"
-              :label="item.cityName"
-              :value="item.id">
-            </el-option> -->
-          </el-select>
+        <el-form-item label="额定功率" required prop="ratedPower">
+          <el-input class="width350" v-model="newLight.ratedPower"></el-input>
         </el-form-item>
-        <el-form-item label="灯具寿命" required>
-          <el-input class="width350" v-model="newLight.projectName"></el-input>
-        </el-form-item>
-        <el-form-item label="灯具功率" required>
-          <el-input class="width350" v-model="newLight.latitude"></el-input>
-        </el-form-item>
-        <el-form-item label="额定电流" required>
-          <el-input class="width350" v-model="newLight.longitude"></el-input>
-        </el-form-item>
-        <el-form-item label="额定电压" required>
-          <el-input class="width350" v-model="newLight.longitude"></el-input>
-        </el-form-item>
-        <el-form-item label="亮灯颜色" required>
-        </el-form-item>
-        <el-form-item label="预览">
+        <el-form-item label="LED数量" required prop="ledCount">
+          <el-input class="width350" v-model="newLight.ledCount"></el-input>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
@@ -159,9 +128,7 @@
   </div>
 </template>
 <script>
-// import { listLightModel, deleteLightModel, addOrUpdateLightModel } from '@/api/RoadLighting/EquipmentType'
-import { listLightModel } from '@/api/RoadLighting/EquipmentType'
-
+import { listLightModel, deleteLightModel, addOrUpdateLightModel } from '@/api/RoadLighting/EquipmentType'
 export default {
   name: 'LightType',
   data () {
@@ -172,8 +139,26 @@ export default {
       currentPage: 1,
       allTotal: null,
       LightList: [],
+      addOrUpdateStatus: null,
       newLight: {},
-      addLightDialog: false
+      addLightDialog: false,
+      addNewLightRules: {
+        modelName: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        ratedVoltage: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        ratedElectric: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        ratedPower: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        ledCount: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
@@ -187,7 +172,7 @@ export default {
     getListLightModel () {
       let that = this
       listLightModel(that.pageNumber, that.pageSize).then(response => {
-        that.projectList = response.data
+        that.LightList = response.data
         if (that.LightList.length > 0) {
           this.allTotal = response.total
         } else {
@@ -199,15 +184,75 @@ export default {
     },
     addCabinet () {
       this.addLightDialog = true
+      this.addOrUpdateStatus = 'add'
     },
-    deleteRow () {
+    deleteRow (type, e) {
+      let _array = []
+      if (type === 1) {
+        _array.push(this.LightList[e].id)
+      } else {
+        if (this.multipleSelection.length > 0) {
+          this.multipleSelection.forEach(selectedItem => {
+            // 取出所有待删除选项id
+            _array.push(selectedItem.id)
+          })
+        } else {
+          this.$message({
+            message: '请勾选需要删除的数据',
+            type: 'warning'
+          })
+        }
+      }
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteLightModel(_array).then(response => {
+          // that.projectList.splice(e, 1)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getListLightModel()
+        }).catch(error => {
+          console.log(error)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
-    editRow () {
+    editRow (e) {
+      this.addOrUpdateStatus = 'edit'
+      this.newLight = this.LightList[e]
+      this.addLightDialog = true
     },
     onSubmit () {
+      let _text
+      if (this.addOrUpdateStatus === 'add') {
+        _text = '添加成功'
+      } else {
+        _text = '修改成功'
+      }
+      addOrUpdateLightModel(this.newLight).then(response => {
+        this.$message({
+          type: 'success',
+          message: _text
+        })
+        this.getListLightModel()
+        this.addLightDialog = false
+        this.handleCloseDialog()
+      }).catch(error => {
+        console.log(error)
+      })
     },
     // 弹窗关闭时将数据清空
     handleCloseDialog (done) {
+      this.newLight = {}
+      this.$refs['addEditLightTypeForm'].resetFields()
       done()
     }
   },
