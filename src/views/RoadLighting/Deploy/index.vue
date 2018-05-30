@@ -312,11 +312,11 @@
     <el-dialog title="增加灯具" width="630px"
       :visible.sync="addLampDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
       :before-close="handleCloseDialog">
-      <el-form :ref="addNewLightForm" class="lamp-form" :model="newLight" :rules="addNewLightRules" label-width="140px" size='small'>
-        <el-form-item label="灯具编码" required>
-          <el-input v-model="newLight.addOrUpdateLighting" class="input-wrap"></el-input>
+      <el-form ref="addNewLightForm" class="lamp-form" :model="newLight" :rules="addNewLightRules" label-width="140px" size='small'>
+        <el-form-item label="灯具编码" required prop="uid">
+          <el-input v-model="newLight.uid" class="input-wrap"></el-input>
         </el-form-item>
-        <el-form-item label="生产日期" required>
+        <el-form-item label="生产日期" required prop="manufacture">
           <el-date-picker
           v-model="newLight.manufacture "
           type="date"
@@ -324,7 +324,7 @@
           placeholder="选择日期">
         </el-date-picker>
         </el-form-item>
-        <el-form-item label="安装日期" required>
+        <el-form-item label="安装日期" required prop="useDate">
           <el-date-picker
             v-model="newLight.useDate "
             type="date"
@@ -332,13 +332,13 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="灯杆" required>
+        <el-form-item label="灯杆" required prop="lamppost">
           <el-input v-model="newLight.lamppost" class="input-wrap"></el-input>
         </el-form-item>
-        <el-form-item  label="灯头号" required>
+        <el-form-item  label="灯头号" required prop="lamppost">
           <el-input v-model="newLight.lamppost" class="input-wrap"></el-input>
         </el-form-item>
-        <el-form-item label="灯具型号" required>
+        <el-form-item label="灯具型号" required prop="nnlightctlLightingModelId">
           <el-select class="input-wrap" v-model="newLight.nnlightctlLightingModelId" placeholder="请选择">
             <el-option
               v-for="item in listLightModel"
@@ -348,7 +348,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="灯具GIS信息" required>
+        <el-form-item label="灯具GIS信息" required prop="nnlightctlLightingGisId">
           <el-select class="input-wrap" v-model="newLight.nnlightctlLightingGisId" placeholder="请选择">
             <el-option
               v-for="item in gisAllList"
@@ -358,13 +358,13 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item  label="资产编号" required>
+        <el-form-item  label="资产编号" required prop="propertySerialNumber">
           <el-input v-model="newLight.propertySerialNumber" class="input-wrap"></el-input>
         </el-form-item>
-        <el-form-item label="光衰" required>
+        <el-form-item label="光衰" required prop="decay">
           <el-input v-model="newLight.decay" class="input-wrap"></el-input>
         </el-form-item>
-        <el-form-item label="灯具最大使用时间" required>
+        <el-form-item label="灯具最大使用时间" required prop="maxUseTime">
           <el-input v-model="newLight.maxUseTime" style="width:120px"></el-input>
           <span>年</span>
         </el-form-item>
@@ -381,7 +381,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addLampDialog = false">取 消</el-button>
-        <el-button @click="addLampDialog = false" type="primary">确 定</el-button>
+        <el-button @click="goNewLightRules('addNewLightForm')" type="primary">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 编辑控制柜 -->
@@ -621,9 +621,10 @@ export default {
       lightMultipleSelection: [],
       lightCurrentPage: 1,
       allLightTotal: 0,
-      newLight: {},
+      newLight: {
+      },
       addNewLightRules: {
-        addOrUpdateLighting: [
+        uid: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ],
         manufacture: [
@@ -819,6 +820,20 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    goNewLightRules (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (formName == 'addNewLightForm') {
+            this.onNewLightSubmit()
+          }
+        } else {
+          console.log('error submit!!')
+        }
+      })
+    },
+    // 新建、修改灯具
+    onNewLightSubmit () {
     }
   },
   created () {
