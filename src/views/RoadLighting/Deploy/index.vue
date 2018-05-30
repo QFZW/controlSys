@@ -35,7 +35,7 @@
               tooltip-effect="dark"
               style="width: 100%"
               header-row-class-name="datalist-header"
-              @selection-change="handleSelectionChange">
+              @selection-change="handleSelectionChangeBox">
               <el-table-column fixed type="selection" width="40"></el-table-column>
               <el-table-column fixed prop="codeNumber" label="区域" width="100"></el-table-column>
               <el-table-column prop="projectName" label="启用" width="100"></el-table-column>
@@ -77,12 +77,14 @@
           </div>
           <div class="pagelist-block">
             <el-pagination
+              @size-change="handleSizeChangeBox"
               background
-              @current-change="handleCurrentChange"
-              :current-page="currentPage"
-              :page-size="100"
-              layout="total, prev, pager, next, jumper"
-              :total="400">
+              @current-change="handleCurrentChangeBox"
+              :current-page="boxCurrentPage"
+              :page-sizes="[10, 20, 50, 100]"
+              :page-size="lightPageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="allLightTotal">
             </el-pagination>
           </div>
         </div>
@@ -111,28 +113,30 @@
                 <el-dropdown-item command="4">设置启用/停用</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <el-button icon='el-icon-delete' @click="deleteRow(2)">批量删除</el-button>
+            <el-button icon='el-icon-delete' @click="deleteLightRow(2)">批量删除</el-button>
           </div>
           <div class="data-list">
             <el-table
               ref="multipleTable"
-              :data="cabinetList"
+              :data="lightingList"
               tooltip-effect="dark"
               style="width: 100%"
               header-row-class-name="datalist-header"
-              @selection-change="handleSelectionChange">
+              @selection-change="handleSelectionChangeLight">
               <el-table-column fixed type="selection" width="40"></el-table-column>
-              <el-table-column fixed prop="codeNumber" label="灯具编码" width="100"></el-table-column>
-              <el-table-column prop="projectName" label="启用" width="100"></el-table-column>
-              <el-table-column prop="countryName" label="校验生产日期" width="140"></el-table-column>
-              <el-table-column prop="provinceName" label="安装日期" width="100"></el-table-column>
-              <el-table-column prop="countryName" label="灯杆" width="100"></el-table-column>
-              <el-table-column prop="provinceName" label="灯头号" width="100"></el-table-column>
-              <el-table-column prop="countryName" label="灯具型号" width="100"></el-table-column>
-              <el-table-column prop="provinceName" label="灯具GIS信息" width="140"></el-table-column>
-              <el-table-column prop="countryName" label="资产编号" width="100"></el-table-column>
-              <el-table-column prop="provinceName" label="光衰" width="100"></el-table-column>
-              <el-table-column prop="provinceName" label="最大使用时间（年）" width="160"></el-table-column>
+              <el-table-column fixed prop="uid" label="UID" width="100"></el-table-column>
+              <el-table-column label="使用日期" width="140">
+                <template slot-scope="scope">
+                  {{scope.row.gmtCreated|timeFormat}}
+                </template>
+              </el-table-column>
+              <el-table-column prop="lamphead" label="灯头号" width="100"></el-table-column>
+              <el-table-column prop="lamppost" label="灯杆" width="100"></el-table-column>
+              <el-table-column prop="decay" label="光衰" width="100"></el-table-column>
+              <el-table-column prop="maxUseTime" label="最大使用时间（年）" width="160"></el-table-column>
+              <el-table-column prop="mem" label="备注" width="160"></el-table-column>
+              <!-- <el-table-column prop="provinceName" label="灯具GIS信息" width="140"></el-table-column>
+              <el-table-column prop="countryName" label="资产编号" width="100"></el-table-column> -->
               <el-table-column fixed="right" label="操作" width="120">
                 <template slot-scope="scope">
                   <el-button
@@ -143,7 +147,7 @@
                   </el-button>
                   <el-button
                     class="danger-text-btn"
-                    @click.native.prevent="deleteRow(1, scope.$index)"
+                    @click.native.prevent="deleteLightRow(1, scope.$index)"
                     type="text"
                     size="small">
                     删除
@@ -154,12 +158,14 @@
           </div>
           <div class="pagelist-block">
             <el-pagination
+              @size-change="handleSizeChangeLight"
               background
-              @current-change="handleCurrentChange"
-              :current-page="currentPage"
-              :page-size="100"
-              layout="total, prev, pager, next, jumper"
-              :total="400">
+              @current-change="handleCurrentChangeLight"
+              :current-page="lightCurrentPage"
+              :page-sizes="[10, 20, 50, 100]"
+              :page-size="lightPageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="allLightTotal">
             </el-pagination>
           </div>
         </div>
@@ -185,7 +191,7 @@
           tooltip-effect="dark"
           style="width: 100%"
           header-row-class-name="datalist-header"
-          @selection-change="handleSelectionChange">
+          @selection-change="handleSelectionChangeBox">
           <el-table-column fixed type="selection" width="40"></el-table-column>
           <el-table-column fixed prop="codeNumber" label="行号" width=""></el-table-column>
           <el-table-column prop="projectName" label="名称" width="140"></el-table-column>
@@ -262,7 +268,7 @@
             tooltip-effect="dark"
             style="width: 100%"
             header-row-class-name="datalist-header"
-            @selection-change="handleSelectionChange">
+            @selection-change="handleSelectionChangeBox">
             <el-table-column fixed type="selection" width="40"></el-table-column>
             <el-table-column fixed prop="codeNumber" label="行号" width=""></el-table-column>
             <el-table-column prop="projectName" label="名称" width="140"></el-table-column>
@@ -306,45 +312,67 @@
     <el-dialog title="增加灯具" width="630px"
       :visible.sync="addLampDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
       :before-close="handleCloseDialog">
-      <el-form ref="form" class="lamp-form" label-width="140px" size='small'>
+      <el-form :ref="addNewLightForm" class="lamp-form" :model="newLight" :rules="addNewLightRules" label-width="140px" size='small'>
         <el-form-item label="灯具编码" required>
-          <el-input class="input-wrap"></el-input>
+          <el-input v-model="newLight.addOrUpdateLighting" class="input-wrap"></el-input>
         </el-form-item>
         <el-form-item label="生产日期" required>
-          <el-input class="input-wrap"></el-input>
+          <el-date-picker
+          v-model="newLight.manufacture "
+          type="date"
+          class="input-wrap"
+          placeholder="选择日期">
+        </el-date-picker>
         </el-form-item>
         <el-form-item label="安装日期" required>
-          <el-input class="input-wrap"></el-input>
+          <el-date-picker
+            v-model="newLight.useDate "
+            type="date"
+            class="input-wrap"
+            placeholder="选择日期">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="灯杆" required>
-          <el-input class="input-wrap"></el-input>
+          <el-input v-model="newLight.lamppost" class="input-wrap"></el-input>
         </el-form-item>
-        <el-form-item label="灯头号" required>
-          <el-input class="input-wrap"></el-input>
-        </el-form-item>
-        <el-form-item label="灯头号" required>
+        <el-form-item v-model="newLight.lamppost" label="灯头号" required>
           <el-input class="input-wrap"></el-input>
         </el-form-item>
         <el-form-item label="灯具型号" required>
-          <el-input class="input-wrap"></el-input>
+          <el-select class="input-wrap" v-model="newLight.nnlightctlLightingModelId" placeholder="请选择">
+            <el-option
+              v-for="item in listLightModel"
+              :key="item.id"
+              :label="item.mem"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="灯具GIS信息" required>
-          <el-input class="input-wrap"></el-input>
+          <el-select class="input-wrap" v-model="newLight.nnlightctlLightingGisId" placeholder="请选择">
+            <el-option
+              v-for="item in gisAllList"
+              :key="item.id"
+              :label="item.mem"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="资产编号" required>
-          <el-input class="input-wrap"></el-input>
+        <el-form-item  label="资产编号" required>
+          <el-input v-model="newLight.propertySerialNumber" class="input-wrap"></el-input>
         </el-form-item>
         <el-form-item label="光衰" required>
-          <el-input class="input-wrap"></el-input>
+          <el-input v-model="newLight.decay" class="input-wrap"></el-input>
         </el-form-item>
         <el-form-item label="灯具最大使用时间" required>
-          <el-input style="width:120px"></el-input>
+          <el-input v-model="newLight.maxUseTime" style="width:120px"></el-input>
           <span>年</span>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
             class="input-wrap"
             type="textarea"
+            v-model="newLight.mem"
             :autosize="{ minRows: 2, maxRows: 4}"
             placeholder="请输入内容"
           >
@@ -527,6 +555,9 @@
   </div>
 </template>
 <script>
+import { listGIS, listElebox, listLighting, deleteLighting } from '@/api/RoadLighting/deploy'
+import { listLightModel } from '@/api/RoadLighting/EquipmentType'
+import '../../../utils/filter.js'
 export default {
   name: 'Deploy',
   watch: {
@@ -562,10 +593,6 @@ export default {
         label: 'label'
       },
       activeName: 'cabinet',
-      pageNumber: 1,
-      pageSize: 100,
-      multipleSelection: [],
-      currentPage: 1,
       cabinetList: [{ }],
       newCabinet: {},
       cabinetDialog: false,
@@ -577,7 +604,41 @@ export default {
       showUserableDialog: false,
       addLampDialog: false,
       editCabinetDialog: false,
-      userable: '1' // 是否启用
+      userable: '1', // 是否启用
+      gisAllList: [], // gis所有列表
+      listLightModel: [], // 所有灯具类型列表
+      eleboxList: [],
+      boxPageNumber: 1,
+      boxPageSize: 10,
+      boxMultipleSelection: [],
+      boxCurrentPage: 1,
+      allEleboxTotal: 0,
+      eleboxId: null, // 灯具搜索使用
+      notBe: 1, // 灯具搜索使用
+      lightingList: [],
+      lightPageNumber: 1,
+      lightPageSize: 10,
+      lightMultipleSelection: [],
+      lightCurrentPage: 1,
+      allLightTotal: 0,
+      newLight: {},
+      addNewLightRules: {
+        modelName: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        ratedVoltage: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        ratedElectric: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        ratedPower: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        ledCount: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
@@ -588,12 +649,29 @@ export default {
     tabHandleClick (tab, event) {
       console.log(tab, event)
     },
-    handleSelectionChange (val) {
-      this.multipleSelection = val
+    handleSelectionChangeBox (val) {
+      this.boxMultipleSelection = val
     },
-    handleCurrentChange (val) {
-      this.pageNumber = val
-      // 翻页请求
+    handleSelectionChangeLight (val) {
+      this.lightMultipleSelection = val
+    },
+    // 控制柜翻页相关
+    handleSizeChangeBox (val) {
+      this.boxPageSize = val
+      this.getListElebox()
+    },
+    handleCurrentChangeBox (val) {
+      this.boxPageNumber = val
+      this.getListElebox()
+    },
+    // 灯具翻页相关
+    handleSizeChangeLight (val) {
+      this.lightPageSize = val
+      this.getListLighting()
+    },
+    handleCurrentChangeLight (val) {
+      this.lightPageNumber = val
+      this.getListLighting()
     },
     addCabinet () {
       this.cabinetDialog = true
@@ -641,7 +719,97 @@ export default {
     },
     editCabinet () {
       this.editCabinetDialog = true
+    },
+    // 获取GIS列表
+    getListGIS () {
+      let that = this
+      listGIS().then(response => {
+        that.gisAllList = response.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 获取灯具类型列表
+    getListLightModel () {
+      let that = this
+      listLightModel().then(response => {
+        that.listLightModel = response.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 获取控制柜相关信息
+    getListElebox () {
+      let that = this
+      listElebox(that.boxPageNumber, that.boxPageSize).then(response => {
+        that.eleboxList = response.data
+        if (that.eleboxList.length > 0) {
+          this.allEleboxTotal = response.total
+        } else {
+          this.allEleboxTotal = 0
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 获取灯具列表
+    getListLighting () {
+      let that = this
+      listLighting(that.lightPageNumber, that.lightPageSize, that.eleboxId, that.notBe).then(response => {
+        that.lightingList = response.data
+        if (that.lightingList.length > 0) {
+          this.allLightTotal = response.total
+        } else {
+          this.allLightTotal = 0
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 删除灯具
+    deleteLightRow (type, e) {
+      let _array = []
+      if (type === 1) {
+        _array.push(this.lightingList[e].id)
+      } else {
+        if (this.lightMultipleSelection.length > 0) {
+          this.lightMultipleSelection.forEach(selectedItem => {
+            // 取出所有待删除选项id
+            _array.push(selectedItem.id)
+          })
+        } else {
+          this.$message({
+            message: '请勾选需要删除的数据',
+            type: 'warning'
+          })
+        }
+      }
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteLighting(_array).then(response => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getListLighting()
+        }).catch(error => {
+          console.log(error)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
+  },
+  created () {
+    this.getListGIS()
+    this.getListLightModel()
+    this.getListLighting()
   }
 }
 </script>

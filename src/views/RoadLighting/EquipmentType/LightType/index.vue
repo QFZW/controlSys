@@ -250,7 +250,7 @@ export default {
       })
     },
     // 弹窗关闭时将数据清空
-    handleCloseDialog (done) { 
+    handleCloseDialog (done) {
       this.newLight = {}
       this.$refs['addEditLightTypeForm'].resetFields()
       done()
