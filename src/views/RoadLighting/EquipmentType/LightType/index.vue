@@ -250,7 +250,7 @@ export default {
       })
     },
     // 弹窗关闭时将数据清空
-    handleCloseDialog (done) {
+    handleCloseDialog (done) { 
       this.newLight = {}
       this.$refs['addEditLightTypeForm'].resetFields()
       done()
@@ -283,7 +283,7 @@ export default {
 .system-container{
   .system-top{
     .item-block{
-        padding: 0 30px 0 55px;
+        padding: 0px 30px 0px 55px;
     }
   }
 }
