@@ -335,8 +335,8 @@
         <el-form-item label="灯杆" required>
           <el-input v-model="newLight.lamppost" class="input-wrap"></el-input>
         </el-form-item>
-        <el-form-item v-model="newLight.lamppost" label="灯头号" required>
-          <el-input class="input-wrap"></el-input>
+        <el-form-item  label="灯头号" required>
+          <el-input v-model="newLight.lamppost" class="input-wrap"></el-input>
         </el-form-item>
         <el-form-item label="灯具型号" required>
           <el-select class="input-wrap" v-model="newLight.nnlightctlLightingModelId" placeholder="请选择">
@@ -623,19 +623,34 @@ export default {
       allLightTotal: 0,
       newLight: {},
       addNewLightRules: {
-        modelName: [
+        addOrUpdateLighting: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ],
-        ratedVoltage: [
+        manufacture: [
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        useDate: [
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        lamppost: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ],
-        ratedElectric: [
+        lamphead: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ],
-        ratedPower: [
+        nnlightctlLightingModelId: [
+          { required: true, message: '选择内容不得为空', trigger: 'change' }
+        ],
+        nnlightctlLightingGisId: [
+          { required: true, message: '选择内容不得为空', trigger: 'blur' }
+        ],
+        propertySerialNumber: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ],
-        ledCount: [
+        decay: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        maxUseTime: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ]
       }
