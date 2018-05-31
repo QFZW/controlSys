@@ -209,3 +209,16 @@ export function deleteLighting (deleteLightIdList) {
     }
   })
 }
+/**
+ * 添加编辑灯具
+ * @export
+ * @param {any} obj 
+ * @returns 
+ */
+export function addOrUpdateLighting (obj) {
+  return request({
+    url: '/api/roadlighting/addOrUpdateLighting',
+    method: 'post',
+    data: obj
+  })
+}

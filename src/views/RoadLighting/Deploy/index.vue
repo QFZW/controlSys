@@ -311,7 +311,7 @@
     <!-- 增加灯具 -->
     <el-dialog title="增加灯具" width="630px"
       :visible.sync="addLampDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
-      :before-close="handleCloseDialog">
+      :before-close="handleCloseAddNewLight">
       <el-form ref="addNewLightForm" class="lamp-form" :model="newLight" :rules="addNewLightRules" label-width="140px" size='small'>
         <el-form-item label="灯具编码" required prop="uid">
           <el-input v-model="newLight.uid" class="input-wrap"></el-input>
@@ -335,8 +335,8 @@
         <el-form-item label="灯杆" required prop="lamppost">
           <el-input v-model="newLight.lamppost" class="input-wrap"></el-input>
         </el-form-item>
-        <el-form-item  label="灯头号" required prop="lamppost">
-          <el-input v-model="newLight.lamppost" class="input-wrap"></el-input>
+        <el-form-item  label="灯头号" required prop="lamphead">
+          <el-input v-model="newLight.lamphead" class="input-wrap"></el-input>
         </el-form-item>
         <el-form-item label="灯具型号" required prop="nnlightctlLightingModelId">
           <el-select class="input-wrap" v-model="newLight.nnlightctlLightingModelId" placeholder="请选择">
@@ -555,7 +555,7 @@
   </div>
 </template>
 <script>
-import { listGIS, listElebox, listLighting, deleteLighting } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, listLighting, deleteLighting, addOrUpdateLighting } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -824,7 +824,7 @@ export default {
     goNewLightRules (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if (formName == 'addNewLightForm') {
+          if (formName === 'addNewLightForm') {
             this.onNewLightSubmit()
           }
         } else {
@@ -834,7 +834,24 @@ export default {
     },
     // 新建、修改灯具
     onNewLightSubmit () {
-    }
+      addOrUpdateLighting(this.newLight).then(response => {
+        this.$message({
+          type: 'success',
+          message: '添加成功'
+        })
+        this.getListLighting()
+        this.addLampDialog = false
+        this.handleCloseAddNewLight()
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    handleCloseAddNewLight (done) {
+      // 弹窗关闭时将数据清空
+      this.$refs['addNewLightForm'].resetFields()
+      this.newLight = {}
+      done()
+    },
   },
   created () {
     this.getListGIS()
