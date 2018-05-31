@@ -45,10 +45,11 @@
               <el-table-column label="集中器" width="120"></el-table-column>
               <el-table-column prop="" label="位置编号" width="120"></el-table-column>
               <el-table-column prop="latitude" label="附加信息"></el-table-column>
-              <el-table-column fixed="right" label="操作" width="120">
+              <el-table-column fixed="right" label="操作" width="240">
                 <!-- 240 -->
                 <template slot-scope="scope">
-                  <!-- <el-button
+                  <el-button
+                    @click.native.prevent="manageLamp()"
                     type="text"
                     size="small">
                     管理灯具
@@ -57,7 +58,7 @@
                     type="text"
                     size="small">
                     回路拆分
-                  </el-button> -->
+                  </el-button>
                   <el-button
                     @click.native.prevent="editCabinet()"
                     type="text"
@@ -204,8 +205,8 @@
         <el-button type="primary">确 定</el-button>
       </div>
     </el-dialog>
-    <!-- 新增设备 -->
-    <el-dialog title="新增设备" width="1200px"
+    <!-- 添加设备 -->
+    <el-dialog title="添加设备" width="1200px"
       :visible.sync="deviceAddDialog"  center>
       <el-form ref="form" label-width="100px">
         <el-form-item label="控制柜数量">
@@ -384,6 +385,164 @@
         <el-button @click="goNewLightRules('addNewLightForm')" type="primary">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 管理灯具 -->
+    <el-dialog title="管理灯具" width="1200px"
+      :visible.sync="manageLanmpDialog" center>
+      <div class="manage-lamp">
+        <div class="operation-bar">
+          <el-button icon='el-icon-plus' @click="insertLamp()" type="primary">批量增加</el-button>
+          <el-button icon='el-icon-edit'>批量编辑</el-button>
+          <el-button icon='el-icon-delete'>批量删除</el-button>
+        </div>
+        <el-table
+          ref="multipleTable"
+          :data="cabinetList"
+          tooltip-effect="dark"
+          style="width: 100%"
+          header-row-class-name="datalist-header"
+          @selection-change="handleSelectionChangeBox">
+          <el-table-column fixed type="selection" width="40"></el-table-column>
+          <el-table-column label="启用" width="100"></el-table-column>
+          <el-table-column label="校验" width="120"></el-table-column>
+          <el-table-column label="灯杆" width="120"></el-table-column>
+          <el-table-column label="灯头号" width="120"></el-table-column>
+          <el-table-column label="终端" width="120"></el-table-column>
+          <el-table-column label="终端输出" width="100"></el-table-column>
+          <el-table-column label="位置编号" width="100"></el-table-column>
+          <el-table-column label="类目编号" width="100"></el-table-column>
+          <el-table-column label="灯杆型号" width="100"></el-table-column>
+          <el-table-column fixed="right" label="操作">
+            <template slot-scope="scope">
+              <el-button
+                @click.native.prevent="editRow(scope.$index)"
+                type="text"
+                size="small">
+                编辑
+              </el-button>
+              <el-button
+                class="danger-text-btn"
+                @click.native.prevent="deleteLightRow(1, scope.$index)"
+                type="text"
+                size="small">
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="pagelist-block">
+          <el-pagination
+            @size-change="handleSizeChangeLight"
+            background
+            @current-change="handleCurrentChangeLight"
+            :current-page="lightCurrentPage"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="lightPageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="allLightTotal">
+          </el-pagination>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="manageLanmpDialog = false">取 消</el-button>
+        <el-button @click="manageLanmpDialog = false" type="primary">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 新增灯具 -->
+     <el-dialog title="新增灯具" width="1200px"
+      :visible.sync="insertLanmpDialog" center>
+      <div class="insert-lamp clearfix">
+        <div class="select-wrap">
+          <div class="operate-block clearfix">
+            <a class="f-l" @click="addLamp()"><i class="iconfont ">&#xe648;</i>添加</a>
+            <a class="f-l"><i class="iconfont">&#xe605;</i>导入</a>
+            <a class="f-l"><i class="iconfont">&#xe632;</i>删除</a>
+          </div>
+          <el-table
+            ref="multipleTable"
+            :data="cabinetList"
+            tooltip-effect="dark"
+            style="width: 100%"
+            header-row-class-name="datalist-header"
+            @selection-change="handleSelectionChangeBox">
+            <el-table-column type="selection" width="30"></el-table-column>
+            <el-table-column label="行号" width="50"></el-table-column>
+            <el-table-column label="灯杆" width="50"></el-table-column>
+            <el-table-column label="灯头号" width="65"></el-table-column>
+            <el-table-column label="终端" width="50"></el-table-column>
+            <el-table-column label="灯具型" width="65"></el-table-column>
+            <el-table-column label="终端输出" width="80"></el-table-column>
+            <el-table-column fixed="right" label="操作">
+              <template slot-scope="scope">
+                <el-button
+                  @click.native.prevent="editRow(scope.$index)"
+                  type="text"
+                  size="small">
+                  编辑
+                </el-button>
+                <el-button
+                  class="danger-text-btn"
+                  @click.native.prevent="deleteLightRow(1, scope.$index)"
+                  type="text"
+                  size="small">
+                  删除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div class="controll-wrap">
+          <div class="controll-btn">
+            <el-button size='small' icon="el-icon-arrow-left"></el-button>
+          </div>
+          <div class="controll-btn">
+            <el-button size='small' icon="el-icon-arrow-right"></el-button>
+          </div>
+        </div>
+        <div class="select-wrap">
+          <div class="operate-block clearfix">
+            <a class="f-l"><i class="iconfont">&#xe632;</i>删除</a>
+          </div>
+          <el-table
+            ref="multipleTable"
+            :data="cabinetList"
+            tooltip-effect="dark"
+            style="width: 100%"
+            header-row-class-name="datalist-header"
+            @selection-change="handleSelectionChangeBox">
+            <el-table-column type="selection" width="30"></el-table-column>
+            <el-table-column label="行号" width="50"></el-table-column>
+            <el-table-column label="灯杆" width="50"></el-table-column>
+            <el-table-column label="灯头号" width="65"></el-table-column>
+            <el-table-column label="终端" width="50"></el-table-column>
+            <el-table-column label="灯具型" width="65"></el-table-column>
+            <el-table-column label="终端输出" width="80"></el-table-column>
+            <el-table-column fixed="right" label="操作">
+              <template slot-scope="scope">
+                <el-button
+                  @click.native.prevent="editRow(scope.$index)"
+                  type="text"
+                  size="small">
+                  编辑
+                </el-button>
+                <el-button
+                  class="danger-text-btn"
+                  @click.native.prevent="deleteLightRow(1, scope.$index)"
+                  type="text"
+                  size="small">
+                  删除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+      <div class="">
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="insertLanmpDialog = false">取 消</el-button>
+        <el-button @click="insertLanmpDialog = false" type="primary">确 定</el-button>
+      </div>
+    </el-dialog>
     <!-- 编辑控制柜 -->
     <el-dialog title="编辑控制柜" width="617px"
       :visible.sync="editCabinetDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
@@ -467,8 +626,7 @@
       </div>
     </el-dialog>
     <!-- 设置区域 -->
-    <el-dialog
-      title="提示"
+    <el-dialog title="提示"
       :visible.sync="showAeraDialog"
       width="560px"
       center>
@@ -604,6 +762,8 @@ export default {
       showUserableDialog: false,
       addLampDialog: false,
       editCabinetDialog: false,
+      manageLanmpDialog: false,
+      insertLanmpDialog: false,
       userable: '1', // 是否启用
       gisAllList: [], // gis所有列表
       listLightModel: [], // 所有灯具类型列表
@@ -735,6 +895,14 @@ export default {
     },
     editCabinet () {
       this.editCabinetDialog = true
+    },
+    // 批量添加灯具
+    insertLamp () {
+      this.insertLanmpDialog = true
+    },
+    // 管理灯具
+    manageLamp () {
+      this.manageLanmpDialog = true
     },
     // 获取GIS列表
     getListGIS () {
@@ -968,6 +1136,32 @@ export default {
 .lamp-form{
   .input-wrap{
     width: 360px;
+  }
+}
+.insert-lamp{
+  .select-wrap{
+    padding:20px;
+    float: left;
+    width: 540px;
+    height: 450px;
+    border:1px solid #dedede;
+    box-sizing:border-box;
+  }
+  .controll-wrap{
+    padding-top: 150px;
+    float: left;
+    width: 80px;
+    height: 450px;
+    text-align: center;
+    .controll-btn {
+      margin: 20px 0;
+    }
+  }
+}
+// 管理灯具
+.manage-lamp{
+  .operation-bar{
+    margin-bottom: 20px;
   }
 }
 </style>
