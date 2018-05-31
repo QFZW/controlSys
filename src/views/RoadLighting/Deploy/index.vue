@@ -26,25 +26,30 @@
                 <el-dropdown-item command="4">设置启用/停用</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <el-button icon='el-icon-delete' @click="deleteRow(2)">批量删除</el-button>
+            <el-button icon='el-icon-delete' @click="deleteEleboxRow(2)">批量删除</el-button>
           </div>
           <div class="data-list">
             <el-table
               ref="multipleTable"
-              :data="cabinetList"
+              :data="eleboxList"
               tooltip-effect="dark"
               style="width: 100%"
               header-row-class-name="datalist-header"
               @selection-change="handleSelectionChangeBox">
               <el-table-column fixed type="selection" width="40"></el-table-column>
               <el-table-column fixed prop="codeNumber" label="区域" width="100"></el-table-column>
-              <el-table-column prop="projectName" label="启用" width="100"></el-table-column>
-              <el-table-column prop="countryName" label="校验" width="120"></el-table-column>
-              <el-table-column prop="provinceName" label="控制柜" width="120"></el-table-column>
-              <el-table-column prop="cityName" label="地图地标" width="120"></el-table-column>
-              <el-table-column label="集中器" width="120"></el-table-column>
-              <el-table-column prop="" label="位置编号" width="120"></el-table-column>
-              <el-table-column prop="latitude" label="附加信息"></el-table-column>
+              <el-table-column label="安装日期" width="100">
+                <template slot-scope="scope">
+                  {{scope.row.useDate|timeFormat}}
+                </template>
+              </el-table-column>
+              <el-table-column prop="ratedVoltage" label="额定电压" width="120"></el-table-column>
+              <el-table-column prop="ratedElectricty" label="额定电流" width="120"></el-table-column>
+              <el-table-column prop="powerRating" label="额定功率" width="120"></el-table-column>
+              <el-table-column prop="mainSwitch" label="主控制开关" width="120"></el-table-column>
+              <el-table-column prop="spd" label="spd" width="120"></el-table-column>
+              <el-table-column prop="latitude" label="经度"></el-table-column>
+              <el-table-column prop="longitude" label="纬度"></el-table-column>
               <el-table-column fixed="right" label="操作" width="240">
                 <!-- 240 -->
                 <template slot-scope="scope">
@@ -67,7 +72,7 @@
                   </el-button>
                   <el-button
                     class="danger-text-btn"
-                    @click.native.prevent="deleteRow(1, scope.$index)"
+                    @click.native.prevent="deleteEleboxRow(1, scope.$index)"
                     type="text"
                     size="small">
                     删除
@@ -178,7 +183,7 @@
       :before-close="handleCloseDialog">
       <el-form ref="form" label-width="100px">
         <el-form-item label="控制柜数量">
-          <el-input value=5 style="width:70px"></el-input>
+          <el-input v-model="ElboxCount" style="width:70px"></el-input>
         </el-form-item>
       </el-form>
       <div class="cabinet-list">
@@ -210,103 +215,114 @@
       :visible.sync="deviceAddDialog"  center>
       <el-form ref="form" label-width="100px">
         <el-form-item label="控制柜数量">
-          <el-input value=5 style="width:70px"></el-input>
+          <el-input  v-model="ElboxCount" style="width:70px"></el-input>
         </el-form-item>
       </el-form>
       <div class="add-device clearfix">
         <div class="device-info">
-          <el-form ref="form" label-width="150px" size='small'>
-            <el-form-item label="名称" required>
-              <el-input></el-input>
+          <el-form label-width="150px" ref="addNewEleboxModelForm" :model="newEleboxModel" :rules="addNewEleboxModel" size='small'>
+            <el-form-item label="名称" required prop="modelName">
+              <el-input v-model="newEleboxModel.modelName"></el-input>
             </el-form-item>
             <el-form-item label="类型" required>
-              <el-select style="width: 100%">
-                <!-- <el-option
+              <el-input  value="模块" disabled="true"></el-input>
+              <!-- <el-select style="width: 100%">
+                <el-option
                   v-for="(item , index) in cityList"
                   :key="index"
                   :label="item.cityName"
                   :value="item.id">
-                </el-option> -->
-              </el-select>
+                </el-option>
+              </el-select> -->
             </el-form-item>
-            <el-form-item label="唯一编码" required>
-              <el-input></el-input>
+            <el-form-item label="唯一编码" required prop="uid">
+              <el-input  v-model="newEleboxModel.uid"></el-input>
             </el-form-item>
-            <el-form-item label="额定功率" required>
-              <el-input></el-input>
+            <el-form-item label="额定功率" required prop="powerRating">
+              <el-input v-model="newEleboxModel.powerRating"></el-input>
             </el-form-item>
-            <el-form-item label="额定电流" required>
-              <el-input></el-input>
+            <el-form-item label="额定电流" required prop="electricRating">
+              <el-input v-model="newEleboxModel.electricRating"></el-input>
             </el-form-item>
-            <el-form-item label="额定电压" required>
-              <el-input></el-input>
+            <el-form-item label="额定电压" required prop="voltageRating">
+              <el-input v-model="newEleboxModel.voltageRating"></el-input>
             </el-form-item>
-            <el-form-item label="空气开关选型" required>
-              <el-input></el-input>
+            <el-form-item label="空气开关选型" required prop="airSwitchType">
+              <el-input v-model="newEleboxModel.airSwitchType"></el-input>
             </el-form-item>
-            <el-form-item label="接触器选型" required>
-              <el-input></el-input>
+            <el-form-item label="接触器选型" required prop="contactorType">
+              <el-input v-model="newEleboxModel.contactorType"></el-input>
             </el-form-item>
-            <el-form-item label="回路数量" required>
-              <el-input></el-input>
+            <el-form-item label="回路数量" required prop="loopCount">
+              <el-input v-model="newEleboxModel.loopCount"></el-input>
             </el-form-item>
-            <el-form-item label="所属相序" required>
-              <el-input></el-input>
+            <el-form-item label="所属相序" required prop="ac">
+              <el-input v-model="newEleboxModel.ac"></el-input>
             </el-form-item>
-            <el-form-item label="回路继电器额定电流" required>
-              <el-input></el-input>
+            <el-form-item label="回路继电器额定电流" required prop="loopElectricity">
+              <el-input v-model="newEleboxModel.loopElectricity"></el-input>
             </el-form-item>
           </el-form>
         </div>
         <div class="loop-info">
           <div class="operate-block clearfix">
             <a class="f-l" @click="addLoop()"><i class="iconfont ">&#xe648;</i>添加回路</a>
-            <a class="f-l"><i class="iconfont">&#xe632;</i>删除</a>
+            <!-- <a class="f-l"><i class="iconfont">&#xe632;</i>删除</a> -->
           </div>
           <el-table
             ref="multipleTable"
-            :data="cabinetList"
+            :data="modelLoopList"
             tooltip-effect="dark"
             style="width: 100%"
-            header-row-class-name="datalist-header"
-            @selection-change="handleSelectionChangeBox">
-            <el-table-column fixed type="selection" width="40"></el-table-column>
-            <el-table-column fixed prop="codeNumber" label="行号" width=""></el-table-column>
-            <el-table-column prop="projectName" label="名称" width="140"></el-table-column>
-            <el-table-column prop="countryName" label="类型" width="140"></el-table-column>
-            <el-table-column prop="provinceName" label="型号" width="140"></el-table-column>
+            header-row-class-name="datalist-header">
+            <el-table-column fixed prop="loopCode" label="编号" width="120"></el-table-column>
+            <el-table-column prop="voltage" label="电压" width="100"></el-table-column>
+            <el-table-column prop="electricity" label="电流" width="100"></el-table-column>
+            <el-table-column prop="lightCount" label="灯具数量" width="100"></el-table-column>
+            <el-table-column prop="state" label="状态" width="100"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="60">
+                <template slot-scope="scope">
+                  <el-button
+                    class="danger-text-btn"
+                    @click.native.prevent="deleteModelLoop(scope.$index)"
+                    type="text"
+                    size="small">
+                    删除
+                  </el-button>
+                </template>
+              </el-table-column>
           </el-table>
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="deviceAddDialog = false">取 消</el-button>
-        <el-button @click="deviceAddDialog = false" type="primary">确 定</el-button>
+        <el-button @click="goRules('addNewEleboxModelForm')" type="primary">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 添加回路 -->
     <el-dialog title="添加回路" width="560px"
       :visible.sync="addLoopDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
-      :before-close="handleCloseDialog">
-      <el-form ref="form" label-width="120px" size='small'>
-        <el-form-item label="回路编号" required>
-          <el-input></el-input>
+      :before-close="handleCloseAddNewModelLoop">
+      <el-form ref="addNewModelLoopForm" label-width="120px" :model="newModelLoop" :rules="addNewModelLoopRules"  size='small'>
+        <el-form-item label="回路编号" required prop="loopCode">
+          <el-input v-model="newModelLoop.loopCode"></el-input>
         </el-form-item>
-        <el-form-item label="回路电压" required>
-          <el-input></el-input>
+        <el-form-item label="回路电压" required prop="voltage">
+          <el-input v-model="newModelLoop.voltage"></el-input>
         </el-form-item>
-        <el-form-item label="回路电流" required>
-          <el-input></el-input>
+        <el-form-item label="回路电流" required prop="electricity">
+          <el-input v-model="newModelLoop.electricity"></el-input>
         </el-form-item>
-        <el-form-item label="回路灯具数量" required>
-          <el-input></el-input>
+        <el-form-item label="回路灯具数量" required prop="lightCount">
+          <el-input v-model="newModelLoop.lightCount"></el-input>
         </el-form-item>
-        <el-form-item label="回路状态" required>
-          <el-input></el-input>
+        <el-form-item label="回路状态" required prop="state">
+          <el-input v-model="newModelLoop.state"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addLoopDialog = false">取 消</el-button>
-        <el-button @click="addLoopDialog = false" type="primary">确 定</el-button>
+        <el-button @click="goRules('addNewModelLoopForm')" type="primary">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 增加灯具 -->
@@ -382,7 +398,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addLampDialog = false">取 消</el-button>
-        <el-button @click="goNewLightRules('addNewLightForm')" type="primary">确 定</el-button>
+        <el-button @click="goRules('addNewLightForm')" type="primary">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 管理灯具 -->
@@ -713,7 +729,7 @@
   </div>
 </template>
 <script>
-import { listGIS, listElebox, listLighting, deleteLighting, addOrUpdateLighting } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, listLighting, deleteLighting, addOrUpdateLighting } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -773,6 +789,61 @@ export default {
       boxMultipleSelection: [],
       boxCurrentPage: 1,
       allEleboxTotal: 0,
+      ElboxCount: null, // 添加控制柜的控制柜个数
+      // 设备
+      newEleboxModel: {},
+      addNewEleboxModel: {
+        modelName: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        uid: [
+          { required: true, message: '选择内容不得为空', trigger: 'blur' }
+        ],
+        electricRating: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        powerRating: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        voltageRating: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        airSwitchType: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        contactorType: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        loopCount: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        ac: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        loopElectricity: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ]
+      },
+      // 回路
+      modelLoopList: [],
+      newModelLoop: {},
+      addNewModelLoopRules: {
+        loopCode: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        voltage: [
+          { required: true, message: '选择内容不得为空', trigger: 'blur' }
+        ],
+        electricity: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        lightCount: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        state: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ]
+      },
       eleboxId: null, // 灯具搜索使用
       notBe: 1, // 灯具搜索使用
       lightingList: [],
@@ -936,6 +1007,116 @@ export default {
         console.log(error)
       })
     },
+    // 删除控制柜
+    deleteEleboxRow (type, e) {
+      let _array = []
+      if (type === 1) {
+        _array.push(this.eleboxList[e].id)
+      } else {
+        if (this.boxMultipleSelection.length > 0) {
+          this.boxMultipleSelection.forEach(selectedItem => {
+            // 取出所有待删除选项id
+            _array.push(selectedItem.id)
+          })
+        } else {
+          this.$message({
+            message: '请勾选需要删除的数据',
+            type: 'warning'
+          })
+          return false
+        }
+      }
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteElebox(_array).then(response => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getListElebox()
+        }).catch(error => {
+          console.log(error)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    // 新建控制柜
+    onNewElboxSubmit () {
+      addEleBox(this.newElbox).then(response => {
+        this.$message({
+          type: 'success',
+          message: '添加成功'
+        })
+        this.getListElebox()
+        this.addLampDialog = false
+        this.handleCloseAddNewElbox()
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    handleCloseAddNewElbox (done) {
+      // 弹窗关闭时将数据清空
+      this.$refs['addNewLightForm'].resetFields()
+      this.newLight = {}
+      done()
+    },
+    //新建设备
+    onNewEleboxModelSubmit () {
+      this.newEleboxModel.modelLoopList = this.modelLoopList
+      console.log(this.newEleboxModel)
+    },
+    // 新建回路
+    onNewModelLoopSubmit () {
+      let _obj = Object.assign({}, this.newModelLoop)
+      this.modelLoopList.push(_obj)
+      this.newEleboxModel.loopCount = this.modelLoopList.length
+      console.log(this.modelLoopList)
+      this.$message({
+        type: 'success',
+        message: '添加成功'
+      })
+      this.addLoopDialog = false
+      this.handleCloseAddNewModelLoop()
+      // addOrUpdateModelLoop(this.newModelLoop).then(response => {
+      //   this.$message({
+      //     type: 'success',
+      //     message: '添加成功'
+      //   })
+      //   this.addLoopDialog = false
+      //   this.handleCloseAddNewModelLoop()
+      // }).catch(error => {
+      //   console.log(error)
+      // })
+    },
+    deleteModelLoop (e) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.modelLoopList.splice(e, 1)
+        this.newEleboxModel.loopCount = this.modelLoopList.length
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    /*
+    *  灯具区域
+    */
     // 获取灯具列表
     getListLighting () {
       let that = this
@@ -966,6 +1147,7 @@ export default {
             message: '请勾选需要删除的数据',
             type: 'warning'
           })
+          return false
         }
       }
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -989,17 +1171,6 @@ export default {
         })
       })
     },
-    goNewLightRules (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          if (formName === 'addNewLightForm') {
-            this.onNewLightSubmit()
-          }
-        } else {
-          console.log('error submit!!')
-        }
-      })
-    },
     // 新建、修改灯具
     onNewLightSubmit () {
       addOrUpdateLighting(this.newLight).then(response => {
@@ -1014,16 +1185,38 @@ export default {
         console.log(error)
       })
     },
+    goRules (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (formName === 'addNewLightForm') {
+            this.onNewLightSubmit()
+          } else if (formName === 'addNewModelLoopForm') {
+            this.onNewModelLoopSubmit()
+          } else if (formName === 'addNewEleboxModelForm') {
+            this.onNewEleboxModelSubmit()
+          }
+        } else {
+          console.log('error submit!!')
+        }
+      })
+    },
+    handleCloseAddNewModelLoop (done) {
+      // 弹窗关闭时将数据清空
+      this.$refs['addNewModelLoopForm'].resetFields()
+      this.newModelLoop = {}
+      done()
+    },
     handleCloseAddNewLight (done) {
       // 弹窗关闭时将数据清空
       this.$refs['addNewLightForm'].resetFields()
       this.newLight = {}
       done()
-    },
+    }
   },
   created () {
     this.getListGIS()
     this.getListLightModel()
+    this.getListElebox()
     this.getListLighting()
   }
 }

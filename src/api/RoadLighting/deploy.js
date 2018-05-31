@@ -181,6 +181,21 @@ export function updateEleboxModel (obj) {
     }
   })
 }
+/**
+ * 修改添加回路
+ * @export
+ * @param {any} obj
+ * @returns
+ */
+export function addOrUpdateModelLoop (obj) {
+  return request({
+    url: '/api/roadlighting/addorupdatemodelloop',
+    method: 'post',
+    data: {
+      obj
+    }
+  })
+}
 // 灯具页面相关接口
 export function listLighting (pageNumber, pageSize, eleboxId, notBe) {
   return request({
@@ -212,8 +227,8 @@ export function deleteLighting (deleteLightIdList) {
 /**
  * 添加编辑灯具
  * @export
- * @param {any} obj 
- * @returns 
+ * @param {any} obj
+ * @returns obj
  */
 export function addOrUpdateLighting (obj) {
   return request({
