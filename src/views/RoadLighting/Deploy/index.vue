@@ -146,7 +146,7 @@
               <el-table-column fixed="right" label="操作" width="120">
                 <template slot-scope="scope">
                   <el-button
-                    @click.native.prevent="editRow(scope.$index)"
+                    @click.native.prevent="editLightRow(scope.$index)"
                     type="text"
                     size="small">
                     编辑
@@ -199,11 +199,17 @@
           header-row-class-name="datalist-header">
           <el-table-column fixed prop="uid" label="唯一编码" width="100"></el-table-column>
           <el-table-column prop="modelName" label="名称" width="140"></el-table-column>
-          <el-table-column prop="powerRating" label="额定功率" width="140"></el-table-column>
-          <el-table-column prop="electricRating" label="额定电流" width="140"></el-table-column>
-          <el-table-column prop="voltageRating" label="额定电压" width="140"></el-table-column>
-          <el-table-column fixed="right" label="操作" width="60">
+          <el-table-column prop="powerRating" label="额定功率" width="80"></el-table-column>
+          <el-table-column prop="electricRating" label="额定电流" width="80"></el-table-column>
+          <el-table-column prop="voltageRating" label="额定电压" width="80"></el-table-column>
+          <el-table-column fixed="right" label="操作" width="100">
             <template slot-scope="scope">
+              <el-button
+                @click.native.prevent="editModel(scope.$index)"
+                type="text"
+                size="small">
+                编辑
+              </el-button>
               <el-button
                 class="danger-text-btn"
                 @click.native.prevent="deleteModel(scope.$index)"
@@ -225,7 +231,7 @@
       :visible.sync="deviceAddDialog"  center>
       <el-form ref="form" label-width="100px">
         <el-form-item label="设备数量">
-          <el-input  v-model="EleboxModelCount" style="width:70px"></el-input>
+          <el-input  v-model="EleboxModelCount" style="width:70px" :disabled="disabled"></el-input>
         </el-form-item>
       </el-form>
       <div class="add-device clearfix">
@@ -290,8 +296,14 @@
             <el-table-column prop="electricity" label="电流" width="100"></el-table-column>
             <el-table-column prop="lightCount" label="灯具数量" width="100"></el-table-column>
             <el-table-column prop="state" label="状态" width="100"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="60">
+            <el-table-column fixed="right" label="操作" width="120">
                 <template slot-scope="scope">
+                  <el-button
+                    @click.native.prevent="editModelLoop(scope.$index)"
+                    type="text"
+                    size="small">
+                    编辑
+                  </el-button>
                   <el-button
                     class="danger-text-btn"
                     @click.native.prevent="deleteModelLoop(scope.$index)"
@@ -739,7 +751,7 @@
   </div>
 </template>
 <script>
-import { listGIS, listElebox, deleteElebox, addEleBox, listLighting, deleteLighting, addOrUpdateLighting } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, listLighting, getLighting, deleteLighting, addOrUpdateLighting } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -791,6 +803,7 @@ export default {
       manageLanmpDialog: false,
       insertLanmpDialog: false,
       userable: '1', // 是否启用
+      editIndex: null, // 专门用来存放编辑时的Index，每次编辑完之后必须清空
       gisAllList: [], // gis所有列表
       listLightModel: [], // 所有灯具类型列表
       eleboxList: [],
@@ -803,6 +816,7 @@ export default {
       // 设备
       deviceList: [], // 设备列表
       EleboxModelCount: null, // 设备个数
+      disabled: false, // 编辑时无法设置个数
       newEleboxModel: {},
       addNewEleboxModel: {
         modelName: [
@@ -1084,14 +1098,39 @@ export default {
     onNewEleboxModelSubmit () {
       this.newEleboxModel.modelLoopList = this.modelLoopList
       let _obj = Object.assign({}, this.newEleboxModel)
-      if (this.EleboxModelCount > 1) {
-        for (let i = 0; i < this.EleboxModelCount; i++) {
+      if (this.editIndex !== null) {
+        this.deviceList.splice(this.editIndex, 1, _obj)
+        this.$message({
+          type: 'success',
+          message: '修改成功'
+        })
+        this.disabled = false
+        this.editIndex = null
+      } else {
+        if (this.EleboxModelCount > 1) {
+          for (let i = 0; i < this.EleboxModelCount; i++) {
+            this.deviceList.push(_obj)
+          }
+        } else {
           this.deviceList.push(_obj)
         }
-      } else {
-        this.deviceList.push(_obj)
+        this.$message({
+          type: 'success',
+          message: '添加成功'
+        })
       }
-      console.log(this.deviceList)
+      this.deviceAddDialog = false
+      this.$refs['addNewEleboxModelForm'].resetFields()
+      this.newEleboxModel = {}
+      this.modelLoopList = []
+      this.EleboxModelCount = null
+    },
+    editModel (e) {
+      this.editIndex = e
+      this.newEleboxModel = this.deviceList[e]
+      this.modelLoopList = this.newEleboxModel.modelLoopList || []
+      this.deviceAddDialog = true
+      this.disabled = true
     },
     // 删除设备模块
     deleteModel (e) {
@@ -1115,26 +1154,30 @@ export default {
     // 新建回路
     onNewModelLoopSubmit () {
       let _obj = Object.assign({}, this.newModelLoop)
-      this.modelLoopList.push(_obj)
-      this.newEleboxModel.loopCount = this.modelLoopList.length
-      console.log(this.modelLoopList)
-      this.$message({
-        type: 'success',
-        message: '添加成功'
-      })
+      if (this.editIndex !== null) {
+        // 如果存在editIndex则是编辑状态
+        this.modelLoopList.splice(this.editIndex, 1, _obj)
+        this.$message({
+          type: 'success',
+          message: '修改成功'
+        })
+        this.editIndex = null
+      } else {
+        this.modelLoopList.push(_obj)
+        this.newEleboxModel.loopCount = this.modelLoopList.length
+        this.$message({
+          type: 'success',
+          message: '添加成功'
+        })
+      }
       this.addLoopDialog = false
       this.$refs['addNewModelLoopForm'].resetFields()
       this.newModelLoop = {}
-      // addOrUpdateModelLoop(this.newModelLoop).then(response => {
-      //   this.$message({
-      //     type: 'success',
-      //     message: '添加成功'
-      //   })
-      //   this.addLoopDialog = false
-      //   this.handleCloseAddNewModelLoop()
-      // }).catch(error => {
-      //   console.log(error)
-      // })
+    },
+    editModelLoop (e) {
+      this.editIndex = e
+      this.newModelLoop = Object.assign({}, this.modelLoopList[e])
+      this.addLoopDialog = true
     },
     deleteModelLoop (e) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -1170,6 +1213,13 @@ export default {
         }
       }).catch(error => {
         console.log(error)
+      })
+    },
+    editLightRow (e) {
+      this.editIndex = e
+      getLighting(this.lightingList[e].id).then(res => {
+        this.newLight = res.data[0]
+        this.addLampDialog = true
       })
     },
     // 删除灯具
@@ -1217,14 +1267,22 @@ export default {
       this.newLight.useDate = new Date(this.newLight.useDate).toString()
       this.newLight.manufacture = new Date(this.newLight.manufacture).toString()
       addOrUpdateLighting(this.newLight).then(response => {
-        this.$message({
-          type: 'success',
-          message: '添加成功'
-        })
+        if (this.editIndex) {
+          this.$message({
+            type: 'success',
+            message: '编辑成功'
+          })
+        } else {
+          this.$message({
+            type: 'success',
+            message: '添加成功'
+          })
+        }
         this.getListLighting()
         this.addLampDialog = false
         this.$refs['addNewLightForm'].resetFields()
         this.newLight = {}
+        this.editIndex = null
       }).catch(error => {
         console.log(error)
       })
