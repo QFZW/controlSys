@@ -180,8 +180,8 @@
     <!-- 新增控制柜 -->
     <el-dialog title="新增控制柜" width="590px"
       :visible.sync="cabinetDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
-      :before-close="handleCloseDialog">
-      <el-form ref="form" label-width="100px">
+      :before-close="handleCloseAddNewElbox">
+      <el-form ref="elboxCountForm" label-width="100px">
         <el-form-item label="控制柜数量">
           <el-input v-model="ElboxCount" style="width:70px"></el-input>
         </el-form-item>
@@ -189,33 +189,43 @@
       <div class="cabinet-list">
         <div class="operate-block clearfix">
           <a class="f-l" @click="addDevice()"><i class="iconfont ">&#xe648;</i>添加设备</a>
-          <a class="f-l"><i class="iconfont">&#xe632;</i>删除</a>
+          <!-- <a class="f-l"><i class="iconfont">&#xe632;</i>删除</a> -->
         </div>
         <el-table
           ref="multipleTable"
-          :data="cabinetList"
+          :data="deviceList"
           tooltip-effect="dark"
           style="width: 100%"
-          header-row-class-name="datalist-header"
-          @selection-change="handleSelectionChangeBox">
-          <el-table-column fixed type="selection" width="40"></el-table-column>
-          <el-table-column fixed prop="codeNumber" label="行号" width=""></el-table-column>
-          <el-table-column prop="projectName" label="名称" width="140"></el-table-column>
-          <el-table-column prop="countryName" label="类型" width="140"></el-table-column>
-          <el-table-column prop="provinceName" label="型号" width="140"></el-table-column>
+          header-row-class-name="datalist-header">
+          <el-table-column fixed prop="uid" label="唯一编码" width="100"></el-table-column>
+          <el-table-column prop="modelName" label="名称" width="140"></el-table-column>
+          <el-table-column prop="powerRating" label="额定功率" width="140"></el-table-column>
+          <el-table-column prop="electricRating" label="额定电流" width="140"></el-table-column>
+          <el-table-column prop="voltageRating" label="额定电压" width="140"></el-table-column>
+          <el-table-column fixed="right" label="操作" width="60">
+            <template slot-scope="scope">
+              <el-button
+                class="danger-text-btn"
+                @click.native.prevent="deleteModel(scope.$index)"
+                type="text"
+                size="small">
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cabinetDialog = false">取 消</el-button>
-        <el-button type="primary">确 定</el-button>
+        <el-button type="primary" @click="onNewElboxSubmit()">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 添加设备 -->
     <el-dialog title="添加设备" width="1200px"
       :visible.sync="deviceAddDialog"  center>
       <el-form ref="form" label-width="100px">
-        <el-form-item label="控制柜数量">
-          <el-input  v-model="ElboxCount" style="width:70px"></el-input>
+        <el-form-item label="设备数量">
+          <el-input  v-model="EleboxModelCount" style="width:70px"></el-input>
         </el-form-item>
       </el-form>
       <div class="add-device clearfix">
@@ -225,7 +235,7 @@
               <el-input v-model="newEleboxModel.modelName"></el-input>
             </el-form-item>
             <el-form-item label="类型" required>
-              <el-input  value="模块" disabled="true"></el-input>
+              <el-input  value="模块" disabled></el-input>
               <!-- <el-select style="width: 100%">
                 <el-option
                   v-for="(item , index) in cityList"
@@ -335,11 +345,11 @@
         </el-form-item>
         <el-form-item label="生产日期" required prop="manufacture">
           <el-date-picker
-          v-model="newLight.manufacture "
-          type="date"
-          class="input-wrap"
-          placeholder="选择日期">
-        </el-date-picker>
+            v-model="newLight.manufacture "
+            type="date"
+            class="input-wrap"
+            placeholder="选择日期">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="安装日期" required prop="useDate">
           <el-date-picker
@@ -791,6 +801,8 @@ export default {
       allEleboxTotal: 0,
       ElboxCount: null, // 添加控制柜的控制柜个数
       // 设备
+      deviceList: [], // 设备列表
+      EleboxModelCount: null, // 设备个数
       newEleboxModel: {},
       addNewEleboxModel: {
         modelName: [
@@ -1049,7 +1061,14 @@ export default {
     },
     // 新建控制柜
     onNewElboxSubmit () {
-      addEleBox(this.newElbox).then(response => {
+      if (this.deviceList.length < 1) {
+        this.$message({
+          type: 'error',
+          message: '请添加设备'
+        })
+        return false
+      }
+      addEleBox(this.deviceList, this.ElboxCount).then(response => {
         this.$message({
           type: 'success',
           message: '添加成功'
@@ -1061,16 +1080,37 @@ export default {
         console.log(error)
       })
     },
-    handleCloseAddNewElbox (done) {
-      // 弹窗关闭时将数据清空
-      this.$refs['addNewLightForm'].resetFields()
-      this.newLight = {}
-      done()
-    },
-    //新建设备
+    // 新建设备
     onNewEleboxModelSubmit () {
       this.newEleboxModel.modelLoopList = this.modelLoopList
-      console.log(this.newEleboxModel)
+      let _obj = Object.assign({}, this.newEleboxModel)
+      if (this.EleboxModelCount > 1) {
+        for (let i = 0; i < this.EleboxModelCount; i++) {
+          this.deviceList.push(_obj)
+        }
+      } else {
+        this.deviceList.push(_obj)
+      }
+      console.log(this.deviceList)
+    },
+    // 删除设备模块
+    deleteModel (e) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deviceList.splice(e, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     // 新建回路
     onNewModelLoopSubmit () {
@@ -1083,7 +1123,8 @@ export default {
         message: '添加成功'
       })
       this.addLoopDialog = false
-      this.handleCloseAddNewModelLoop()
+      this.$refs['addNewModelLoopForm'].resetFields()
+      this.newModelLoop = {}
       // addOrUpdateModelLoop(this.newModelLoop).then(response => {
       //   this.$message({
       //     type: 'success',
@@ -1173,6 +1214,8 @@ export default {
     },
     // 新建、修改灯具
     onNewLightSubmit () {
+      this.newLight.useDate = new Date(this.newLight.useDate).toString()
+      this.newLight.manufacture = new Date(this.newLight.manufacture).toString()
       addOrUpdateLighting(this.newLight).then(response => {
         this.$message({
           type: 'success',
@@ -1180,7 +1223,8 @@ export default {
         })
         this.getListLighting()
         this.addLampDialog = false
-        this.handleCloseAddNewLight()
+        this.$refs['addNewLightForm'].resetFields()
+        this.newLight = {}
       }).catch(error => {
         console.log(error)
       })
@@ -1199,6 +1243,12 @@ export default {
           console.log('error submit!!')
         }
       })
+    },
+    handleCloseAddNewElbox (done) {
+      // 弹窗关闭时将数据清空
+      this.$refs['elboxCountForm'].resetFields()
+      this.deviceList = []
+      done()
     },
     handleCloseAddNewModelLoop (done) {
       // 弹窗关闭时将数据清空

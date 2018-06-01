@@ -383,7 +383,15 @@ export default {
           })
           this.getListProvince()
           this.addNewObjShow = false
-          this.handleCloseDialog()
+          this.addObj = {
+            name: null,
+            code: null,
+            mem: null,
+            longitude: null,
+            latitude: null,
+            timeZone: null
+          }
+          this.$refs['rulesform'].resetFields()
         }).catch(error => {
           console.log(error)
         })
@@ -402,7 +410,15 @@ export default {
           })
           this.getListCity()
           this.addNewObjShow = false
-          this.handleCloseDialog()
+          this.addObj = {
+            name: null,
+            code: null,
+            mem: null,
+            longitude: null,
+            latitude: null,
+            timeZone: null
+          }
+          this.$refs['rulesform'].resetFields()
         }).catch(error => {
           console.log(error)
         })
