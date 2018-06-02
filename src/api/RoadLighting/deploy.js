@@ -246,3 +246,14 @@ export function addOrUpdateLighting (obj) {
     data: obj
   })
 }
+// 批量编辑灯具所属控制柜
+export function updateLightBeElebox (lightIdList, beEleboxId) {
+  return request({
+    url: '/api/roadlighting/updateLightBeElebox',
+    method: 'post',
+    data: {
+      lightIdList,
+      beEleboxId
+    }
+  })
+}

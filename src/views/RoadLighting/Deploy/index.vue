@@ -17,13 +17,13 @@
           <div class="operation-bar">
             <el-button icon='el-icon-plus' @click="addCabinet()" type="primary">增加</el-button>
             <el-button icon='el-icon-upload2'>导入</el-button>
-            <el-dropdown trigger="click" placement='bottom-start' @command="handleEdit">
+            <el-dropdown trigger="click" placement='bottom-start' @command="handleElboxEdit">
               <el-button icon='el-icon-edit'>批量编辑</el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="1">设置区域</el-dropdown-item>
                 <el-dropdown-item command="2">设置控制柜型号</el-dropdown-item>
                 <el-dropdown-item command="3">设置地图图标</el-dropdown-item>
-                <el-dropdown-item command="4">设置启用/停用</el-dropdown-item>
+                <!-- <el-dropdown-item command="4">设置启用/停用</el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
             <el-button icon='el-icon-delete' @click="deleteEleboxRow(2)">批量删除</el-button>
@@ -88,9 +88,9 @@
               @current-change="handleCurrentChangeBox"
               :current-page="boxCurrentPage"
               :page-sizes="[10, 20, 50, 100]"
-              :page-size="lightPageSize"
+              :page-size="boxPageSize"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="allLightTotal">
+              :total="allEleboxTotal">
             </el-pagination>
           </div>
         </div>
@@ -110,7 +110,7 @@
         <div class="system-center">
           <div class="operation-bar">
             <el-button icon='el-icon-plus' @click="addLamp()" type="primary">增加</el-button>
-            <el-dropdown trigger="click" placement='bottom-start' @command="handleEdit">
+            <el-dropdown trigger="click" placement='bottom-start' @command="handleLightEdit">
               <el-button icon='el-icon-edit'>批量编辑</el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="1">设置区域</el-dropdown-item>
@@ -725,6 +725,28 @@
         <el-button type="primary" @click="showMapDialog = false">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 设置所属控制柜 -->
+    <el-dialog
+      title="设置所属控制柜"
+      :visible.sync="setLightBoxDialog"
+      width="560px"
+      center>
+      <div class="model-select-dialog">
+        <span>所属控制柜</span>
+        <el-select placeholder="请选择" class="select-wrap" v-model="selectEleboxId">
+          <el-option
+            v-for="item in allEleboxList"
+            :key="item.id"
+            :label="item.codeNumber"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setLightBoxDialog = false">取 消</el-button>
+        <el-button type="primary" @click="setLightBox()">确 定</el-button>
+      </span>
+    </el-dialog>
     <!-- 设置启用/停用 -->
     <el-dialog
       title="设置启停"
@@ -743,7 +765,7 @@
   </div>
 </template>
 <script>
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listLighting, getLighting, deleteLighting, addOrUpdateLighting } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listLighting, getLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -788,6 +810,7 @@ export default {
       addLoopDialog: false,
       showAeraDialog: false,
       showModelDialog: false,
+      setLightBoxDialog: false,
       showMapDialog: false,
       showUserableDialog: false,
       addLampDialog: false,
@@ -799,6 +822,7 @@ export default {
       gisAllList: [], // gis所有列表
       listLightModel: [], // 所有灯具类型列表
       eleboxList: [],
+      allEleboxList: [], // 所有控制柜列表
       newElebox: [],
       boxPageNumber: 1,
       boxPageSize: 10,
@@ -945,7 +969,8 @@ export default {
         state: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ]
-      }
+      },
+      selectEleboxId: ''
     }
   },
   methods: {
@@ -994,8 +1019,40 @@ export default {
       this.newUser = {}
       done()
     },
+    // 控制柜批量管理
+    handleElboxEdit (command) {
+      let _array = []
+      if (this.boxMultipleSelection.length > 0) {
+        this.boxMultipleSelection.forEach(selectedItem => {
+          // 取出所有待删除选项id
+          _array.push(selectedItem.id)
+        })
+      } else {
+        this.$message({
+          message: '请勾选需要处理的数据',
+          type: 'warning'
+        })
+        return false
+      }
+      switch (command) {
+        case '1':
+          this.showAeraDialog = true
+          break
+        case '2':
+          this.showModelDialog = true
+          break
+        case '3':
+          this.showMapDialog = true
+          break
+        case '4':
+          this.showUserableDialog = true
+          break
+        default:
+          break
+      }
+    },
     // 灯具批量编辑
-    handleEdit (command) {
+    handleLightEdit (command) {
       let _array = []
       if (this.lightMultipleSelection.length > 0) {
         this.lightMultipleSelection.forEach(selectedItem => {
@@ -1014,7 +1071,7 @@ export default {
           this.showAeraDialog = true
           break
         case '2':
-          this.showModelDialog = true
+          this.setLightBoxDialog = true
           break
         case '3':
           this.showMapDialog = true
@@ -1082,6 +1139,16 @@ export default {
         console.log(error)
       })
     },
+    // 获取控制柜相关信息
+    getAllListElebox () {
+      let that = this
+      listElebox().then(response => {
+        that.allEleboxList = response.data
+        console.log(this.allEleboxList)
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     // 删除控制柜
     deleteEleboxRow (type, e) {
       let _array = []
@@ -1112,6 +1179,7 @@ export default {
             message: '删除成功!'
           })
           this.getListElebox()
+          this.getAllListElebox()
         }).catch(error => {
           console.log(error)
         })
@@ -1137,8 +1205,10 @@ export default {
           message: '添加成功'
         })
         this.getListElebox()
-        this.addLampDialog = false
-        this.handleCloseAddNewElbox()
+        this.cabinetDialog = false
+        this.$refs['elboxCountForm'].resetFields()
+        this.deviceList = []
+        this.ElboxCount = null
       }).catch(error => {
         console.log(error)
       })
@@ -1153,6 +1223,7 @@ export default {
           message: '编辑成功'
         })
         this.getListElebox()
+        this.getAllListElebox()
         this.editCabinetDialog = false
         this.$refs['editCabinetForm'].resetFields()
         this.newElebox = {}
@@ -1354,6 +1425,33 @@ export default {
         console.log(error)
       })
     },
+    // 设置灯具所属控制柜
+    setLightBox () {
+      let _array = []
+      if (this.lightMultipleSelection.length > 0) {
+        this.lightMultipleSelection.forEach(selectedItem => {
+          // 取出所有待删除选项id
+          _array.push(selectedItem.id)
+        })
+      } else {
+        this.$message({
+          message: '请勾选需要删除的数据',
+          type: 'warning'
+        })
+        return false
+      }
+      updateLightBeElebox(_array, this.selectEleboxId).then(response => {
+        this.selectEleboxId = ''
+        this.$message({
+          message: '所属控制柜更改成功',
+          type: 'success'
+        })
+        this.lightMultipleSelection = []
+        this.setLightBoxDialog = false
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     goRules (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -1375,6 +1473,7 @@ export default {
       // 弹窗关闭时将数据清空
       this.$refs['elboxCountForm'].resetFields()
       this.deviceList = []
+      this.ElboxCount = null
       done()
     },
     handleCloseAddNewModelLoop (done) {
@@ -1394,6 +1493,7 @@ export default {
     this.getListGIS()
     this.getListLightModel()
     this.getListElebox()
+    this.getAllListElebox()
     this.getListLighting()
   }
 }
