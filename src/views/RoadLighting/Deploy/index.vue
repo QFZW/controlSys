@@ -65,7 +65,7 @@
                     回路拆分
                   </el-button>
                   <el-button
-                    @click.native.prevent="editCabinet()"
+                    @click.native.prevent="editCabinet(scope.$index)"
                     type="text"
                     size="small">
                     编辑
@@ -114,7 +114,7 @@
               <el-button icon='el-icon-edit'>批量编辑</el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="1">设置区域</el-dropdown-item>
-                <el-dropdown-item command="2">设置控制柜型号</el-dropdown-item>
+                <el-dropdown-item command="2">设置所属控制柜</el-dropdown-item>
                 <el-dropdown-item command="3">设置地图图标</el-dropdown-item>
                 <el-dropdown-item command="4">设置启用/停用</el-dropdown-item>
               </el-dropdown-menu>
@@ -140,7 +140,7 @@
               <el-table-column prop="lamppost" label="灯杆" width="100"></el-table-column>
               <el-table-column prop="decay" label="光衰" width="100"></el-table-column>
               <el-table-column prop="maxUseTime" label="最大使用时间（年）" width="160"></el-table-column>
-              <el-table-column prop="mem" label="备注" width="160"></el-table-column>
+              <el-table-column prop="mem" label="备注"></el-table-column>
               <!-- <el-table-column prop="provinceName" label="灯具GIS信息" width="140"></el-table-column>
               <el-table-column prop="countryName" label="资产编号" width="100"></el-table-column> -->
               <el-table-column fixed="right" label="操作" width="120">
@@ -272,7 +272,7 @@
             <el-form-item label="回路数量" required prop="loopCount">
               <el-input v-model="newEleboxModel.loopCount"></el-input>
             </el-form-item>
-            <el-form-item label="所属相序" required prop="ac">
+            <el-form-item label="所属相序">
               <el-input v-model="newEleboxModel.ac"></el-input>
             </el-form-item>
             <el-form-item label="回路继电器额定电流" required prop="loopElectricity">
@@ -486,7 +486,7 @@
       </div>
     </el-dialog>
     <!-- 新增灯具 -->
-     <el-dialog title="新增灯具" width="1200px"
+    <el-dialog title="新增灯具" width="1200px"
       :visible.sync="insertLanmpDialog" center>
       <div class="insert-lamp clearfix">
         <div class="select-wrap">
@@ -585,82 +585,74 @@
     <el-dialog title="编辑控制柜" width="617px"
       :visible.sync="editCabinetDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
       :before-close="handleCloseDialog">
-      <el-form ref="form" class="lamp-form" label-width="140px" size='small'>
-        <el-form-item label="控制柜uid" required>
-          <el-input class="input-wrap"></el-input>
+      <el-form ref="editCabinetForm" class="lamp-form" :model="newElebox" :rules="editNewEleboxRules" label-width="140px" size='small'>
+        <el-form-item label="控制柜uid" required prop="uid">
+          <el-input class="input-wrap" v-model="newElebox.uid"></el-input>
         </el-form-item>
-        <el-form-item label="控制柜唯一编码" required>
-          <el-input class="input-wrap"></el-input>
+        <el-form-item label="控制柜唯一编码" required prop="codeNumber">
+          <el-input class="input-wrap" v-model="newElebox.codeNumber"></el-input>
         </el-form-item>
-        <el-form-item label="配电柜生产日期" required>
-          <el-input class="input-wrap"></el-input>
+        <el-form-item label="配电柜生产日期" required prop="manufacture">
+          <el-date-picker
+            v-model="newElebox.manufacture"
+            type="date"
+            class="input-wrap"
+            placeholder="选择日期">
+          </el-date-picker>
         </el-form-item>
-        <el-form-item label="纬度" required>
-          <el-input class="input-wrap"></el-input>
+        <el-form-item label="纬度" required prop="longitude">
+          <el-input class="input-wrap" v-model="newElebox.longitude"></el-input>
         </el-form-item>
-        <el-form-item label="经度" required>
-          <el-input class="input-wrap"></el-input>
+        <el-form-item label="经度" required prop="latitude">
+          <el-input class="input-wrap" v-model="newElebox.latitude"></el-input>
         </el-form-item>
-        <el-form-item label="配电柜使用日期" required>
-          <el-input class="input-wrap"></el-input>
+        <el-form-item label="配电柜使用日期" required prop="useDate">
+          <el-date-picker
+            v-model="newElebox.useDate"
+            type="date"
+            class="input-wrap"
+            placeholder="选择日期">
+          </el-date-picker>
         </el-form-item>
-        <el-form-item label="额定电压" required>
-          <el-input class="input-wrap"></el-input>
+        <el-form-item label="额定电压" required prop="ratedVoltage">
+          <el-input class="input-wrap" v-model="newElebox.ratedVoltage"></el-input>
         </el-form-item>
-        <el-form-item label="额定电流" required>
-          <el-input class="input-wrap"></el-input>
+        <el-form-item label="额定电流" required prop="ratedElectricty">
+          <el-input class="input-wrap" v-model="newElebox.ratedElectricty"></el-input>
         </el-form-item>
-        <el-form-item label="额定功率" required>
-          <el-input class="input-wrap"></el-input>
+        <el-form-item label="额定功率" required prop="powerRating">
+          <el-input class="input-wrap" v-model="newElebox.powerRating"></el-input>
         </el-form-item>
-        <el-form-item label="最大使用时间" required>
-          <el-input style="width:120px"></el-input>
+        <el-form-item label="最大使用时间" required prop="maxUseTime">
+          <el-input style="width:120px" v-model="newElebox.maxUseTime"></el-input>
           <span>年</span>
         </el-form-item>
-        <el-form-item label="spd描述" required>
-          <el-input class="input-wrap"></el-input>
+        <el-form-item label="spd描述" required prop="spd">
+          <el-input class="input-wrap" v-model="newElebox.spd"></el-input>
         </el-form-item>
-        <el-form-item label="主进线开关型号" required>
-          <el-select class="input-wrap">
-            <!-- <el-option
-              v-for="(item , index) in cityList"
-              :key="index"
-              :label="item.cityName"
-              :value="item.id">
-            </el-option> -->
-          </el-select>
+        <el-form-item label="主进线开关型号" required prop="mainSwitch">
+          <el-input class="input-wrap" v-model="newElebox.mainSwitch"></el-input>
         </el-form-item>
-        <el-form-item label="控制柜GIS" required>
-          <el-select class="input-wrap">
-            <!-- <el-option
-              v-for="(item , index) in cityList"
-              :key="index"
-              :label="item.cityName"
+        <el-form-item label="控制柜GIS" required prop="nnlightctlEleboxGisId">
+          <el-select class="input-wrap" v-model="newElebox.nnlightctlEleboxGisId">
+            <el-option
+              v-for="item in gisAllList"
+              :key="item.id"
+              :label="item.mem"
               :value="item.id">
-            </el-option> -->
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="控制柜区域" required>
-          <el-input class="input-wrap"></el-input>
+          <!-- <el-input class="input-wrap" v-model="newElebox.uid"></el-input> -->
         </el-form-item>
-        <el-form-item label="备注">
-          <el-input
-            class="input-wrap"
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            placeholder="请输入内容"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item label="">
-          <el-radio-group>
-            <el-radio label="启用"></el-radio>
-          </el-radio-group>
+        <el-form-item label="控制柜所属项目" required>
+          <!-- <el-input class="input-wrap" v-model="newElebox.nnlightctlProjectId"></el-input> -->
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editCabinetDialog = false">取 消</el-button>
-        <el-button @click="editCabinetDialog = false" type="primary">确 定</el-button>
+        <el-button @click="goRules('editCabinetForm')" type="primary">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 设置区域 -->
@@ -751,7 +743,7 @@
   </div>
 </template>
 <script>
-import { listGIS, listElebox, deleteElebox, addEleBox, listLighting, getLighting, deleteLighting, addOrUpdateLighting } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listLighting, getLighting, deleteLighting, addOrUpdateLighting } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -807,6 +799,7 @@ export default {
       gisAllList: [], // gis所有列表
       listLightModel: [], // 所有灯具类型列表
       eleboxList: [],
+      newElebox: [],
       boxPageNumber: 1,
       boxPageSize: 10,
       boxMultipleSelection: [],
@@ -853,23 +846,6 @@ export default {
       // 回路
       modelLoopList: [],
       newModelLoop: {},
-      addNewModelLoopRules: {
-        loopCode: [
-          { required: true, message: '填写内容不得为空', trigger: 'blur' }
-        ],
-        voltage: [
-          { required: true, message: '选择内容不得为空', trigger: 'blur' }
-        ],
-        electricity: [
-          { required: true, message: '填写内容不得为空', trigger: 'blur' }
-        ],
-        lightCount: [
-          { required: true, message: '填写内容不得为空', trigger: 'blur' }
-        ],
-        state: [
-          { required: true, message: '填写内容不得为空', trigger: 'blur' }
-        ]
-      },
       eleboxId: null, // 灯具搜索使用
       notBe: 1, // 灯具搜索使用
       lightingList: [],
@@ -880,15 +856,56 @@ export default {
       allLightTotal: 0,
       newLight: {
       },
+      editNewEleboxRules: {
+        uid: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        codeNumber: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        manufacture: [
+          { required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        longitude: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        latitude: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        useDate: [
+          { required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        ratedVoltage: [
+          { required: true, message: '选择内容不得为空', trigger: 'change' }
+        ],
+        ratedElectricty: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        powerRating: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        maxUseTime: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        spd: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        mainSwitch: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        nnlightctlLightingGisId: [
+          { required: true, message: '选择内容不得为空', trigger: 'blur' }
+        ]
+      },
       addNewLightRules: {
         uid: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ],
         manufacture: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          { required: true, message: '请选择日期', trigger: 'change' }
         ],
         useDate: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          { required: true, message: '请选择日期', trigger: 'change' }
         ],
         lamppost: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
@@ -905,10 +922,27 @@ export default {
         propertySerialNumber: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ],
-        decay: [
+        // decay: [
+        //   { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        // ],
+        maxUseTime: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ]
+      },
+      addNewModelLoopRules: {
+        loopCode: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ],
-        maxUseTime: [
+        voltage: [
+          { required: true, message: '选择内容不得为空', trigger: 'blur' }
+        ],
+        electricity: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        lightCount: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        state: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ]
       }
@@ -960,7 +994,21 @@ export default {
       this.newUser = {}
       done()
     },
+    // 灯具批量编辑
     handleEdit (command) {
+      let _array = []
+      if (this.lightMultipleSelection.length > 0) {
+        this.lightMultipleSelection.forEach(selectedItem => {
+          // 取出所有待删除选项id
+          _array.push(selectedItem.id)
+        })
+      } else {
+        this.$message({
+          message: '请勾选需要处理的数据',
+          type: 'warning'
+        })
+        return false
+      }
       switch (command) {
         case '1':
           this.showAeraDialog = true
@@ -990,7 +1038,8 @@ export default {
       // 添加灯具
       this.addLampDialog = true
     },
-    editCabinet () {
+    editCabinet (e) {
+      this.newElebox = Object.assign({}, this.eleboxList[e])
       this.editCabinetDialog = true
     },
     // 批量添加灯具
@@ -1090,6 +1139,23 @@ export default {
         this.getListElebox()
         this.addLampDialog = false
         this.handleCloseAddNewElbox()
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 编辑控制柜
+    onEditNewEleboxSubmit () {
+      this.newElebox.useDate = new Date(this.newElebox.useDate).toString()
+      this.newElebox.manufacture = new Date(this.newElebox.manufacture).toString()
+      updateEleBox(this.newElebox).then(response => {
+        this.$message({
+          type: 'success',
+          message: '编辑成功'
+        })
+        this.getListElebox()
+        this.editCabinetDialog = false
+        this.$refs['editCabinetForm'].resetFields()
+        this.newElebox = {}
       }).catch(error => {
         console.log(error)
       })
@@ -1264,6 +1330,7 @@ export default {
     },
     // 新建、修改灯具
     onNewLightSubmit () {
+      console.log(this.newLight.useDate)
       this.newLight.useDate = new Date(this.newLight.useDate).toString()
       this.newLight.manufacture = new Date(this.newLight.manufacture).toString()
       addOrUpdateLighting(this.newLight).then(response => {
@@ -1296,6 +1363,8 @@ export default {
             this.onNewModelLoopSubmit()
           } else if (formName === 'addNewEleboxModelForm') {
             this.onNewEleboxModelSubmit()
+          } else if (formName === 'editCabinetForm') {
+            this.onEditNewEleboxSubmit()
           }
         } else {
           console.log('error submit!!')

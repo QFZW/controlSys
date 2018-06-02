@@ -24,11 +24,12 @@ export function listGIS (pageNumber, pageSize) {
  * @returns
  */
 export function addEleBox (deviceList, count) {
+  let _deviceList = JSON.stringify(deviceList)
   return request({
     url: '/api/roadlighting/addelebox',
     method: 'post',
     data: {
-      deviceList,
+      _deviceList,
       count
     }
   })
@@ -43,9 +44,7 @@ export function updateEleBox (obj) {
   return request({
     url: '/api/roadlighting/updateelebox',
     method: 'post',
-    data: {
-      obj
-    }
+    data: obj
   })
 }
 /**
