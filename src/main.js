@@ -2,7 +2,7 @@
  * @Author: Vincent
  * @Date: 2018-05-06 14:46:35
  * @Last Modified by: Vincent
- * @Last Modified time: 2018-05-10 13:17:48
+ * @Last Modified time: 2018-05-31 23:53:28
  */
 
 // The Vue build version to load with the `import` command
@@ -14,6 +14,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import service from './utils/request'
+
 // style
 import 'normalize.css/normalize.css'// A modern alternative to CSS resets
 import ElementUI from 'element-ui'

@@ -22,19 +22,19 @@ export const constantRouterMap = [
     path: '/gisservice',
     component: Layout,
     name: 'Gisservice',
-    redirect: '/gisservice/index',
+    redirect: '/gisservice/project',
     meta: { title: 'GIS地理信息系统', icon: '&#xe6c1;' },
     children: [{
-      path: 'index',
-      component: () => import('@/views/GisService/index'),
-      name: 'index',
-      meta: { title: '子菜单1', icon: '' }
+      path: 'project',
+      component: () => import('@/views/GisService/Project/index'),
+      name: 'Project',
+      meta: { title: '项目地理信息', icon: '' }
     },
     {
-      path: 'test',
-      component: () => import('@/views/ProjectAdmin/Project/index'),
-      name: 'test',
-      meta: { title: '子菜单1', icon: '' }
+      path: 'lamp',
+      component: () => import('@/views/GisService/Lamp/index'),
+      name: 'Lamp',
+      meta: { title: '灯具地理信息', icon: '' }
     }]
   },
   // 道路照明系统

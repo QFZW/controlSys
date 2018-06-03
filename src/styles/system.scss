@@ -1,38 +1,63 @@
-.system-container{
+.system-container {
   min-width: 950px;
   background: #fff;
-  .system-top{
-    padding:25px 40px 15px 40px;
+  .system-top {
+    padding: 25px 40px 15px 40px;
     border-bottom: 1px solid #ebeef5;
-    .item-block{
+    .item-block {
       width: 27%;
       position: relative;
-      padding:0 30px 0 37px;
-      .title{
+      padding: 0 30px 0 37px;
+      .title {
         position: absolute;
         left: 0;
-        top:0;
-        margin-top:9px;
+        top: 0;
+        margin-top: 9px;
       }
     }
   }
-  .system-center{
-    padding:20px 40px;
-    .operation-bar{
+  .system-center {
+    padding: 20px 40px;
+    .operation-bar {
       margin-bottom: 20px;
     }
   }
 }
-.pagelist-block{
+
+.pagelist-block {
   width: 100%;
-  margin-top:20px;
-  .el-pagination{
+  margin-top: 20px;
+  .el-pagination {
     text-align: right;
   }
+  .el-pager .active {
+    background: #5789fa !important;
+  }
+  .el-pager li.active {
+    color: #ffffff
+  }
 }
-.el-pager .active{
-  background: #5789fa !important;
-}
-.width350{
+
+.width350 {
   width: 350px;
+}
+
+.el-dialog {
+  .el-dialog__header {
+    padding-top: 10px;
+    background: #5789fa;
+    text-align: left !important;
+  }
+  .el-dialog__title {
+    font-size: 16px;
+    color: #ffffff;
+  }
+  .el-dialog__headerbtn {
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    .el-dialog__close {
+      color: #ffffff;
+    }
+  }
 }

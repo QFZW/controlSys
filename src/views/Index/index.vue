@@ -14,7 +14,7 @@
     <div class="index-module">
       <div class="clearfix">
         <div class="grid-content gird-1">
-          <div class="gird-wrap">
+          <div class="gird-wrap" @click="linkModule('/gisservice')">
             <div class="trans-middle">
               <p class="p1"><i class="iconfont">&#xe7b9;</i></p>
               <p>GIS地理信息系统</p>
@@ -66,7 +66,7 @@
           </div>
         </div>
         <div class="grid-content gird-7">
-          <div class="gird-wrap"  @click="linkModule('/roadlighting')">
+          <div class="gird-wrap" @click="linkModule('/roadlighting')">
             <div class="trans-middle">
               <p class="p1"><i class="iconfont">&#xe691;</i></p>
               <p>道路照明系统</p>
