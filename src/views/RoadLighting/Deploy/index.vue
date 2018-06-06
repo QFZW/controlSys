@@ -116,7 +116,7 @@
                 <el-dropdown-item command="1">设置区域</el-dropdown-item>
                 <el-dropdown-item command="2">设置所属控制柜</el-dropdown-item>
                 <el-dropdown-item command="3">设置地图图标</el-dropdown-item>
-                <el-dropdown-item command="4">设置启用/停用</el-dropdown-item>
+                <!-- <el-dropdown-item command="4">设置启用/停用</el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
             <el-button icon='el-icon-delete' @click="deleteLightRow(2)">批量删除</el-button>

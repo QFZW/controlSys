@@ -1,19 +1,17 @@
 <template>
   <div class="system-container">
       <div class="system-top clearfix">
-        <div class="item-block f-l">
-          <span class="title">目录</span><el-input  placeholder="请输入内容"></el-input>
-        </div>
-        <div class="item-block f-l">
-          <span class="title">名称</span><el-input  placeholder="请输入内容"></el-input>
-        </div>
-        <div class="btn-block f-r">
+        <el-input placeholder="请输入内容" class="input-with-select">
+        </el-input>
+        <el-button slot="append" type="primary"  icon="el-icon-search"></el-button>
+        <!-- <div class="btn-block f-r">
           <el-button type="primary">查询</el-button>
-        </div>
+        </div> -->
       </div>
       <div class="system-center">
         <div class="operation-bar">
           <el-button @click="addUser()" type="primary">增加</el-button>
+          <el-button @click="editPassword()" >修改密码</el-button>
           <el-button @click="deleteRow(2)">删除</el-button>
         </div>
         <div class="data-list">
@@ -111,26 +109,32 @@
       <el-dialog title="添加用户"
        :visible.sync="userDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
        :before-close="handleCloseDialog">
-        <el-form ref="form" label-width="50px">
-          <el-form-item label="国家" required>
-            <span class="text">{{newUser.countryName}}</span>
+        <el-form ref="form" label-width="80px">
+          <el-form-item label="用户类型" required>
+            <el-input class="width350" v-model="newUser.projectName"></el-input>
           </el-form-item>
-          <el-form-item label="省份" required>
-            <span class="text">{{newUser.provinceName}}</span>
-          </el-form-item>
-          <el-form-item label="城市" required>
-            <span class="text">{{newUser.cityName}}</span>
-          </el-form-item>
-          <el-form-item label="类型" required>
-            <span class="text" v-if="newUser.type == 1">道路照明系统</span>
+          <el-form-item label="账号" required>
+            <el-input class="width350" v-model="newUser.projectName"></el-input>
           </el-form-item>
           <el-form-item label="名称" required>
             <el-input class="width350" v-model="newUser.projectName"></el-input>
           </el-form-item>
-          <el-form-item label="纬度" required>
+          <el-form-item label="密码" required>
+            <el-input class="width350" v-model="newUser.projectName"></el-input>
+          </el-form-item>
+          <el-form-item label="确认密码" required>
+            <el-input class="width350" v-model="newUser.projectName"></el-input>
+          </el-form-item>
+          <el-form-item label="手机" required>
             <el-input class="width350" v-model="newUser.latitude"></el-input>
           </el-form-item>
-          <el-form-item label="经度" required>
+          <el-form-item label="固话" required>
+            <el-input class="width350" v-model="newUser.longitude"></el-input>
+          </el-form-item>
+          <el-form-item label="传真" required>
+            <el-input class="width350" v-model="newUser.longitude"></el-input>
+          </el-form-item>
+          <el-form-item label="邮件" required>
             <el-input class="width350" v-model="newUser.longitude"></el-input>
           </el-form-item>
           <el-form-item label="备注">
@@ -141,12 +145,26 @@
               v-model="newUser.mem">
             </el-input>
           </el-form-item>
-          <el-form-item>
-              <el-checkbox v-model="newUser.state">启用</el-checkbox>
-          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="userDialog = false">取 消</el-button>
+          <el-button type="primary" @click="onSubmit">确 定</el-button>
+        </div>
+      </el-dialog>
+      <!-- 修改 密码 -->
+      <el-dialog title="修改密码"
+       :visible.sync="passwordDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
+       :before-close="handleCloseDialog">
+        <el-form ref="form" label-width="100px">
+          <el-form-item label="新密码" required>
+            <el-input class="width350" v-model="newUser.projectName"></el-input>
+          </el-form-item>
+          <el-form-item label="确认新密码" required>
+            <el-input class="width350" v-model="newUser.projectName"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="passwordDialog = false">取 消</el-button>
           <el-button type="primary" @click="onSubmit">确 定</el-button>
         </div>
       </el-dialog>
@@ -164,7 +182,8 @@ export default {
       currentPage: 1,
       userList: [],
       newUser: {},
-      userDialog: false
+      userDialog: false,
+      passwordDialog: false
     }
   },
   methods: {
@@ -176,6 +195,10 @@ export default {
       // 翻页请求
     },
     addUser () {
+      this.userDialog = true
+    },
+    editPassword () {
+      this.passwordDialog = true
     },
     deleteRow () {
     },
@@ -201,4 +224,7 @@ export default {
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+  .input-with-select{
+    width: 285px;
+  }
 </style>
