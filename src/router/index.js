@@ -90,6 +90,18 @@ export const constantRouterMap = [
         name: 'LightType',
         meta: { title: '灯具型号', icon: '' }
       }]
+    },
+    {
+      path: 'areaadmin',
+      component: () => import('@/views/RoadLighting/AreaAdmin/index'),
+      name: 'AreaAdmin',
+      meta: { title: '区域管理', icon: '' }
+    },
+    {
+      path: 'gisadmin',
+      component: () => import('@/views/RoadLighting/GisAdmin/index'),
+      name: 'GisAdmin',
+      meta: { title: 'Gis管理', icon: '' }
     }]
   },
   // 项目管理
@@ -129,9 +141,15 @@ export const constantRouterMap = [
       path: '/ucenter/user',
       component: () => import('@/views/Ucenter/index'),
       name: 'User',
-      redirect: '/ucenter/user/organization',
+      redirect: '/ucenter/user/index',
       meta: { title: '用户', icon: '' },
       children: [{
+        path: 'index',
+        component: () => import('@/views/Ucenter/User/index'),
+        name: 'userindex',
+        meta: { title: '用户中心', icon: '' }
+      },
+      {
         path: 'organization',
         component: () => import('@/views/Ucenter/User/organization'),
         name: 'Organization',

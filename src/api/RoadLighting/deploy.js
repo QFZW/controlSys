@@ -1,22 +1,5 @@
 import request from '@/utils/request'
 /**
- * 获取gis列表
- * @export
- * @param {any} pageNumber
- * @param {any} pageSize
- * @returns obj
- */
-export function listGIS (pageNumber, pageSize) {
-  return request({
-    url: '/api/roadlighting/listGIS',
-    method: 'get',
-    params: {
-      pageNumber,
-      pageSize
-    }
-  })
-}
-/**
  * 添加控制柜
  * @export
  * @param {any} deviceList
@@ -254,6 +237,94 @@ export function updateLightBeElebox (lightIdList, beEleboxId) {
     data: {
       lightIdList,
       beEleboxId
+    }
+  })
+}
+// 获取区域列表相关接口
+export function listArea (pageNumber, pageSize) {
+  return request({
+    url: '/api/roadlighting/listArea',
+    method: 'get',
+    params: {
+      pageNumber,
+      pageSize
+    }
+  })
+}
+/**
+ * 添加编辑区域
+ * @export
+ * @param {any} obj
+ * @returns obj
+ */
+export function addOrUpdateArea (obj) {
+  return request({
+    url: '/api/roadlighting/addOrUpdateArea',
+    method: 'post',
+    data: obj
+  })
+}
+/**
+ * 删除区域
+ * @export
+ * @param {any} areaIdList
+ * @returns
+ */
+export function deleteArea (areaIdList) {
+  return request({
+    url: '/api/roadlighting/deleteArea',
+    method: 'post',
+    data: {
+      areaIdList
+    }
+  })
+}
+/**
+ * 获取GIS列表相关接口
+ * @export
+ * @param {any} pageNumber
+ * @param {any} pageSize
+ * @param {any} type  0 - 删除灯具GIS； 1 - 删除控制柜GIS
+ * @returns
+ */
+export function listGIS (pageNumber, pageSize, type) {
+  return request({
+    url: '/api/roadlighting/listGIS',
+    method: 'get',
+    params: {
+      pageNumber,
+      pageSize,
+      type
+    }
+  })
+}
+/**
+ * 添加编辑GIS
+ * @export
+ * @param {any} obj
+ * @returns obj
+ */
+export function addOrUpdateGIS (obj) {
+  return request({
+    url: '/api/roadlighting/addOrUpdateGIS',
+    method: 'post',
+    data: obj
+  })
+}
+/**
+ * 删除配电柜或者灯具的GIS信息
+ * @export
+ * @param {any} gisIDList
+ * @param {any} type  0 - 删除灯具GIS； 1 - 删除控制柜GIS
+ * @returns
+ */
+export function deleteGIS (gisIDList, type) {
+  return request({
+    url: '/api/roadlighting/deleteGIS',
+    method: 'post',
+    data: {
+      gisIDList,
+      type
     }
   })
 }

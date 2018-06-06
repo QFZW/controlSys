@@ -13,13 +13,13 @@
     </div>
     <div class="system-center">
       <div class="operation-bar">
-        <el-button @click="addCabinet()" type="primary">增加灯具型号</el-button>
+        <el-button @click="addBlock()" type="primary">增加区域</el-button>
         <el-button @click="deleteRow(2)">删除</el-button>
       </div>
       <div class="data-list">
         <el-table
           ref="lightTypeTable"
-          :data="LightList"
+          :data="List"
           tooltip-effect="dark"
           style="width: 100%"
           header-row-class-name="datalist-header"
@@ -30,38 +30,32 @@
             width="40">
           </el-table-column>
           <el-table-column
-            fixed
-            prop="modelName"
-            label="型号名称"
-            width="100">
+            prop="areaName"
+            label="区域名称"
+            width="200">
           </el-table-column>
           <el-table-column
-            prop="ratedVoltage"
-            label="额定电压"
-            width="100">
+            label="创建时间"
+            width="150">
+            <template slot-scope="scope">
+              {{scope.row.gmtCreated|timeFormat}}
+            </template>
           </el-table-column>
           <el-table-column
-            prop="ratedElectric"
-            label="额定电流"
-            width="100">
+            label="修改时间"
+            width="150">
+            <template slot-scope="scope">
+              {{scope.row.gmtUpdated|timeFormat}}
+            </template>
           </el-table-column>
           <el-table-column
-            prop="ratedPower"
-            label="额定功率"
-            width="120">
-          </el-table-column>
-          <el-table-column
-            prop="ledCount"
-            label="LED数量"
-            width="120">
-          </el-table-column>
-          <el-table-column
-            prop="mem"
-            label="备注">
+            prop="regionDesc"
+            label="区域介绍">
           </el-table-column>
           <el-table-column
             fixed="right"
-            label="操作">
+            label="操作"
+            width="100">
             <template slot-scope="scope">
               <el-button
                 @click.native.prevent="editRow(scope.$index)"
@@ -83,79 +77,59 @@
       <div class="pagelist-block">
         <el-pagination
           background
+          @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
+          :page-sizes="[10, 20, 50, 100]"
           :page-size="pageSize"
           layout="total, prev, pager, next, jumper"
           :total="allTotal">
         </el-pagination>
       </div>
     </div>
-    <!-- 修改 增加灯具-->
-    <el-dialog title="添加灯具类型"
-    :visible.sync="addLightDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
+    <!-- 修改 增加区域-->
+    <el-dialog :title="TITLE+'区域'"
+    :visible.sync="addDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
     :before-close="handleCloseDialog">
-      <el-form ref="addEditLightTypeForm" :model="newLight" :rules="addNewLightRules" label-width="100px">
-        <el-form-item label="型号名称" required prop="modelName">
-          <el-input class="width350" v-model="newLight.modelName"></el-input>
-        </el-form-item>
-        <el-form-item label="额定电压" required prop="ratedVoltage">
-          <el-input class="width350" v-model="newLight.ratedVoltage"></el-input>
-        </el-form-item>
-        <el-form-item label="额定电流" required prop="ratedElectric">
-          <el-input class="width350" v-model="newLight.ratedElectric"></el-input>
-        </el-form-item>
-        <el-form-item label="额定功率" required prop="ratedPower">
-          <el-input class="width350" v-model="newLight.ratedPower"></el-input>
-        </el-form-item>
-        <el-form-item label="LED数量" required prop="ledCount">
-          <el-input class="width350" v-model="newLight.ledCount"></el-input>
+      <el-form ref="addEditForm" :model="newObject" :rules="addNewObjectRules" label-width="100px">
+        <el-form-item label="区域名称" required prop="areaName">
+          <el-input class="width350" v-model="newObject.areaName"></el-input>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 4}"
             placeholder="请输入内容"
-            v-model="newLight.mem">
+            v-model="newObject.regionDesc">
           </el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="addLightDialog = false">取 消</el-button>
+        <el-button @click="addDialog = false">取 消</el-button>
         <el-button type="primary" @click="onSubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { listLightModel, deleteLightModel, addOrUpdateLightModel } from '@/api/RoadLighting/EquipmentType'
+import { listArea, deleteArea, addOrUpdateArea } from '@/api/RoadLighting/deploy'
+import '../../../utils/filter.js'
 export default {
-  name: 'LightType',
+  name: 'AreaAdmin',
   data () {
     return {
       pageNumber: 1,
-      pageSize: 100,
+      pageSize: 10,
       multipleSelection: [],
       currentPage: 1,
       allTotal: null,
-      LightList: [],
+      TITLE: null,
+      List: [],
       addOrUpdateStatus: null,
-      newLight: {},
-      addLightDialog: false,
-      addNewLightRules: {
-        modelName: [
-          { required: true, message: '填写内容不得为空', trigger: 'blur' }
-        ],
-        ratedVoltage: [
-          { required: true, message: '填写内容不得为空', trigger: 'blur' }
-        ],
-        ratedElectric: [
-          { required: true, message: '填写内容不得为空', trigger: 'blur' }
-        ],
-        ratedPower: [
-          { required: true, message: '填写内容不得为空', trigger: 'blur' }
-        ],
-        ledCount: [
+      newObject: {},
+      addDialog: false,
+      addNewObjectRules: {
+        areaName: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ]
       }
@@ -166,15 +140,19 @@ export default {
       this.multipleSelection = val
     },
     handleCurrentChange (val) {
-      this.pageNumber = val
-      this.getListLightModel()
       // 翻页请求
+      this.pageNumber = val
+      this.getList()
     },
-    getListLightModel () {
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.getList()
+    },
+    getList () {
       let that = this
-      listLightModel(that.pageNumber, that.pageSize).then(response => {
-        that.LightList = response.data
-        if (that.LightList.length > 0) {
+      listArea(that.pageNumber, that.pageSize).then(response => {
+        that.List = response.data
+        if (that.List.length > 0) {
           this.allTotal = response.total
         } else {
           this.allTotal = 0
@@ -183,14 +161,15 @@ export default {
         console.log(error)
       })
     },
-    addCabinet () {
-      this.addLightDialog = true
+    addBlock () {
+      this.TITLE = '添加'
+      this.addDialog = true
       this.addOrUpdateStatus = 'add'
     },
     deleteRow (type, e) {
       let _array = []
       if (type === 1) {
-        _array.push(this.LightList[e].id)
+        _array.push(this.List[e].id)
       } else {
         if (this.multipleSelection.length > 0) {
           this.multipleSelection.forEach(selectedItem => {
@@ -209,13 +188,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteLightModel(_array).then(response => {
+        deleteArea(_array).then(response => {
           // that.projectList.splice(e, 1)
           this.$message({
             type: 'success',
             message: '删除成功!'
           })
-          this.getListLightModel()
+          this.getList()
         }).catch(error => {
           console.log(error)
         })
@@ -227,38 +206,45 @@ export default {
       })
     },
     editRow (e) {
+      this.TITLE = '修改'
       this.addOrUpdateStatus = 'edit'
-      this.newLight = this.LightList[e]
-      this.addLightDialog = true
+      this.newObject = Object.assign({}, this.List[e])
+      this.addDialog = true
     },
     onSubmit () {
-      let _text
-      if (this.addOrUpdateStatus === 'add') {
-        _text = '添加成功'
-      } else {
-        _text = '修改成功'
-      }
-      addOrUpdateLightModel(this.newLight).then(response => {
-        this.$message({
-          type: 'success',
-          message: _text
-        })
-        this.getListLightModel()
-        this.addLightDialog = false
-        this.handleCloseDialog()
-      }).catch(error => {
-        console.log(error)
+      this.$refs['addEditForm'].validate((valid) => {
+        if (valid) {
+          let _text
+          if (this.addOrUpdateStatus === 'add') {
+            _text = '添加成功'
+          } else {
+            _text = '修改成功'
+          }
+          addOrUpdateArea(this.newObject).then(response => {
+            this.$message({
+              type: 'success',
+              message: _text
+            })
+            this.getList()
+            this.addDialog = false
+            this.handleCloseDialog()
+          }).catch(error => {
+            console.log(error)
+          })
+        } else {
+          console.log('error submit!!')
+        }
       })
     },
     // 弹窗关闭时将数据清空
     handleCloseDialog (done) {
-      this.newLight = {}
-      this.$refs['addEditLightTypeForm'].resetFields()
+      this.newObject = {}
+      this.$refs['addEditForm'].resetFields()
       done()
     }
   },
   created () {
-    this.getListLightModel()
+    this.getList()
   },
   destroyed () {
   }
