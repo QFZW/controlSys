@@ -54,7 +54,7 @@
                 <!-- 240 -->
                 <template slot-scope="scope">
                   <el-button
-                    @click.native.prevent="manageLamp()"
+                    @click.native.prevent="manageLamp(scope.$id)"
                     type="text"
                     size="small">
                     管理灯具
@@ -434,11 +434,11 @@
         </div>
         <el-table
           ref="multipleTable"
-          :data="cabinetList"
+          :data="lightingListOfElbox"
           tooltip-effect="dark"
           style="width: 100%"
           header-row-class-name="datalist-header"
-          @selection-change="handleSelectionChangeBox">
+          @selection-change="handleSelectionChangeOfElBox">
           <el-table-column fixed type="selection" width="40"></el-table-column>
           <el-table-column label="启用" width="100"></el-table-column>
           <el-table-column label="校验" width="120"></el-table-column>
@@ -469,14 +469,14 @@
         </el-table>
         <div class="pagelist-block">
           <el-pagination
-            @size-change="handleSizeChangeLight"
+            @size-change="handleSizeChangeLightOfElBox"
             background
-            @current-change="handleCurrentChangeLight"
-            :current-page="lightCurrentPage"
+            @current-change="handleCurrentChangeLightOfElBox"
+            :current-page="lightCurrentPageOfElBox"
             :page-sizes="[10, 20, 50, 100]"
-            :page-size="lightPageSize"
+            :page-size="lightPageSizeOfElBox"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="allLightTotal">
+            :total="allLightTotalOfElBox">
           </el-pagination>
         </div>
       </div>
@@ -765,7 +765,7 @@
   </div>
 </template>
 <script>
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listLighting, getLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listLighting, getLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -870,8 +870,6 @@ export default {
       // 回路
       modelLoopList: [],
       newModelLoop: {},
-      eleboxId: null, // 灯具搜索使用
-      notBe: 1, // 灯具搜索使用
       lightingList: [],
       lightPageNumber: 1,
       lightPageSize: 10,
@@ -970,7 +968,19 @@ export default {
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ]
       },
-      selectEleboxId: ''
+      selectEleboxId: '',
+      // 管理模块，获取单个控制柜下所有模块
+      alllistEleboxTotal: null,
+      listEleboxPageNumber: 1,
+      listEleboxPageSize: 10,
+      listEleboxModel: [],
+      // 获取单个控制柜下所有灯具
+      lightingListOfElbox: [],
+      lightPageNumberOfElbox: 1,
+      lightPageSizeOfElbox: 10,
+      lightMultipleSelectionOfElbox: [],
+      lightCurrentPageOfElbox: 1,
+      allLightTotalOfElbox: 0
     }
   },
   methods: {
@@ -986,6 +996,9 @@ export default {
     },
     handleSelectionChangeLight (val) {
       this.lightMultipleSelection = val
+    },
+    handleSelectionChangeOfElBox (val) {
+      this.lightMultipleSelectionOfElbox = val
     },
     // 控制柜翻页相关
     handleSizeChangeBox (val) {
@@ -1004,6 +1017,15 @@ export default {
     handleCurrentChangeLight (val) {
       this.lightPageNumber = val
       this.getListLighting()
+    },
+    // 控制柜编辑灯具 灯具翻页相关
+    handleSizeChangeLightOfElBox (val) {
+      this.lightPageSizeOfElBox = val
+      this.getListLightingOfElBox()
+    },
+    handleCurrentChangeLightOfElBox (val) {
+      this.lightPageNumberOfElBox = val
+      this.getListLightingOfElBox()
     },
     addCabinet () {
       this.cabinetDialog = true
@@ -1104,7 +1126,8 @@ export default {
       this.insertLanmpDialog = true
     },
     // 管理灯具
-    manageLamp () {
+    manageLamp (e) {
+      console.log(e)
       this.manageLanmpDialog = true
     },
     // 获取GIS列表
@@ -1336,12 +1359,48 @@ export default {
       })
     },
     /*
+    获取指定控制柜下的所有模块
+    */
+    getListEleboxModel (id) {
+      let that = this
+      listEleboxModel(id, that.listEleboxPageNumber, that.listEleboxPageSize).then(response => {
+        that.listEleboxModel = response.data
+        if (that.listEleboxModel.length > 0) {
+          this.alllistEleboxTotal = response.total
+        } else {
+          this.alllistEleboxTotal = 0
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    /*
+    获取指定控制柜下的所有灯具
+    */
+    getListLightingOfElbox (e) {
+      let that = this
+      let eleboxId = e // 灯具搜索使用
+      let notBe = 0 // 灯具搜索使用
+      listLighting(that.lightPageNumber, that.lightPageSize, eleboxId, notBe).then(response => {
+        that.lightingListOfElbox = response.data
+        if (that.lightingListOfElbox.length > 0) {
+          this.allLightTotalOfElbox = response.total
+        } else {
+          this.allLightTotalElbox = 0
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    /*
     *  灯具区域
     */
     // 获取灯具列表
     getListLighting () {
       let that = this
-      listLighting(that.lightPageNumber, that.lightPageSize, that.eleboxId, that.notBe).then(response => {
+      let eleboxId = null // 灯具搜索使用
+      let notBe = 1 // 灯具搜索使用
+      listLighting(that.lightPageNumber, that.lightPageSize, eleboxId, notBe).then(response => {
         that.lightingList = response.data
         if (that.lightingList.length > 0) {
           this.allLightTotal = response.total

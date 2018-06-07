@@ -82,11 +82,13 @@
       </div>
       <div class="pagelist-block">
         <el-pagination
+          @size-change="handleSizeChange"
           background
           @current-change="handleCurrentChange"
           :current-page="currentPage"
+          :page-sizes="[10, 20, 50, 100]"
           :page-size="pageSize"
-          layout="total, prev, pager, next, jumper"
+          layout="total, sizes, prev, pager, next, jumper"
           :total="allTotal">
         </el-pagination>
       </div>
@@ -134,7 +136,7 @@ export default {
   data () {
     return {
       pageNumber: 1,
-      pageSize: 100,
+      pageSize: 10,
       multipleSelection: [],
       currentPage: 1,
       allTotal: null,
@@ -169,6 +171,10 @@ export default {
       this.pageNumber = val
       this.getListLightModel()
       // 翻页请求
+    },
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.getListLightModel()
     },
     getListLightModel () {
       let that = this

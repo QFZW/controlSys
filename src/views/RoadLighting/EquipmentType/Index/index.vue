@@ -117,6 +117,7 @@ export default {
   .equipment-list{
     width:100%;
     .item{
+      cursor: pointer;
       width: 200px;
       float: left;
       margin-right: 40px;
