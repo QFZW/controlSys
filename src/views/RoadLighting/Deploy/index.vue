@@ -54,7 +54,7 @@
                 <!-- 240 -->
                 <template slot-scope="scope">
                   <el-button
-                    @click.native.prevent="manageLamp(scope.$id)"
+                    @click.native.prevent="manageLamp(scope.row.id)"
                     type="text"
                     size="small">
                     管理灯具
@@ -434,25 +434,27 @@
         </div>
         <el-table
           ref="multipleTable"
-          :data="lightingListOfElbox"
+          :data="lightingList"
           tooltip-effect="dark"
           style="width: 100%"
           header-row-class-name="datalist-header"
-          @selection-change="handleSelectionChangeOfElBox">
+          @selection-change="handleSelectionChangeLight">
           <el-table-column fixed type="selection" width="40"></el-table-column>
-          <el-table-column label="启用" width="100"></el-table-column>
-          <el-table-column label="校验" width="120"></el-table-column>
-          <el-table-column label="灯杆" width="120"></el-table-column>
-          <el-table-column label="灯头号" width="120"></el-table-column>
-          <el-table-column label="终端" width="120"></el-table-column>
-          <el-table-column label="终端输出" width="100"></el-table-column>
-          <el-table-column label="位置编号" width="100"></el-table-column>
-          <el-table-column label="类目编号" width="100"></el-table-column>
-          <el-table-column label="灯杆型号" width="100"></el-table-column>
-          <el-table-column fixed="right" label="操作">
+          <el-table-column fixed prop="uid" label="UID" width="100"></el-table-column>
+          <el-table-column label="使用日期" width="140">
+            <template slot-scope="scope">
+              {{scope.row.gmtCreated|timeFormat}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="lamphead" label="灯头号" width="100"></el-table-column>
+          <el-table-column prop="lamppost" label="灯杆" width="100"></el-table-column>
+          <el-table-column prop="decay" label="光衰" width="100"></el-table-column>
+          <el-table-column prop="maxUseTime" label="最大使用时间（年）" width="160"></el-table-column>
+          <el-table-column prop="mem" label="备注"></el-table-column>
+          <el-table-column fixed="right" label="操作" width="120">
             <template slot-scope="scope">
               <el-button
-                @click.native.prevent="editRow(scope.$index)"
+                @click.native.prevent="editLightRow(scope.$index)"
                 type="text"
                 size="small">
                 编辑
@@ -469,14 +471,14 @@
         </el-table>
         <div class="pagelist-block">
           <el-pagination
-            @size-change="handleSizeChangeLightOfElBox"
+            @size-change="handleSizeChangeLight"
             background
-            @current-change="handleCurrentChangeLightOfElBox"
-            :current-page="lightCurrentPageOfElBox"
+            @current-change="handleCurrentChangeLight"
+            :current-page="lightCurrentPage"
             :page-sizes="[10, 20, 50, 100]"
-            :page-size="lightPageSizeOfElBox"
+            :page-size="lightPageSize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="allLightTotalOfElBox">
+            :total="allLightTotal">
           </el-pagination>
         </div>
       </div>
@@ -773,6 +775,16 @@ export default {
   watch: {
     filterText (val) {
       this.$refs.tree2.filter(val)
+    },
+    activeName: function (val, oldVal) {
+      this.lightPageNumber = 1
+      this.lightPageSize = 10
+      this.eleboxId = null
+      this.notBe = 1
+      if (val === 'lighting') {
+        this.getListLighting()
+      } else {
+      }
     }
   },
   data () {
@@ -878,6 +890,8 @@ export default {
       allLightTotal: 0,
       newLight: {
       },
+      eleboxId: null,
+      notBe: 1,
       editNewEleboxRules: {
         uid: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
@@ -997,9 +1011,6 @@ export default {
     handleSelectionChangeLight (val) {
       this.lightMultipleSelection = val
     },
-    handleSelectionChangeOfElBox (val) {
-      this.lightMultipleSelectionOfElbox = val
-    },
     // 控制柜翻页相关
     handleSizeChangeBox (val) {
       this.boxPageSize = val
@@ -1017,15 +1028,6 @@ export default {
     handleCurrentChangeLight (val) {
       this.lightPageNumber = val
       this.getListLighting()
-    },
-    // 控制柜编辑灯具 灯具翻页相关
-    handleSizeChangeLightOfElBox (val) {
-      this.lightPageSizeOfElBox = val
-      this.getListLightingOfElBox()
-    },
-    handleCurrentChangeLightOfElBox (val) {
-      this.lightPageNumberOfElBox = val
-      this.getListLightingOfElBox()
     },
     addCabinet () {
       this.cabinetDialog = true
@@ -1105,16 +1107,16 @@ export default {
           break
       }
     },
-    addDevice () {
-      // 添加设备
+    // 添加设备
+    addDevice () {   
       this.deviceAddDialog = true
     },
+    // 添加回路
     addLoop () {
-      // 添加回路
       this.addLoopDialog = true
     },
+    // 添加灯具
     addLamp () {
-      // 添加灯具
       this.addLampDialog = true
     },
     editCabinet (e) {
@@ -1127,7 +1129,9 @@ export default {
     },
     // 管理灯具
     manageLamp (e) {
-      console.log(e)
+      this.eleboxId = e
+      this.notBe = 0
+      this.getListLighting()
       this.manageLanmpDialog = true
     },
     // 获取GIS列表
@@ -1375,32 +1379,12 @@ export default {
       })
     },
     /*
-    获取指定控制柜下的所有灯具
-    */
-    getListLightingOfElbox (e) {
-      let that = this
-      let eleboxId = e // 灯具搜索使用
-      let notBe = 0 // 灯具搜索使用
-      listLighting(that.lightPageNumber, that.lightPageSize, eleboxId, notBe).then(response => {
-        that.lightingListOfElbox = response.data
-        if (that.lightingListOfElbox.length > 0) {
-          this.allLightTotalOfElbox = response.total
-        } else {
-          this.allLightTotalElbox = 0
-        }
-      }).catch(error => {
-        console.log(error)
-      })
-    },
-    /*
     *  灯具区域
     */
     // 获取灯具列表
     getListLighting () {
       let that = this
-      let eleboxId = null // 灯具搜索使用
-      let notBe = 1 // 灯具搜索使用
-      listLighting(that.lightPageNumber, that.lightPageSize, eleboxId, notBe).then(response => {
+      listLighting(that.lightPageNumber, that.lightPageSize, that.eleboxId, that.notBe).then(response => {
         that.lightingList = response.data
         if (that.lightingList.length > 0) {
           this.allLightTotal = response.total
