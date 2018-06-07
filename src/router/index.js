@@ -162,6 +162,12 @@ export const constantRouterMap = [
         meta: { title: '部门岗位', icon: '' }
       },
       {
+        path: 'userlist',
+        component: () => import('@/views/Ucenter/User/userList'),
+        name: 'userList',
+        meta: { title: '用户列表', icon: '' }
+      },
+      {
         path: 'onlineuser',
         component: () => import('@/views/Ucenter/User/onlineuser'),
         name: 'OnlineUser',
@@ -172,7 +178,25 @@ export const constantRouterMap = [
         component: () => import('@/views/Ucenter/User/belong'),
         name: 'Belong',
         meta: { title: '项目归属', icon: '' }
+      },
+      {
+        path: 'systemusers',
+        component: () => import('@/views/Ucenter/User/systemUsers'),
+        name: 'systemUsers',
+        meta: { title: '系统用户', icon: '' }
+      },
+      {
+        path: 'organizationusers',
+        component: () => import('@/views/Ucenter/User/organizationUsers'),
+        name: 'organizationUsers',
+        meta: { title: '机构用户', icon: '' }
       }]
+    },
+    {
+      path: 'dailyrecord',
+      component: () => import('@/views/Ucenter/DailyRecord'),
+      name: 'DailyRecord',
+      meta: { title: '日志', icon: '' }
     }]
   }
 ]
