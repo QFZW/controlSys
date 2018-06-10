@@ -6,13 +6,13 @@ import request from '@/utils/request'
  * @param {any} count
  * @returns
  */
-export function addEleBox (deviceList, count) {
-  let _deviceList = JSON.stringify(deviceList)
+export function addEleBox (deviceList1, count) {
+  let deviceList = JSON.stringify(deviceList1)
   return request({
     url: '/api/roadlighting/addelebox',
     method: 'post',
     data: {
-      _deviceList,
+      deviceList,
       count
     }
   })
@@ -101,17 +101,17 @@ export function listElebox (pageNumber, pageSize) {
 /**
  * 分页获取某一控制柜下全部模块
  * @export
- * @param {any} id
+ * @param {any} eleboxId
  * @param {any} pageNumber
  * @param {any} pageSize
  * @returns
  */
-export function listEleboxModel (id, pageNumber, pageSize) {
+export function listEleboxModel (eleboxId, pageNumber, pageSize) {
   return request({
     url: '/api/roadlighting/listmodel',
     method: 'get',
     params: {
-      id,
+      eleboxId,
       pageNumber,
       pageSize
     }

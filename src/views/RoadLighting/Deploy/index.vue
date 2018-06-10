@@ -61,6 +61,7 @@
                   </el-button>
                   <el-button
                     type="text"
+                    @click.native.prevent="loopSplitFun(scope.row.id)"
                     size="small">
                     回路拆分
                   </el-button>
@@ -110,6 +111,7 @@
         <div class="system-center">
           <div class="operation-bar">
             <el-button icon='el-icon-plus' @click="addLamp()" type="primary">增加</el-button>
+            <el-button icon='el-icon-plus' @click="addLampAll()" type="primary">批量增加</el-button>
             <el-dropdown trigger="click" placement='bottom-start' @command="handleLightEdit">
               <el-button icon='el-icon-edit'>批量编辑</el-button>
               <el-dropdown-menu slot="dropdown">
@@ -429,8 +431,8 @@
       <div class="manage-lamp">
         <div class="operation-bar">
           <el-button icon='el-icon-plus' @click="insertLamp()" type="primary">批量增加</el-button>
-          <el-button icon='el-icon-edit'>批量编辑</el-button>
-          <el-button icon='el-icon-delete'>批量删除</el-button>
+          <!-- <el-button icon='el-icon-edit'>批量编辑</el-button> -->
+          <el-button icon='el-icon-delete'  @click="deleteLightRow(2)">批量删除</el-button>
         </div>
         <el-table
           ref="multipleTable"
@@ -495,37 +497,36 @@
           <div class="operate-block clearfix">
             <a class="f-l" @click="addLamp()"><i class="iconfont ">&#xe648;</i>添加</a>
             <a class="f-l"><i class="iconfont">&#xe605;</i>导入</a>
-            <a class="f-l"><i class="iconfont">&#xe632;</i>删除</a>
           </div>
           <el-table
             ref="multipleTable"
-            :data="cabinetList"
+            :data="lightingList"
             tooltip-effect="dark"
+            height="350"
             style="width: 100%"
             header-row-class-name="datalist-header"
-            @selection-change="handleSelectionChangeBox">
+            @selection-change="handleSelectionChangeLight">
             <el-table-column type="selection" width="30"></el-table-column>
-            <el-table-column label="行号" width="50"></el-table-column>
-            <el-table-column label="灯杆" width="50"></el-table-column>
-            <el-table-column label="灯头号" width="65"></el-table-column>
-            <el-table-column label="终端" width="50"></el-table-column>
-            <el-table-column label="灯具型" width="65"></el-table-column>
-            <el-table-column label="终端输出" width="80"></el-table-column>
-            <el-table-column fixed="right" label="操作">
+            <el-table-column fixed prop="uid" label="UID" width="60"></el-table-column>
+            <el-table-column prop="lamphead" label="灯头号" width="100"></el-table-column>
+            <el-table-column prop="lamppost" label="灯杆" width="100"></el-table-column>
+            <el-table-column prop="decay" label="光衰" width="100"></el-table-column>
+            <el-table-column prop="mem" label="备注"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="60">
               <template slot-scope="scope">
                 <el-button
-                  @click.native.prevent="editRow(scope.$index)"
+                  @click.native.prevent="editLightRow(scope.$index)"
                   type="text"
                   size="small">
                   编辑
                 </el-button>
-                <el-button
+                <!-- <el-button
                   class="danger-text-btn"
                   @click.native.prevent="deleteLightRow(1, scope.$index)"
                   type="text"
                   size="small">
                   删除
-                </el-button>
+                </el-button> -->
               </template>
             </el-table-column>
           </el-table>
@@ -546,6 +547,7 @@
             ref="multipleTable"
             :data="cabinetList"
             tooltip-effect="dark"
+            height="350"
             style="width: 100%"
             header-row-class-name="datalist-header"
             @selection-change="handleSelectionChangeBox">
@@ -586,7 +588,7 @@
     <!-- 编辑控制柜 -->
     <el-dialog title="编辑控制柜" width="617px"
       :visible.sync="editCabinetDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
-      :before-close="handleCloseDialog">
+      :before-close="handleCloseEditCabinetDialog">
       <el-form ref="editCabinetForm" class="lamp-form" :model="newElebox" :rules="editNewEleboxRules" label-width="140px" size='small'>
         <el-form-item label="控制柜uid" required prop="uid">
           <el-input class="input-wrap" v-model="newElebox.uid"></el-input>
@@ -645,8 +647,15 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="控制柜区域" required>
-          <!-- <el-input class="input-wrap" v-model="newElebox.uid"></el-input> -->
+        <el-form-item label="控制柜区域" required prop="nnlightctlRegionId">
+          <el-select class="input-wrap" v-model="newElebox.nnlightctlRegionId">
+            <el-option
+              v-for="item in listArea"
+              :key="item.id"
+              :label="item.areaName"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="控制柜所属项目" required>
           <!-- <el-input class="input-wrap" v-model="newElebox.nnlightctlProjectId"></el-input> -->
@@ -764,29 +773,42 @@
         <el-button type="primary" @click="showUserableDialog = false">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 回路拆分 -->
+    <el-dialog
+      title="设置启停"
+      :visible.sync="loopSplitDialog"
+      width="700px"
+      center>
+      <div class="modeloop-split">
+        <p class="title">请选择模块下的回路进行拆分</p>
+        <div class="modeloop-split-center clearfix">
+          <div class="split-center-left">
+            <el-tree
+              :props="propsLoopSplit"
+              :load="loadNode"
+              accordion
+              lazy>
+            </el-tree>
+          </div>
+          <div class="split-center-right">
+            <el-button type="primary">新增回路</el-button>
+          </div>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="loopSplitDialog = false">取 消</el-button>
+        <el-button type="primary" @click="loopSplitDialog = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listLighting, getLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listLighting, getLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
   name: 'Deploy',
-  watch: {
-    filterText (val) {
-      this.$refs.tree2.filter(val)
-    },
-    activeName: function (val, oldVal) {
-      this.lightPageNumber = 1
-      this.lightPageSize = 10
-      this.eleboxId = null
-      this.notBe = 1
-      if (val === 'lighting') {
-        this.getListLighting()
-      } else {
-      }
-    }
-  },
   data () {
     return {
       filterText: '',
@@ -833,6 +855,7 @@ export default {
       editIndex: null, // 专门用来存放编辑时的Index，每次编辑完之后必须清空
       gisAllList: [], // gis所有列表
       listLightModel: [], // 所有灯具类型列表
+      listArea: [], // 区域列表
       eleboxList: [],
       allEleboxList: [], // 所有控制柜列表
       newElebox: [],
@@ -929,7 +952,10 @@ export default {
         mainSwitch: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ],
-        nnlightctlLightingGisId: [
+        nnlightctlEleboxGisId: [
+          { required: true, message: '选择内容不得为空', trigger: 'blur' }
+        ],
+        nnlightctlRegionId: [
           { required: true, message: '选择内容不得为空', trigger: 'blur' }
         ]
       },
@@ -983,18 +1009,54 @@ export default {
         ]
       },
       selectEleboxId: '',
+      //  //
+      eleboxIdBeifen: null,
+      lightPageNumberBeifen: null,
+      lightPageSizeBeifen: null,
+      // 回路拆分
+      loopSplitDialog: false,
+      propsLoopSplit: {},
       // 管理模块，获取单个控制柜下所有模块
-      alllistEleboxTotal: null,
-      listEleboxPageNumber: 1,
-      listEleboxPageSize: 10,
-      listEleboxModel: [],
-      // 获取单个控制柜下所有灯具
-      lightingListOfElbox: [],
-      lightPageNumberOfElbox: 1,
-      lightPageSizeOfElbox: 10,
-      lightMultipleSelectionOfElbox: [],
-      lightCurrentPageOfElbox: 1,
-      allLightTotalOfElbox: 0
+      listEleboxModel: []
+    }
+  },
+  watch: {
+    filterText (val) {
+      this.$refs.tree2.filter(val)
+    },
+    activeName: function (val, oldVal) {
+      this.lightPageNumber = 1
+      this.lightPageSize = 10
+      this.eleboxId = null
+      this.notBe = 1
+      if (val === 'lighting') {
+        this.getListLighting()
+      } else {
+      }
+    },
+    insertLanmpDialog: function (val, oldVal) {
+      if (val === true) {
+        this.eleboxIdBeifen = this.eleboxId
+        this.lightPageNumberBeifen = this.lightPageNumber
+        this.lightPageSizeBeifen = this.lightPageSize
+        this.lightPageNumber = null
+        this.lightPageSize = null
+        this.eleboxId = null
+        console.log(this.eleboxIdBeifen)
+        this.notBe = 1
+        this.getListLighting()
+      } else {
+        console.log('ssssssssssssssssssssssss')
+        this.lightPageNumber = this.lightPageNumberBeifen
+        this.lightPageSize = this.lightPageSizeBeifen
+        this.eleboxId = this.eleboxIdBeifen
+        this.notBe = 0
+        console.log(this.eleboxId)
+        this.getListLighting()
+        this.eleboxIdBeifen = null
+        this.lightPageNumberBeifen = null
+        this.lightPageSizeBeifen = null
+      }
     }
   },
   methods: {
@@ -1108,16 +1170,25 @@ export default {
       }
     },
     // 添加设备
-    addDevice () {   
+    addDevice () {
       this.deviceAddDialog = true
     },
     // 添加回路
     addLoop () {
       this.addLoopDialog = true
     },
+    // 回路拆分
+    loopSplitFun (e) {
+      console.log(e)
+      this.getListEleboxModel(e)
+      this.loopSplitDialog = true
+    },
     // 添加灯具
     addLamp () {
       this.addLampDialog = true
+    },
+    addLampAll () {
+      this.addLampAllDialog = true
     },
     editCabinet (e) {
       this.newElebox = Object.assign({}, this.eleboxList[e])
@@ -1131,6 +1202,8 @@ export default {
     manageLamp (e) {
       this.eleboxId = e
       this.notBe = 0
+      this.lightPageNumber = 1
+      this.lightPageSize = 10
       this.getListLighting()
       this.manageLanmpDialog = true
     },
@@ -1148,6 +1221,14 @@ export default {
       let that = this
       listLightModel().then(response => {
         that.listLightModel = response.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getListArea () {
+      let that = this
+      listArea().then(response => {
+        that.listArea = response.data
       }).catch(error => {
         console.log(error)
       })
@@ -1363,22 +1444,6 @@ export default {
       })
     },
     /*
-    获取指定控制柜下的所有模块
-    */
-    getListEleboxModel (id) {
-      let that = this
-      listEleboxModel(id, that.listEleboxPageNumber, that.listEleboxPageSize).then(response => {
-        that.listEleboxModel = response.data
-        if (that.listEleboxModel.length > 0) {
-          this.alllistEleboxTotal = response.total
-        } else {
-          this.alllistEleboxTotal = 0
-        }
-      }).catch(error => {
-        console.log(error)
-      })
-    },
-    /*
     *  灯具区域
     */
     // 获取灯具列表
@@ -1512,6 +1577,12 @@ export default {
         }
       })
     },
+    handleCloseEditCabinetDialog (done) {
+      // 弹窗关闭时将数据清空
+      this.$refs['editCabinetForm'].resetFields()
+      this.newElebox = {}
+      done()
+    },
     handleCloseAddNewElbox (done) {
       // 弹窗关闭时将数据清空
       this.$refs['elboxCountForm'].resetFields()
@@ -1530,6 +1601,38 @@ export default {
       this.$refs['addNewLightForm'].resetFields()
       this.newLight = {}
       done()
+    },
+    /**
+      回路拆分
+    */
+    /**
+    获取指定控制柜下的所有模块
+    */
+    getListEleboxModel (eleboxId) {
+      let that = this
+      listEleboxModel(eleboxId).then(response => {
+        that.listEleboxModel = response.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    loadNode (node, resolve) {
+      let that = this
+      if (node.level === 0) {
+        return resolve(that.listEleboxModel)
+      }
+      if (node.level > 1) return resolve([])
+
+      setTimeout(() => {
+        const data = [{
+          name: 'leaf',
+          leaf: true
+        }, {
+          name: 'zone'
+        }]
+
+        resolve(data)
+      }, 500)
     }
   },
   created () {
@@ -1538,6 +1641,7 @@ export default {
     this.getListElebox()
     this.getAllListElebox()
     this.getListLighting()
+    this.getListArea()
   }
 }
 </script>
@@ -1675,6 +1779,32 @@ export default {
 .manage-lamp{
   .operation-bar{
     margin-bottom: 20px;
+  }
+}
+// 回路拆分
+.modeloop-split{
+  width: 100%;
+  .title{
+    font-size:16px;
+    margin-bottom: 10px;
+  }
+  .modeloop-split-center{
+    .split-center-left{
+      float: left;
+      width: 280px;
+      height: 400px;
+      overflow-y: scroll;
+      padding: 10px;
+      border:1px solid #e5e5e5
+    }
+    .split-center-right{
+      float: right;
+      width: 360px;
+      height: 400px;
+      // overflow-y: scroll;
+      padding: 10px;
+      border:1px solid #e5e5e5
+    }
   }
 }
 </style>
