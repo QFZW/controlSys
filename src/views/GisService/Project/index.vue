@@ -3,12 +3,13 @@
  * @Author: Vincent
  * @Date: 2018-05-13 12:37:54
  * @Last Modified by: Vincent
- * @Last Modified time: 2018-06-03 17:09:03
+ * @Last Modified time: 2018-06-10 22:57:32
  */
 
 <template>
   <div class='map-wrap'>
     <el-amap vid='amapDemo' :center="center" :zooms="zooms" :plugin='plugin'>
+      <el-amap-marker v-for="(marker, index) in markers" :key="index" :template='marker.template' :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable" :vid="index"></el-amap-marker>
     </el-amap>
     <div class='search-wrap'>
       <el-autocomplete
@@ -43,6 +44,78 @@ export default {
   data () {
     return {
       zooms: '14',
+      markers: [ {
+        position: [112.5273285, 38.21515044],
+        events: {
+          click: () => {
+            console.log(this)
+            // this.$router.push('/gisservice/project')
+          },
+          dragend: (e) => {
+            console.log('---event---: dragend')
+            this.markers[0].position = [e.lnglat.lng, e.lnglat.lat]
+          }
+        },
+        visible: true,
+        draggable: false,
+        template: `
+          <el-tooltip placement="bottom-start">
+            <div slot="content">经度：112.5273285<br/>纬度：38.21515044</div>
+            <div class="project-mark">
+              <span class="project-name">xxx项目</span>
+              <i class="iconfont">&#xe638;</i>
+            </div>
+          </el-tooltip>
+        `
+      },
+      {
+        position: [102.5273285, 31.21515044],
+        events: {
+          click: () => {
+            console.log(this)
+            // this.$router.push('/gisservice/project')
+          },
+          dragend: (e) => {
+            console.log('---event---: dragend')
+            this.markers[0].position = [e.lnglat.lng, e.lnglat.lat]
+          }
+        },
+        visible: true,
+        draggable: false,
+        template: `
+          <el-tooltip placement="bottom-start">
+            <div slot="content">经度：102.5273285<br/>纬度：31.21515044</div>
+            <div class="project-mark">
+              <span class="project-name">xxx项目</span>
+              <i class="iconfont">&#xe638;</i>
+            </div>
+          </el-tooltip>
+        `
+      },
+      {
+        position: [111.5273285, 24.21515044],
+        events: {
+          click: () => {
+            console.log(this)
+            // this.$router.push('/gisservice/project')
+          },
+          dragend: (e) => {
+            console.log('---event---: dragend')
+            this.markers[0].position = [e.lnglat.lng, e.lnglat.lat]
+          }
+        },
+        visible: true,
+        draggable: false,
+        template: `
+          <el-tooltip placement="bottom-start">
+            <div slot="content">经度：111.5273285<br/>纬度：24.21515044</div>
+            <div class="project-mark">
+              <span class="project-name">xxx项目</span>
+              <i class="iconfont">&#xe638;</i>
+            </div>
+          </el-tooltip>
+        `
+      }],
       center: [108.59996, 32.197646],
       plugin: [{
         pName: 'MapType',
@@ -116,5 +189,28 @@ export default {
   position: absolute;
   top: 20px;
   left: 20px;
+}
+</style>
+<style lang="scss">
+.project-mark {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  .iconfont{
+    color: #5789FA;
+    font-size: 38px;
+  }
+  .project-name {
+    position: absolute;
+    display: inline-block;
+    padding: 4px 10px;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background: #15A4FA;
+    border-radius: 5px;
+    color: #ffffff;
+  }
 }
 </style>

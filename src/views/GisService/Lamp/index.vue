@@ -3,7 +3,7 @@
  * @Author: Vincent
  * @Date: 2018-05-13 12:37:54
  * @Last Modified by: Vincent
- * @Last Modified time: 2018-06-03 17:01:47
+ * @Last Modified time: 2018-06-11 01:45:41
  */
 
 <template>
@@ -11,7 +11,7 @@
     <el-amap vid='amapDemo' :center="center" :plugin='plugin'>
     </el-amap>
     <!-- 搜索栏 -->
-    <div class='search-wrap'>
+    <!-- <div class='search-wrap'>
       <el-autocomplete
         style='width:320px'
         v-model='state4'
@@ -20,15 +20,44 @@
         @select='handleSelect'
       ></el-autocomplete>
       <el-button type='primary' icon='el-icon-search'></el-button>
-    </div>
+    </div> -->
+    <el-tooltip :value='true' placement="bottom-start" effect="light">
+      <div slot="content">
+        <div class="select-device">
+          <el-tabs type="card">
+            <el-tab-pane label="控制柜">
+              <el-tree
+                :data="dataEleBox"
+                :props="defaultProps"
+                accordion
+                @node-click="handleNodeClick">
+              </el-tree>
+            </el-tab-pane>
+            <el-tab-pane label="区域">
+              <el-tree
+                :data="dataArea"
+                :props="defaultProps"
+                accordion
+                @node-click="handleNodeClick">
+              </el-tree>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+      </div>
+      <div class="located-tool">
+        <i class="iconfont">&#xe662;</i>
+      </div>
+    </el-tooltip>
     <!-- 工具栏 -->
     <div class="lamp-tool">
-        <a class="tool-li tool-li-1" href="javascript:;" @click="lampGroupDialog = true"><span>灯具<br />分组</span></a>
-        <a class="tool-li tool-li-2" href="javascript:;" @click="taskSwitchDialog = true"><span>任务<br />开关</span></a>
-        <a class="tool-li tool-li-3" href="javascript:;" @click="sceneDialog = true"><span>场景</span></a>
-        <a class="tool-li tool-li-4" href="javascript:;" @click="ctrlBoxDialog = true"><span>控制</span></a>
-        <a class="tool-li tool-li-5" href="javascript:;" @click="lampsDialog = true"><span>灯具</span></a>
+        <a class="tool-li tool-li-1" href="javascript:;" @click="getLightGroupList()"><span>灯具<br />分组</span></a>
+        <a class="tool-li tool-li-2" href="javascript:;" @click="getSwitchTaskList()"><span>任务<br />开关</span></a>
+        <a class="tool-li tool-li-3" href="javascript:;" @click="getSceneList()"><span>场景</span></a>
+        <a class="tool-li tool-li-4" href="javascript:;" @click="getEleboxList()"><span>控制</span></a>
+        <a class="tool-li tool-li-5" href="javascript:;" @click="getLightList()"><span>灯具</span></a>
     </div>
+    <!-- 警告信息 -->
+    <div class="sys-warnning" @click="sysWarnningDialog = true"><i class="iconfont">&#xe623;</i>警报信息</div>
     <!-- 场景  ***start -->
     <el-dialog title="场景" :visible.sync="sceneDialog" width="540px" center>
       <div class="scene-dialog">
@@ -207,7 +236,7 @@
           <el-button type="text" icon='el-icon-plus' @click="addTaskSwitchDialog = true">添加任务开关</el-button>
         </div>
         <el-table ref="multipleTable"
-          :data="sceneList"
+          :data="switchTaskList"
           tooltip-effect="dark"
           style="width: 100%"
           height="340px"
@@ -297,23 +326,36 @@
     <el-dialog title="控制柜" :visible.sync="ctrlBoxDialog" width="1100px" center>
       <div class="ctrlbox-dialog">
         <el-table ref="multipleTable"
-          :data="sceneList"
+          :data="EleboxList"
           tooltip-effect="dark"
           style="width: 100%"
           height="340"
           header-row-class-name="datalist-header"
           @selection-change="handleSelectionChange">>
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column label="同步"></el-table-column>
-          <el-table-column label="控制柜"></el-table-column>
-          <el-table-column label="UID"></el-table-column>
-          <el-table-column label="状态"></el-table-column>
-          <el-table-column label="KM11"></el-table-column>
-          <el-table-column label="时间"></el-table-column>
-          <el-table-column label="KM12"></el-table-column>
-          <el-table-column label="时间"></el-table-column>
-          <el-table-column label="KM13"></el-table-column>
-          <el-table-column label="时间"></el-table-column>
+          <el-table-column prop='uid' label="UID"></el-table-column>
+          <el-table-column prop='codeNumber' label="编码"></el-table-column>
+          <el-table-column prop='mainSwitch' label="主进线开关"></el-table-column>
+          <el-table-column prop='latitude' label="经度"></el-table-column>
+          <el-table-column prop='longitude' label="纬度"></el-table-column>
+          <el-table-column prop='powerRating' label="额定功率"></el-table-column>
+          <el-table-column prop='ratedElectricty' label="额定电流"></el-table-column>
+          <el-table-column prop='ratedVoltage' label="额定电压"></el-table-column>
+          <!-- <el-table-column label="创建时间">
+            <template slot-scope="scope" >
+              {{scope.row.gmtCreated | timeFormat}}
+            </template>
+          </el-table-column>
+          <el-table-column label="更新时间">
+            <template slot-scope="scope">
+              {{scope.row.gmtUpdated | timeFormat}}
+            </template>
+          </el-table-column> -->
+          <el-table-column label="使用时间">
+            <template slot-scope="scope">
+              {{scope.row.useDate | timeFormat}}
+            </template>
+          </el-table-column>
         </el-table>
         <div class="pagelist-block">
           <el-pagination
@@ -332,23 +374,25 @@
     <el-dialog title="灯具" :visible.sync="lampsDialog" width="1100px" center>
       <div class="ctrlbox-dialog">
         <el-table ref="multipleTable"
-          :data="sceneList"
+          :data="lightList"
           tooltip-effect="dark"
           style="width: 100%"
           height="340"
           header-row-class-name="datalist-header"
           @selection-change="handleSelectionChange">>
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column label="同步"></el-table-column>
-          <el-table-column label="灯具"></el-table-column>
-          <el-table-column label="UID"></el-table-column>
-          <el-table-column label="状态"></el-table-column>
-          <el-table-column label="KM11"></el-table-column>
-          <el-table-column label="时间"></el-table-column>
-          <el-table-column label="KM12"></el-table-column>
-          <el-table-column label="时间"></el-table-column>
-          <el-table-column label="KM13"></el-table-column>
-          <el-table-column label="时间"></el-table-column>
+          <el-table-column prop='uid' label="UID"></el-table-column>
+          <el-table-column prop='propertySerialNumber' label="资产编号"></el-table-column>
+          <el-table-column prop='lamphead' label="灯头"></el-table-column>
+          <el-table-column prop='lamppost' label="灯杆"></el-table-column>
+          <el-table-column prop='decay' label="光衰"></el-table-column>
+          <el-table-column prop='manufacture' label="生产日期"></el-table-column>
+          <el-table-column label="使用时间">
+            <template slot-scope="scope">
+              {{scope.row.useDate | timeFormat}}
+            </template>
+          </el-table-column>
+          <el-table-column prop='mem' label="备注"></el-table-column>
         </el-table>
         <div class="pagelist-block">
           <el-pagination
@@ -370,15 +414,15 @@
           <el-button type="text" icon='el-icon-plus' @click="addLampGroupDialog = true">新建灯具分组</el-button>
         </div>
         <el-table ref="multipleTable"
-          :data="sceneList"
+          :data="lightGroupList"
           tooltip-effect="dark"
           style="width: 100%"
           height="340px"
           header-row-class-name="datalist-header"
           @selection-change="handleSelectionChange">>
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="name" label="灯具分组名称" width="140"></el-table-column>
-          <el-table-column prop="desc" label="描述"></el-table-column>
+          <el-table-column prop="cGroupName" label="灯具分组名称" width="140"></el-table-column>
+          <el-table-column prop="mem" label="描述"></el-table-column>
           <el-table-column fixed="right" label="操作" width="100">
               <template slot-scope="scope">
                 <el-button
@@ -505,12 +549,48 @@
         <el-button type="primary" @click="addLampGroupDialog = false" size="small">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 警告信息 -->
+    <el-dialog title="警报信息" :visible.sync="sysWarnningDialog" width="780px" center>
+      <div class="system-warning clearfix">
+        <div class="info-classify">
+          <h3>警报类型</h3>
+          <el-tree
+            :data="dataWarnClassify"
+            :props="defaultProps"
+            accordion
+            @node-click="handleNodeClick">
+          </el-tree>
+        </div>
+        <div class="info-list">
+          <h3>警报列表</h3>
+          <el-table ref="multipleTable"
+          :data="EleboxList"
+          tooltip-effect="dark"
+          style="width: 100%"
+          height="325"
+          header-row-class-name="datalist-header"
+          @selection-change="handleSelectionChange">>
+          <el-table-column prop='uid' label="行号"></el-table-column>
+          <el-table-column prop='codeNumber' label="电表警告"></el-table-column>
+          <el-table-column prop='mainSwitch' label="集中器警告"></el-table-column>
+          <el-table-column prop='latitude' label="开关警报"></el-table-column>
+          <el-table-column prop='longitude' label="防盗警报"></el-table-column>
+        </el-table>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="sysWarnningDialog = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="sysWarnningDialog = false" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import VueAMap from 'vue-amap'
+import { VueAMap, lazyAMapApiLoaderInstance } from 'vue-amap'
+import { listElebox, listLighting, listLightGroup, listSwitchTask, listScene } from '@/api/GisService/lamp'
+import '../../../utils/filter.js'
 Vue.use(VueAMap)
 
 // 初始化vue-amap
@@ -521,6 +601,13 @@ VueAMap.initAMapApiLoader({
   plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],
   // 高德 sdk 版本，默认为 1.4.4
   v: '1.4.4'
+})
+
+lazyAMapApiLoaderInstance.load().then(() => {
+  // your code ...
+  this.map = new AMap.Map('amapContainer', {
+    center: new AMap.LngLat(121.59996, 31.197646)
+  })
 })
 
 export default {
@@ -576,6 +663,7 @@ export default {
       lampsDialog: false,
       lampGroupDialog: false,
       addLampGroupDialog: false,
+      sysWarnningDialog: false,
       activemode: 'mapMode',
       addScenerRules: {
         name: [
@@ -585,7 +673,78 @@ export default {
         desc: [
           { required: true, message: '请输入场景描述', trigger: 'blur' }
         ]
-      }
+      },
+      // 控制柜
+      dataEleBox: [{
+        label: '控制柜1',
+        children: [{
+          label: '灯具1'
+        },
+        {
+          label: '灯具1'
+        }]
+      },
+      {
+        label: '控制柜1',
+        children: [{
+          label: '灯具1'
+        },
+        {
+          label: '灯具1'
+        }]
+      }],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      dataWarnClassify: [{
+        label: '全部'
+      },
+      {
+        label: '控制柜警报',
+        children: [{
+          label: '意外亮灯'
+        },
+        {
+          label: '灭灯'
+        }]
+      },
+      {
+        label: '常规灯具警报',
+        children: [{
+          label: '灯具熄灭'
+        },
+        {
+          label: '电源故障'
+        }]
+      },
+      {
+        label: '防盗警报',
+        children: [{
+          label: '指线缆被盗'
+        },
+        {
+          label: '自定义报警'
+        }]
+      },
+      {
+        label: '太阳能警报',
+        children: [{
+          label: '节点丢失'
+        },
+        {
+          label: '电池过放'
+        }]
+      },
+      {
+        label: '单灯控制器警报',
+        children: [{
+          label: '信号强弱报警'
+        },
+        {
+          label: '离线报警'
+        }]
+      }]
     }
   },
   methods: {
@@ -615,6 +774,60 @@ export default {
     },
     handleSelect (item) {
       console.log(item)
+    },
+    getLightGroupList () {
+      // 按条件获取分页的灯具分组数据
+      let that = this
+      listLightGroup(1, 10).then(res => {
+        that.lightGroupList = res.data
+        that.lampGroupDialog = true
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getLightList () {
+      // 获取项目下全部灯具
+      let that = this
+      that.lampsDialog = true
+      listLighting().then(res => {
+        that.lightList = res.data
+        console.log(res.data)
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getEleboxList () {
+      // 获取项目下全部控制柜
+      let that = this
+      listElebox().then(res => {
+        that.EleboxList = res.data
+        that.ctrlBoxDialog = true
+        console.log(res.data)
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getSwitchTaskList () {
+      // 获取项目下全部控制柜
+      let that = this
+      listSwitchTask(1, 10).then(res => {
+        that.switchTaskList = res.data
+        that.taskSwitchDialog = true
+        console.log(res.data)
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getSceneList () {
+      // 按搜索条件获取分页的场景模式数据
+      let that = this
+      listScene(1, 10).then(res => {
+        that.sceneList = res.data
+        that.sceneDialog = true
+        console.log(res.data)
+      }).catch(error => {
+        console.log(error)
+      })
     }
   },
   mounted () {
@@ -678,6 +891,67 @@ export default {
       background-color: rgba($color: #FFCF7C, $alpha: .6);
       border: 2px #FFCF7C solid;
     }
+  }
+}
+.located-tool{
+  position: absolute;
+  top: 20px;
+  left: 100px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  width: 40px;
+  cursor: pointer;
+  .iconfont{
+    color: #5789FA;
+    font-size: 30px;
+  }
+}
+.select-device{
+  width: 184px;
+  height: 320px;
+  background: #ffffff;
+}
+.sys-warnning{
+  position: absolute;
+  top: 15px;
+  right: 100px;
+  padding: 10px 15px;
+  text-align: center;
+  background: #FAE58C;
+  font-size: 14px;
+  cursor: pointer;
+  .iconfont{
+    position: relative;
+    top: -1px;
+    color: #ff9b00;
+    font-size: 20px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+}
+.system-warning{
+  height: 400px;
+  .info-classify{
+    width: 210px;
+    height: 390px;
+    float: left;
+    border: 1px #dedede solid;
+    box-sizing: border-box;
+    padding: 20px;
+  }
+  .info-list{
+    float: left;
+    width: 530px;
+    height: 390px;
+    border: 1px #dedede solid;
+    box-sizing: border-box;
+    padding: 15px;
+  }
+  h3{
+    color: #101010;
+    font-size: 14px;
+    margin-bottom: 10px;
   }
 }
 .scene-dialog{
