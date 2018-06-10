@@ -49,7 +49,7 @@
             </div>
           </div>
           <div class="grid-content gird-5">
-            <div class="gird-wrap" @click="linkModule('/projectadmin')" data-url="">
+            <div class="gird-wrap" @click="linkModule('/projectadmin')">
               <div class="trans-middle f-mid">
                 <p class="p1"><i class="iconfont">&#xe63b;</i></p>
                 <p>项目管理</p>
@@ -57,7 +57,7 @@
             </div>
           </div>
           <div class="grid-content gird-6">
-            <div class="gird-wrap">
+            <div class="gird-wrap" @click="linkModule('/ucenter')">
               <div class="trans-middle f-mid">
                 <p class="p1"><i class="iconfont">&#xe603;</i></p>
                 <p>用户中心</p>

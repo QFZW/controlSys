@@ -135,7 +135,7 @@ export const constantRouterMap = [
     path: '/ucenter',
     component: Layout,
     name: 'Ucenter',
-    redirect: '/ucenter/user/organization',
+    redirect: '/ucenter/user',
     meta: { title: '用户中心', icon: '&#xe601;' },
     children: [{
       path: '/ucenter/user',
