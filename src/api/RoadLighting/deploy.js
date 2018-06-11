@@ -229,6 +229,22 @@ export function addOrUpdateLighting (obj) {
     data: obj
   })
 }
+/**
+ * 批量添加灯具
+ * @export
+ * @param {any} List
+ * @returns obj
+ */
+export function addLighting (List) {
+  // List = JSON.stringify(List)
+  return request({
+    url: '/api/roadlighting/batchAddLighting',
+    method: 'post',
+    data: {
+      List
+    }
+  })
+}
 // 批量编辑灯具所属控制柜
 export function updateLightBeElebox (lightIdList, beEleboxId) {
   return request({

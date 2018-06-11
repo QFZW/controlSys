@@ -349,6 +349,101 @@
         <el-button @click="goRules('addNewModelLoopForm')" type="primary">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 批量增加灯具 -->
+    <el-dialog title="批量增加灯具" width="630px"
+      :visible.sync="addMoreLampDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
+      :before-close="handleCloseAddMoreNewLight">
+      <div class="uid-dgh-item clearfix">
+        <div class="item-block f-l" style="width:220px">
+          <span class="title">灯具UID</span><el-input style="width:120px" v-model="MoreLampObj.uid" placeholder="请输入"></el-input>
+        </div>
+        <div class="item-block f-l">
+          <span class="title">数量</span><el-input v-model="MoreLampObj.uidNum"  placeholder="请输入"></el-input>
+        </div>
+        <div class="item-block f-l" style="width:160px">
+          <span class="title">每次递增</span><el-input v-model="MoreLampObj.num"  placeholder="请输入"></el-input>
+        </div>
+      </div>
+      <!-- <div class="uid-dgh-item">
+        <div class="item-block f-l">
+          <span class="title">灯杆号</span><el-input  placeholder="请输入"></el-input>
+        </div>
+        <div class="item-block f-l">
+          <span class="title">批量数量</span><el-input  placeholder="请输入"></el-input>
+        </div>
+        <div class="item-block f-l">
+          <span class="title">每次递增</span><el-input  placeholder="请输入"></el-input>
+        </div>
+      </div> -->
+      <el-form ref="addNewMoreLightForm" class="lamp-form" :model="newMoreLight" :rules="addNewLightRules" label-width="140px" size='small'>
+        <el-form-item label="生产日期" required prop="manufacture">
+          <el-date-picker
+            v-model="newMoreLight.manufacture "
+            type="date"
+            class="input-wrap"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="安装日期" required prop="useDate">
+          <el-date-picker
+            v-model="newMoreLight.useDate "
+            type="date"
+            class="input-wrap"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="灯杆" required prop="lamppost">
+          <el-input v-model="newMoreLight.lamppost" class="input-wrap"></el-input>
+        </el-form-item>
+        <el-form-item  label="灯头号" required prop="lamphead">
+          <el-input v-model="newMoreLight.lamphead" class="input-wrap"></el-input>
+        </el-form-item>
+        <el-form-item label="灯具型号" required prop="nnlightctlLightingModelId">
+          <el-select class="input-wrap" v-model="newMoreLight.nnlightctlLightingModelId" placeholder="请选择">
+            <el-option
+              v-for="item in listLightModel"
+              :key="item.id"
+              :label="item.mem"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="灯具GIS信息" required prop="nnlightctlLightingGisId">
+          <el-select class="input-wrap" v-model="newMoreLight.nnlightctlLightingGisId" placeholder="请选择">
+            <el-option
+              v-for="item in gisAllList"
+              :key="item.id"
+              :label="item.mem"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item  label="资产编号" required prop="propertySerialNumber">
+          <el-input v-model="newMoreLight.propertySerialNumber" class="input-wrap"></el-input>
+        </el-form-item>
+        <el-form-item label="光衰" required prop="decay">
+          <el-input v-model="newMoreLight.decay" class="input-wrap"></el-input>
+        </el-form-item>
+        <el-form-item label="灯具最大使用时间" required prop="maxUseTime">
+          <el-input v-model="newMoreLight.maxUseTime" style="width:120px"></el-input>
+          <span>年</span>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input
+            class="input-wrap"
+            type="textarea"
+            v-model="newMoreLight.mem"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="请输入内容"
+          >
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addMoreLampDialog = false">取 消</el-button>
+        <el-button @click="goRules('addNewMoreLightForm')" type="primary">确 定</el-button>
+      </div>
+    </el-dialog>
     <!-- 增加灯具 -->
     <el-dialog title="增加灯具" width="630px"
       :visible.sync="addLampDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
@@ -804,7 +899,7 @@
   </div>
 </template>
 <script>
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listLighting, getLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -848,6 +943,7 @@ export default {
       showMapDialog: false,
       showUserableDialog: false,
       addLampDialog: false,
+      addMoreLampDialog: false,
       editCabinetDialog: false,
       manageLanmpDialog: false,
       insertLanmpDialog: false,
@@ -913,6 +1009,7 @@ export default {
       allLightTotal: 0,
       newLight: {
       },
+      newMoreLight: {},
       eleboxId: null,
       notBe: 1,
       editNewEleboxRules: {
@@ -1017,7 +1114,13 @@ export default {
       loopSplitDialog: false,
       propsLoopSplit: {},
       // 管理模块，获取单个控制柜下所有模块
-      listEleboxModel: []
+      listEleboxModel: [],
+      // 灯具批量
+      MoreLampObj: {
+        uid: null,
+        uidNum: 1,
+        num: 1
+      }
     }
   },
   watch: {
@@ -1188,7 +1291,8 @@ export default {
       this.addLampDialog = true
     },
     addLampAll () {
-      this.addLampAllDialog = true
+      console.log('11')
+      this.addMoreLampDialog = true
     },
     editCabinet (e) {
       this.newElebox = Object.assign({}, this.eleboxList[e])
@@ -1533,6 +1637,60 @@ export default {
         console.log(error)
       })
     },
+    // 批量添加灯具
+    onNewMoreLightSubmit () {
+      if (this.MoreLampObj.uid === null) {
+        this.$message({
+          type: 'error',
+          message: '请填写Uid'
+        })
+        return false
+      }
+      if (this.MoreLampObj.uidNum === null) {
+        this.$message({
+          type: 'error',
+          message: '请填写数量'
+        })
+        return false
+      }
+      if (this.MoreLampObj.num === null) {
+        this.$message({
+          type: 'error',
+          message: '请每次递增间隔'
+        })
+        return false
+      }
+      let _uid = parseInt(this.MoreLampObj.uid)
+      let List = []
+      for (var i = 0; i < this.MoreLampObj.uidNum; i++) {
+        let obj = Object.assign({}, this.newMoreLight)
+        obj.uid = _uid
+        obj.uid = obj.uid.toString()
+        _uid = _uid + this.MoreLampObj.num
+        obj = JSON.stringify(obj)
+        List.push(obj)
+      }
+      console.log(List)
+      addLighting(List).then(response => {
+        if (this.editIndex) {
+          this.$message({
+            type: 'success',
+            message: '编辑成功'
+          })
+        } else {
+          this.$message({
+            type: 'success',
+            message: '添加成功'
+          })
+        }
+        this.getListLighting()
+        this.addMoreLampDialog = false
+        this.$refs['addNewMoreLightForm'].resetFields()
+        this.newMoreLight = {}
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     // 设置灯具所属控制柜
     setLightBox () {
       let _array = []
@@ -1571,6 +1729,8 @@ export default {
             this.onNewEleboxModelSubmit()
           } else if (formName === 'editCabinetForm') {
             this.onEditNewEleboxSubmit()
+          } else if (formName === 'addNewMoreLightForm') {
+            this.onNewMoreLightSubmit()
           }
         } else {
           console.log('error submit!!')
@@ -1600,6 +1760,11 @@ export default {
       // 弹窗关闭时将数据清空
       this.$refs['addNewLightForm'].resetFields()
       this.newLight = {}
+      done()
+    },
+    handleCloseAddMoreNewLight (done) {
+      this.$refs['addNewMoreLightForm'].resetFields()
+      this.newMoreLight = {}
       done()
     },
     /**
@@ -1658,6 +1823,12 @@ export default {
   height: 70px;
   line-height: 70px;
   font-size: 16px
+}
+.uid-dgh-item{
+  .el-input__inner {
+      height: 32px;
+      line-height: 32px;
+  }
 }
 </style>
 <style lang="scss" scoped>
@@ -1806,5 +1977,29 @@ export default {
       border:1px solid #e5e5e5
     }
   }
+}
+.uid-dgh-item{
+  margin-bottom: 15px;
+  .el-input__inner {
+      height: 32px;
+      line-height: 32px;
+  }
+  .item-block{
+    width:150px;
+    .el-input{
+      width: 80px;
+    }
+    .title{
+      color: #606266;
+      font-weight: 700;
+      padding-right: 10px;
+      &::before{
+        content: "*";
+        color: #f56c6c;
+        margin-right: 4px;
+      }
+    }
+  }
+
 }
 </style>
