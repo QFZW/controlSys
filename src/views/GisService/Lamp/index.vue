@@ -3,7 +3,7 @@
  * @Author: Vincent
  * @Date: 2018-05-13 12:37:54
  * @Last Modified by: Vincent
- * @Last Modified time: 2018-06-11 01:45:41
+ * @Last Modified time: 2018-06-11 09:53:08
  */
 
 <template>
@@ -588,7 +588,7 @@
 
 <script>
 import Vue from 'vue'
-import { VueAMap, lazyAMapApiLoaderInstance } from 'vue-amap'
+import VueAMap from 'vue-amap'
 import { listElebox, listLighting, listLightGroup, listSwitchTask, listScene } from '@/api/GisService/lamp'
 import '../../../utils/filter.js'
 Vue.use(VueAMap)
@@ -603,12 +603,12 @@ VueAMap.initAMapApiLoader({
   v: '1.4.4'
 })
 
-lazyAMapApiLoaderInstance.load().then(() => {
-  // your code ...
-  this.map = new AMap.Map('amapContainer', {
-    center: new AMap.LngLat(121.59996, 31.197646)
-  })
-})
+// lazyAMapApiLoaderInstance.load().then(() => {
+//   // your code ...
+//   this.map = new AMap.Map('amapContainer', {
+//     center: new AMap.LngLat(121.59996, 31.197646)
+//   })
+// })
 
 export default {
   name: 'GisIndex',
