@@ -1666,8 +1666,10 @@ export default {
         let obj = Object.assign({}, this.newMoreLight)
         obj.uid = _uid
         obj.uid = obj.uid.toString()
+        obj.useDate = new Date(obj.useDate).toString()
+        obj.manufacture = new Date(obj.manufacture).toString()
         _uid = _uid + this.MoreLampObj.num
-        obj = JSON.stringify(obj)
+        // obj = JSON.stringify(obj)
         List.push(obj)
       }
       console.log(List)

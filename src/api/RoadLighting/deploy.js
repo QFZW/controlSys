@@ -232,16 +232,15 @@ export function addOrUpdateLighting (obj) {
 /**
  * 批量添加灯具
  * @export
- * @param {any} List
+ * @param {any} addLightings
  * @returns obj
  */
-export function addLighting (List) {
-  // List = JSON.stringify(List)
+export function addLighting (addLightings) {
   return request({
     url: '/api/roadlighting/batchAddLighting',
     method: 'post',
     data: {
-      List
+      addLightings
     }
   })
 }
