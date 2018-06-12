@@ -2,7 +2,7 @@
  * @Author: Vincent
  * @Date: 2018-05-06 15:24:27
  * @Last Modified by: Vincent
- * @Last Modified time: 2018-06-12 00:52:53
+ * @Last Modified time: 2018-06-12 10:03:19
  */
 
 import axios from 'axios'
@@ -20,7 +20,8 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(config => {
   if (config.method === 'post') {
-    config.data = qs.stringify(config.data, { allowDots: true })
+    // config.data = qs.stringify(config.data, { allowDots: true })
+    config.data = qs.stringify(config.data)
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
   } else if (config.method === 'get') {
     config.params = {
