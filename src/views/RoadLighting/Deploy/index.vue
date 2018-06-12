@@ -871,23 +871,33 @@
 
     <!-- 回路拆分 -->
     <el-dialog
-      title="设置启停"
+      title="回路拆分"
       :visible.sync="loopSplitDialog"
       width="700px"
       center>
       <div class="modeloop-split">
         <p class="title">请选择模块下的回路进行拆分</p>
         <div class="modeloop-split-center clearfix">
-          <div class="split-center-left">
-            <el-tree
-              :props="propsLoopSplit"
-              :load="loadNode"
-              accordion
-              lazy>
-            </el-tree>
+          <div class="split-center-left clearfix">
+            <div class="title clearfix">
+              <div class="item">模块</div>
+              <div class="item" style="float:right">回路</div>
+            </div>
+            <div class="center-left-item">
+              <p  v-for="(item, index) in listEleboxModel" :class="selectEleboxModelId==item.id?'activep':''" @click="selectEleboxModel(item.id)" v-bind:key="index">{{item.modelName}}</p>
+            </div>
+            <div class="center-left-item" style="float:right">
+              <p  v-for="(item, index) in listModelLoop" v-bind:key="index" :class="selectModelLoopId==item.id?'activep':''" @click="selectModelLoop(item.id)">{{item.loopCode}}</p>
+            </div>
           </div>
           <div class="split-center-right">
-            <el-button type="primary">新增回路</el-button>
+            <p class="title clearfix">
+              拆分后的回路
+              <a class="add-loop-split"><i class="iconfont ">&#xe648;</i>添加回路</a>
+            </p>
+            <div class="center-right-item">
+              <el-button type="primary" @click="splitAddNewLoop()">新增回路</el-button>
+            </div>
           </div>
         </div>
       </div>
@@ -896,10 +906,36 @@
         <el-button type="primary" @click="loopSplitDialog = false">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 添加回路 -->
+    <el-dialog title="添加回路" width="560px"
+      :visible.sync="addLoopDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
+      :before-close="handleCloseAddNewModelLoop">
+      <el-form ref="addNewModelLoopForm" label-width="120px" :model="newModelLoop" :rules="addNewModelLoopRules"  size='small'>
+        <el-form-item label="回路编号" required prop="loopCode">
+          <el-input v-model="newModelLoop.loopCode"></el-input>
+        </el-form-item>
+        <el-form-item label="回路电压" required prop="voltage">
+          <el-input v-model="newModelLoop.voltage"></el-input>
+        </el-form-item>
+        <el-form-item label="回路电流" required prop="electricity">
+          <el-input v-model="newModelLoop.electricity"></el-input>
+        </el-form-item>
+        <el-form-item label="回路灯具数量" required prop="lightCount">
+          <el-input v-model="newModelLoop.lightCount"></el-input>
+        </el-form-item>
+        <el-form-item label="回路状态" required prop="state">
+          <el-input v-model="newModelLoop.state"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addLoopDialog = false">取 消</el-button>
+        <el-button @click="subSplitLoop()" type="primary">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -1112,9 +1148,13 @@ export default {
       lightPageSizeBeifen: null,
       // 回路拆分
       loopSplitDialog: false,
-      propsLoopSplit: {},
       // 管理模块，获取单个控制柜下所有模块
       listEleboxModel: [],
+      listModelLoop: [],
+      selectEleboxModelId: null,
+      selectModelLoopId: null,
+      // 存放拆分回路
+      splitNewLoopList: [],
       // 灯具批量
       MoreLampObj: {
         uid: null,
@@ -1779,27 +1819,35 @@ export default {
       let that = this
       listEleboxModel(eleboxId).then(response => {
         that.listEleboxModel = response.data
+        console.log(that.listEleboxModel)
       }).catch(error => {
         console.log(error)
       })
     },
-    loadNode (node, resolve) {
-      let that = this
-      if (node.level === 0) {
-        return resolve(that.listEleboxModel)
-      }
-      if (node.level > 1) return resolve([])
-
-      setTimeout(() => {
-        const data = [{
-          name: 'leaf',
-          leaf: true
-        }, {
-          name: 'zone'
-        }]
-
-        resolve(data)
-      }, 500)
+    selectEleboxModel (e){
+      this.selectEleboxModelId = e
+      this.gerListModelLoop(e)
+    },
+    gerListModelLoop (e) {
+      listModelLoop(e).then(response => {
+        this.listModelLoop = response.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    selectModelLoop (e) {
+      this.selectModelLoopId = e
+      // 点击触发这个事件之后，出现右侧的添加回路
+    },
+    splitAddNewLoop () {
+      this.addLoopDialog = true
+    },
+    subSplitLoop () {
+      let _obj = Object.assign({}, this.newModelLoop)
+      this.splitNewLoopList.push(_obj)
+      this.addLoopDialog = false
+      this.$refs['addNewModelLoopForm'].resetFields()
+      this.newModelLoop = {}
     }
   },
   created () {
@@ -1834,6 +1882,12 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
+.activep{
+  background: #e5e5e5;
+  line-height: 28px;
+  height: 28px;
+  padding:0 5px;
+}
 .system-container{
   .system-top{
     .item-block{
@@ -1965,18 +2019,42 @@ export default {
     .split-center-left{
       float: left;
       width: 280px;
-      height: 400px;
-      overflow-y: scroll;
-      padding: 10px;
-      border:1px solid #e5e5e5
+      .title{
+        width: 100%;
+        height: 24px;
+        .item{
+          float:left;
+          width:130px;
+          height: 16px;
+          text-align: left;
+        }
+      }
+      .center-left-item{
+        padding: 10px 5px;
+        border:1px solid #e5e5e5;
+        overflow-y: auto;
+        float: left;
+        width:130px;
+        height: 400px;
+      }
     }
     .split-center-right{
       float: right;
       width: 360px;
-      height: 400px;
       // overflow-y: scroll;
-      padding: 10px;
-      border:1px solid #e5e5e5
+      .add-loop-split{
+        color:#5789fa;
+        float: right;
+      }
+      .title{
+        font-size:16px;
+        height: 24px;
+      }
+      .center-right-item{
+        padding: 10px;
+        border:1px solid #e5e5e5;
+        height: 400px;
+      }
     }
   }
 }

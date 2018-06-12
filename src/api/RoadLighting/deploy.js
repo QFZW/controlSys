@@ -6,8 +6,7 @@ import request from '@/utils/request'
  * @param {any} count
  * @returns
  */
-export function addEleBox (deviceList1, count) {
-  let deviceList = JSON.stringify(deviceList1)
+export function addEleBox (deviceList, count) {
   return request({
     url: '/api/roadlighting/addelebox',
     method: 'post',

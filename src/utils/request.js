@@ -20,8 +20,8 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(config => {
   if (config.method === 'post') {
-    // config.data = qs.stringify(config.data, { allowDots: true })
-    config.data = qs.stringify(config.data)
+    config.data = qs.stringify(config.data, { allowDots: true })
+    // config.data = qs.stringify(config.data)
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
   } else if (config.method === 'get') {
     config.params = {
