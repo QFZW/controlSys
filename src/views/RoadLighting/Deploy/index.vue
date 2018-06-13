@@ -591,13 +591,14 @@
         <div class="select-wrap">
           <div class="operate-block clearfix">
             <a class="f-l" @click="addLamp()"><i class="iconfont ">&#xe648;</i>添加</a>
+            <a class="f-l" @click="addLampAll()"><i class="iconfont ">&#xe648;</i>批量添加</a>
             <a class="f-l"><i class="iconfont">&#xe605;</i>导入</a>
           </div>
           <el-table
             ref="multipleTable"
             :data="lightingList"
             tooltip-effect="dark"
-            height="350"
+            height="320"
             style="width: 100%"
             header-row-class-name="datalist-header"
             @selection-change="handleSelectionChangeLight">
@@ -625,6 +626,18 @@
               </template>
             </el-table-column>
           </el-table>
+          <div class="pagelist-block">
+            <el-pagination
+              @size-change="handleSizeChangeLight"
+              background
+              @current-change="handleCurrentChangeLight"
+              :current-page="lightCurrentPage"
+              :page-sizes="[10, 20, 50, 100]"
+              :page-size="lightPageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="allLightTotal">
+            </el-pagination>
+          </div>
         </div>
         <div class="controll-wrap">
           <div class="controll-btn">
@@ -893,22 +906,43 @@
           <div class="split-center-right">
             <p class="title clearfix">
               拆分后的回路
-              <a class="add-loop-split"><i class="iconfont ">&#xe648;</i>添加回路</a>
+              <a class="add-loop-split" @click="splitAddNewLoop()"><i class="iconfont ">&#xe648;</i>添加回路</a>
             </p>
             <div class="center-right-item">
-              <el-button type="primary" @click="splitAddNewLoop()">新增回路</el-button>
+              <el-table
+                ref="multipleTable"
+                :data="splitNewLoopList"
+                tooltip-effect="dark"
+                style="width: 100%"
+                header-row-class-name="datalist-header">
+                <el-table-column fixed prop="loopCode" label="编号" width="120"></el-table-column>
+                <el-table-column prop="voltage" label="电压" width="100"></el-table-column>
+                <el-table-column prop="electricity" label="电流" width="100"></el-table-column>
+                <el-table-column prop="lightCount" label="灯具数量" width="100"></el-table-column>
+                <el-table-column fixed="right" label="操作" width="60">
+                    <template slot-scope="scope">
+                      <el-button
+                        class="danger-text-btn"
+                        @click.native.prevent="deleteSplitModelLoop(scope.$index)"
+                        type="text"
+                        size="small">
+                        删除
+                      </el-button>
+                    </template>
+                  </el-table-column>
+              </el-table>
             </div>
           </div>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="loopSplitDialog = false">取 消</el-button>
-        <el-button type="primary" @click="loopSplitDialog = false">确 定</el-button>
+        <el-button type="primary" @click="subAllSplitLoop()">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 添加回路 -->
     <el-dialog title="添加回路" width="560px"
-      :visible.sync="addLoopDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
+      :visible.sync="addSplitLoopDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
       :before-close="handleCloseAddNewModelLoop">
       <el-form ref="addNewModelLoopForm" label-width="120px" :model="newModelLoop" :rules="addNewModelLoopRules"  size='small'>
         <el-form-item label="回路编号" required prop="loopCode">
@@ -928,14 +962,14 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="addLoopDialog = false">取 消</el-button>
+        <el-button @click="addSplitLoopDialog = false">取 消</el-button>
         <el-button @click="subSplitLoop()" type="primary">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -1148,6 +1182,7 @@ export default {
       lightPageSizeBeifen: null,
       // 回路拆分
       loopSplitDialog: false,
+      addSplitLoopDialog: false,
       // 管理模块，获取单个控制柜下所有模块
       listEleboxModel: [],
       listModelLoop: [],
@@ -1168,6 +1203,7 @@ export default {
       this.$refs.tree2.filter(val)
     },
     activeName: function (val, oldVal) {
+      this.lightMultipleSelection
       this.lightPageNumber = 1
       this.lightPageSize = 10
       this.eleboxId = null
@@ -1182,19 +1218,16 @@ export default {
         this.eleboxIdBeifen = this.eleboxId
         this.lightPageNumberBeifen = this.lightPageNumber
         this.lightPageSizeBeifen = this.lightPageSize
-        this.lightPageNumber = null
-        this.lightPageSize = null
+        this.lightPageNumber = 1
+        this.lightPageSize = 10
         this.eleboxId = null
-        console.log(this.eleboxIdBeifen)
         this.notBe = 1
         this.getListLighting()
       } else {
-        console.log('ssssssssssssssssssssssss')
         this.lightPageNumber = this.lightPageNumberBeifen
         this.lightPageSize = this.lightPageSizeBeifen
         this.eleboxId = this.eleboxIdBeifen
         this.notBe = 0
-        console.log(this.eleboxId)
         this.getListLighting()
         this.eleboxIdBeifen = null
         this.lightPageNumberBeifen = null
@@ -1331,7 +1364,6 @@ export default {
       this.addLampDialog = true
     },
     addLampAll () {
-      console.log('11')
       this.addMoreLampDialog = true
     },
     editCabinet (e) {
@@ -1595,6 +1627,7 @@ export default {
       let that = this
       listLighting(that.lightPageNumber, that.lightPageSize, that.eleboxId, that.notBe).then(response => {
         that.lightingList = response.data
+        console.log(that.lightingList)
         if (that.lightingList.length > 0) {
           this.allLightTotal = response.total
         } else {
@@ -1840,14 +1873,41 @@ export default {
       // 点击触发这个事件之后，出现右侧的添加回路
     },
     splitAddNewLoop () {
-      this.addLoopDialog = true
+      this.addSplitLoopDialog = true
     },
     subSplitLoop () {
       let _obj = Object.assign({}, this.newModelLoop)
       this.splitNewLoopList.push(_obj)
-      this.addLoopDialog = false
+      this.addSplitLoopDialog = false
       this.$refs['addNewModelLoopForm'].resetFields()
       this.newModelLoop = {}
+    },
+    deleteSplitModelLoop (e) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.splitNewLoopList.splice(e, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    // 提交回路修改
+    subAllSplitLoop () {
+      console.log(this.splitNewLoopList)
+      modelLoopSplite(this.selectModelLoopId, this.splitNewLoopList).then(response => {
+        console.log(response)
+      }).catch(error => {
+        console.log(error)
+      })
     }
   },
   created () {
