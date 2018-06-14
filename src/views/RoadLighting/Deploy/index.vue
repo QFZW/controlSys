@@ -588,6 +588,7 @@
     <el-dialog title="新增灯具" width="1200px"
       :visible.sync="insertLanmpDialog" center>
       <div class="insert-lamp clearfix">
+        <p class="p-title">可选择</p>
         <div class="select-wrap">
           <div class="operate-block clearfix">
             <a class="f-l" @click="addLamp()"><i class="iconfont ">&#xe648;</i>添加</a>
@@ -648,9 +649,33 @@
           </div>
         </div>
         <div class="select-wrap">
-          <div class="operate-block clearfix">
+          <p class="p-title">已选择</p>
+          <p class="p-title-add">添加到：</p>
+          <!-- <div class="operate-block clearfix">
             <a class="f-l"><i class="iconfont">&#xe632;</i>删除</a>
-          </div>
+          </div> -->
+          <el-form :inline="true" class="demo-form-inline">
+            <el-form-item required label="模块">
+              <el-select v-model="selectEleboxModelId" placeholder="模块">
+                <el-option
+                  v-for="item in listEleboxModel"
+                  :key="item.id"
+                  :label="item.modelName"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item required label="回路">
+              <el-select v-model="selectModelLoopId" placeholder="回路">
+                <el-option
+                  v-for="item in listModelLoop"
+                  :key="item.id"
+                  :label="item.loopCode"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
           <el-table
             ref="multipleTable"
             :data="cabinetList"
@@ -1203,7 +1228,7 @@ export default {
       this.$refs.tree2.filter(val)
     },
     activeName: function (val, oldVal) {
-      this.lightMultipleSelection
+      this.lightMultipleSelection = []
       this.lightPageNumber = 1
       this.lightPageSize = 10
       this.eleboxId = null
@@ -1223,7 +1248,10 @@ export default {
         this.eleboxId = null
         this.notBe = 1
         this.getListLighting()
+        this.getListEleboxModel(this.eleboxIdBeifen)
       } else {
+        this.selectModelLoopId = null
+        this.selectEleboxModelId = null
         this.lightPageNumber = this.lightPageNumberBeifen
         this.lightPageSize = this.lightPageSizeBeifen
         this.eleboxId = this.eleboxIdBeifen
@@ -1233,6 +1261,9 @@ export default {
         this.lightPageNumberBeifen = null
         this.lightPageSizeBeifen = null
       }
+    },
+    selectEleboxModelId: function (val, oldVal) {
+      this.getListModelLoop(e)
     }
   },
   methods: {
@@ -1857,11 +1888,11 @@ export default {
         console.log(error)
       })
     },
-    selectEleboxModel (e){
+    selectEleboxModel (e) {
       this.selectEleboxModelId = e
-      this.gerListModelLoop(e)
+      // this.getListModelLoop(e)
     },
-    gerListModelLoop (e) {
+    getListModelLoop (e) {
       listModelLoop(e).then(response => {
         this.listModelLoop = response.data
       }).catch(error => {
@@ -1938,6 +1969,11 @@ export default {
   .el-input__inner {
       height: 32px;
       line-height: 32px;
+  }
+}
+.el-form--inline{
+  .el-form-item__content{
+    width: 160px
   }
 }
 </style>
@@ -2067,6 +2103,15 @@ export default {
   .operation-bar{
     margin-bottom: 20px;
   }
+}
+.p-title{
+  font-size:16px;
+  color:#333
+}
+.p-title-add{
+  color:#909399;
+  font-size:14px;
+  margin-top: 5px;
 }
 // 回路拆分
 .modeloop-split{
