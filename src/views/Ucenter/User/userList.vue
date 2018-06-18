@@ -11,7 +11,7 @@
       <div class="system-center">
         <div class="operation-bar">
           <el-button @click="addUser()" type="primary">增加</el-button>
-          <el-button @click="editPassword()" >修改密码</el-button>
+          <!-- <el-button @click="editPassword()" >修改密码</el-button> -->
           <el-button @click="deleteRow(2)">删除</el-button>
         </div>
         <div class="data-list">
@@ -30,58 +30,61 @@
             <el-table-column
               fixed
               prop="codeNumber"
-              label="目录"
+              label="编号"
+              width="100">
+            </el-table-column>
+            <el-table-column
+              fixed
+              prop="userName"
+              label="用户名"
+              width="100">
+            </el-table-column>
+            <el-table-column
+              prop="userType"
+              label="用户类型"
+              width="100">
+            </el-table-column>
+            <el-table-column
+              prop="loginName"
+              label="登录名"
               width="100">
             </el-table-column>
              <el-table-column
-              prop="projectName"
-              label="名称"
+              prop="loginPwd"
+              label="密码"
               width="100">
             </el-table-column>
             <el-table-column
-              prop="countryName"
-              label="联系人"
+              prop="place"
+              label="职位"
               width="100">
             </el-table-column>
             <el-table-column
-              prop="provinceName"
-              label="电话"
-              width="100">
+              prop="phone"
+              label="电话号码"
+              width="120">
             </el-table-column>
             <el-table-column
-              prop="cityName"
-              label="传真"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              label="邮件"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="longitude"
-              label="地址"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="latitude"
-              label="邮编"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="mem"
-              label="创建时间"
+              prop="email"
+              label="电子邮箱"
               width="150">
             </el-table-column>
             <el-table-column
               fixed="right"
               label="操作"
-              width="120">
+              width="180">
               <template slot-scope="scope">
                 <el-button
                   @click.native.prevent="editRow(scope.$index)"
                   type="text"
                   size="small">
                   编辑
+                </el-button>
+                <el-button
+                  @click.native.prevent="editPassword(scope.$index)"
+                  type="text"
+                  size="small">
+                  修改密码
                 </el-button>
                 <el-button
                   class="danger-text-btn"
@@ -108,44 +111,65 @@
         </div>
       </div>
       <!-- 修改 增加用户 -->
-      <el-dialog title="添加用户"
+      <el-dialog :title="addTypeText[addType]+'添加用户'"
        :visible.sync="userDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
        :before-close="handleCloseDialog">
-        <el-form ref="form" label-width="80px">
-          <el-form-item label="用户类型" required>
-            <el-input class="width350" v-model="newUser.projectName"></el-input>
-          </el-form-item>
-          <el-form-item label="账号" required>
-            <el-input class="width350" v-model="newUser.projectName"></el-input>
-          </el-form-item>
-          <el-form-item label="名称" required>
-            <el-input class="width350" v-model="newUser.projectName"></el-input>
+        <el-form ref="addNewForm" label-width="120px">
+          <el-form-item label="登录名" >
+            <el-input class="width350" v-model="newUser.loginName"></el-input>
           </el-form-item>
           <el-form-item label="密码" required>
-            <el-input class="width350" v-model="newUser.projectName"></el-input>
+            <el-input class="width350" v-model="newUser.loginPwd"></el-input>
           </el-form-item>
-          <el-form-item label="确认密码" required>
-            <el-input class="width350" v-model="newUser.projectName"></el-input>
+          <el-form-item label="是否记住用户" required>
+            <el-radio-group v-model="newUser.isRemenberPwd">
+              <el-radio label="是"></el-radio>
+              <el-radio label="否"></el-radio>
+            </el-radio-group>
           </el-form-item>
-          <el-form-item label="手机" required>
-            <el-input class="width350" v-model="newUser.latitude"></el-input>
+          <el-form-item label="用户名" required>
+            <el-input class="width350" v-model="newUser.userName"></el-input>
           </el-form-item>
-          <el-form-item label="固话" required>
-            <el-input class="width350" v-model="newUser.longitude"></el-input>
+          <el-form-item label="性别" required>
+            <el-radio-group v-model="newUser.sex">
+              <el-radio label="男"></el-radio>
+              <el-radio label="女"></el-radio>
+            </el-radio-group>
           </el-form-item>
-          <el-form-item label="传真" required>
-            <el-input class="width350" v-model="newUser.longitude"></el-input>
+          <el-form-item label="年龄" required>
+            <el-input class="width350" v-model="newUser.age"></el-input>
           </el-form-item>
-          <el-form-item label="邮件" required>
-            <el-input class="width350" v-model="newUser.longitude"></el-input>
+          <el-form-item label="电话号码" required>
+            <el-input class="width350" v-model="newUser.phone"></el-input>
           </el-form-item>
-          <el-form-item label="备注">
-            <el-input
-              type="textarea"
-              :autosize="{ minRows: 2, maxRows: 4}"
-              placeholder="请输入内容"
-              v-model="newUser.mem">
-            </el-input>
+          <el-form-item label="电子邮箱" required>
+            <el-input class="width350" v-model="newUser.email"></el-input>
+          </el-form-item>
+          <el-form-item label="职位" required>
+            <el-input class="width350" v-model="newUser.place"></el-input>
+          </el-form-item>
+          <el-form-item label="编号" required>
+            <el-input class="width350" v-model="newUser.codeNumber"></el-input>
+          </el-form-item>
+          <el-form-item label="用户类型" required>
+            <el-select  v-model="newUser.userType">
+              <el-option
+                v-for="(item , index) in userTypeList"
+                :key="index"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="所属部门" required prop="nnlightctlInstitutionIdBelong">
+            <el-select  v-model="newUser.nnlightctlInstitutionIdBelong">
+              <el-option
+                v-for="(item , index) in listAllDepartment"
+                :key="index"
+                :label="item.departmentName"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -156,28 +180,43 @@
       <!-- 修改 密码 -->
       <el-dialog title="修改密码"
        :visible.sync="passwordDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
-       :before-close="handleCloseDialog">
+       :before-close="handleClosePassDialog">
         <el-form ref="form" label-width="100px">
           <el-form-item label="新密码" required>
-            <el-input class="width350" v-model="newUser.projectName"></el-input>
-          </el-form-item>
-          <el-form-item label="确认新密码" required>
-            <el-input class="width350" v-model="newUser.projectName"></el-input>
+            <el-input class="width350" v-model="newPwd.newPwd"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="passwordDialog = false">取 消</el-button>
-          <el-button type="primary" @click="onSubmit">确 定</el-button>
+          <el-button type="primary" @click="onSubmitNewPass">确 定</el-button>
         </div>
       </el-dialog>
     </div>
 </template>
 
 <script>
+import {addOrUpdateUser, listUser, getUser, deleteUser, updateUserPwd, listDepartment} from '@/api/RoadLighting/userAdmin'
+import '../../../utils/filter.js'
 export default {
   name: 'organization',
   data () {
     return {
+      addTypeText: ['添加', '修改'],
+      addType: 0,
+      userTypeList: [
+        {
+          id: 0,
+          name: '超级管理员用户'
+        },
+        {
+          id: 1,
+          name: '机构管理员用户'
+        },
+        {
+          id: 2,
+          name: '部门用户'
+        }
+      ],
       pageNumber: 1,
       pageSize: 10,
       multipleSelection: [],
@@ -186,7 +225,9 @@ export default {
       userList: [],
       newUser: {},
       userDialog: false,
-      passwordDialog: false
+      passwordDialog: false,
+      listAllDepartment: [],
+      newPwd: {}
     }
   },
   methods: {
@@ -195,30 +236,173 @@ export default {
     },
     handleCurrentChange (val) {
       this.pageNumber = val
+      this.getListUser()
       // 翻页请求
     },
     handleSizeChange (val) {
       this.pageSize = val
+      this.getListUser()
     },
     addUser () {
+      this.addType = 0
       this.userDialog = true
     },
-    editPassword () {
+    editPassword (e) {
+      this.newPwd.id = this.userList[e].id
       this.passwordDialog = true
     },
-    deleteRow () {
-    },
-    editRow () {
-    },
     onSubmit () {
+      this.addOrUpdateUser()
     },
     // 弹窗关闭时将数据清空
     handleCloseDialog (done) {
       this.newUser = {}
       done()
+    },
+    // 获取部门不翻页列表
+    getAllListDepartment () {
+      let that = this
+      listDepartment().then(response => {
+        that.listAllDepartment = response.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    addOrUpdateUser () {
+      if (this.newUser.isRemenberPwd === '是') {
+        this.newUser.isRemenberPwd = 1
+      } else {
+        this.newUser.isRemenberPwd = 0
+      }
+      if (this.newUser.sex === '男') {
+        this.newUser.sex = 1
+      } else {
+        this.newUser.sex = 0
+      }
+      addOrUpdateUser(this.newUser).then(response => {
+        let _text = ''
+        if (this.addType === 0) {
+          _text = '添加成功!'
+        } else {
+          _text = '编辑成功!'
+        }
+        this.$message({
+          type: 'success',
+          message: _text
+        })
+        this.getListUser()
+        this.userDialog = false
+        this.newUser = {}
+        this.$refs['addNewForm'].resetFields()
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 获取列表
+    getListUser () {
+      let that = this
+      listUser(that.pageNumber, that.pageSize).then(response => {
+        that.userList = response.data
+        if (that.userList.length > 0) {
+          this.allTotal = response.total
+        } else {
+          this.allTotal = 0
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 获取单个用户信息进行修改
+    editRow (e) {
+      this.addType = 1
+      let that = this
+      getUser(this.userList[e].id).then(response => {
+        if (response.data[0].isRemenberPwd === 1) {
+          response.data[0].isRemenberPwd = '是'
+        } else {
+          response.data[0].isRemenberPwd = '否'
+        }
+        if (response.data[0].sex === 1) {
+          response.data[0].sex = '男'
+        } else {
+          response.data[0].sex = '女'
+        }
+        that.newUser = response.data[0]
+        console.log(that.newUser)
+        this.userDialog = true
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 删除
+    deleteRow (type, e) {
+      let _array = []
+      if (type === 1) {
+        _array.push(this.userList[e].id)
+      } else {
+        if (this.multipleSelection.length > 0) {
+          this.multipleSelection.forEach(selectedItem => {
+            // 取出所有待删除选项id
+            _array.push(selectedItem.id)
+          })
+        } else {
+          this.$message({
+            message: '请勾选需要删除的数据',
+            type: 'warning'
+          })
+          return false
+        }
+      }
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteUser(_array).then(response => {
+          // that.projectList.splice(e, 1)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getListUser()
+        }).catch(error => {
+          console.log(error)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    handleClosePassDialog (done) {
+      this.newPwd = {}
+      done()
+    },
+    onSubmitNewPass () {
+      this.newPwd.newPwd = this.newPwd.newPwd.replace(/(^\s*)|(\s*$)/g, '')
+      if (this.newPwd.newPwd === '' || this.newPwd.newPwd === null || this.newPwd.newPwd === undefined) {
+        this.$message({
+          type: 'error',
+          message: '密码不得为空'
+        })
+        return false
+      }
+      updateUserPwd(this.newPwd).then(response => {
+        this.$message({
+          type: 'success',
+          message: '编辑成功'
+        })
+        this.passwordDialog = false
+        this.newPwd = {}
+      }).catch(error => {
+        console.log(error)
+      })
     }
   },
   created () {
+    this.getListUser()
+    this.getAllListDepartment()
   },
   destroyed () {
   }

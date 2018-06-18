@@ -216,27 +216,27 @@
           append-to-body
           :before-close="handleCloseAddCity">
           <el-form ref="rulesform" :model="addObj" :rules="addCityrules" label-width="50px">
-          <el-form-item :label="dialogTitle[dialogType]" prop="name" required>
-            <el-input v-model="addObj.name" placeholder="请输入内容"></el-input>
-          </el-form-item>
-          <el-form-item label="编码" prop="code" required>
-            <el-input v-model="addObj.code" placeholder="请输入内容"></el-input>
-          </el-form-item>
-          <div v-if="dialogType == 2">
-            <el-form-item label="经度" prop="longitude" required>
-              <el-input v-model="addObj.longitude" placeholder="请输入内容"></el-input>
+            <el-form-item :label="dialogTitle[dialogType]" prop="name" required>
+              <el-input v-model="addObj.name" placeholder="请输入内容"></el-input>
             </el-form-item>
-            <el-form-item label="纬度" prop="latitude" required>
-              <el-input v-model="addObj.latitude" placeholder="请输入内容"></el-input>
+            <el-form-item label="编码" prop="code" required>
+              <el-input v-model="addObj.code" placeholder="请输入内容"></el-input>
             </el-form-item>
-            <el-form-item label="时区" prop="timeZone" required>
-              <el-input v-model="addObj.timeZone" placeholder="请输入内容"></el-input>
+            <div v-if="dialogType == 2">
+              <el-form-item label="经度" prop="longitude" required>
+                <el-input v-model="addObj.longitude" placeholder="请输入内容"></el-input>
+              </el-form-item>
+              <el-form-item label="纬度" prop="latitude" required>
+                <el-input v-model="addObj.latitude" placeholder="请输入内容"></el-input>
+              </el-form-item>
+              <el-form-item label="时区" prop="timeZone" required>
+                <el-input v-model="addObj.timeZone" placeholder="请输入内容"></el-input>
+              </el-form-item>
+            </div>
+            <el-form-item label="备注">
+              <el-input type="textarea" v-model="addObj.mem" placeholder="请输入内容"></el-input>
             </el-form-item>
-          </div>
-          <el-form-item label="备注">
-            <el-input type="textarea" v-model="addObj.mem" placeholder="请输入内容"></el-input>
-          </el-form-item>
-        </el-form>
+          </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="addNewObjShow = false">取 消</el-button>
             <el-button type="primary" @click="goCityRules('rulesform')">确 定</el-button>

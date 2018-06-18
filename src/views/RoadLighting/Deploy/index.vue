@@ -1262,7 +1262,7 @@ export default {
         this.lightPageSizeBeifen = null
       }
     },
-    selectEleboxModelId: function (val, oldVal) {
+    selectEleboxModelId: function (e) {
       this.getListModelLoop(e)
     }
   },

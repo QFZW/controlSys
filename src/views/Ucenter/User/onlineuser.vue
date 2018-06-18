@@ -49,31 +49,17 @@
             </el-table-column>
           </el-table>
         </div>
-        <div class="pagelist-block">
-          <el-pagination
-            @size-change="handleSizeChange"
-            background
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size="pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="allTotal">
-          </el-pagination>
-        </div>
       </div>
     </div>
 </template>
 
 <script>
+import {listOnlineUser} from '@/api/RoadLighting/userAdmin'
+import '../../../utils/filter.js'
 export default {
   name: 'organization',
   data () {
     return {
-      pageNumber: 1,
-      pageSize: 10,
-      currentPage: 1,
-      allTotal: null,
       userList: []
     }
   },
@@ -84,9 +70,19 @@ export default {
     },
     handleSizeChange (val) {
       this.pageSize = val
+    },
+    // 获取列表
+    getListUser () {
+      let that = this
+      listOnlineUser().then(response => {
+        that.userList = response.data
+      }).catch(error => {
+        console.log(error)
+      })
     }
   },
   created () {
+    this.getListUser()
   },
   destroyed () {
   }

@@ -16,7 +16,7 @@
         <div class="data-list">
           <el-table
             ref="multipleTable"
-            :data="userList"
+            :data="listDepartment"
             tooltip-effect="dark"
             style="width: 100%"
             header-row-class-name="datalist-header"
@@ -27,29 +27,35 @@
               width="40">
             </el-table-column>
              <el-table-column
-              prop="projectName"
+              prop="departmentName"
               fixed="left"
-              label="名称"
+              label="部门名称"
               width="100">
             </el-table-column>
             <el-table-column
-              label="机构"
-              width="100">
+              label="最高级别部门"
+              width="120">
+              <template slot-scope="scope">
+                <span v-if="scope.row.departmentLevel==0">是</span>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="longitude"
-              label="上级部门"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="latitude"
-              label="备注"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="mem"
               label="创建时间"
-              width="150">
+              width="100">
+              <template slot-scope="scope">
+                {{scope.row.gmtCreated|timeFormat}}
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="修改时间"
+              width="100">
+              <template slot-scope="scope">
+                {{scope.row.gmtUpdated|timeFormat}}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="addr"
+              label="部门地址">
             </el-table-column>
             <el-table-column
               fixed="right"
@@ -86,19 +92,47 @@
           </el-pagination>
         </div>
       </div>
-      <!-- 修改 增加机构 -->
-      <el-dialog title="添加/修改机构"
+      <!-- 修改 增加部门 -->
+      <el-dialog :title="addTypeText[addType]+'部门'"
        :visible.sync="addDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
        :before-close="handleCloseDialog">
-        <el-form ref="form" label-width="80px">
-          <el-form-item label="名称" required>
-            <el-input class="width350" v-model="newObject.projectName"></el-input>
+        <el-form ref="addNewForm" label-width="120px" :model="newObject" :rules="addNewRules" >
+          <el-form-item label="部门名称" prop="departmentName" required>
+            <el-input v-model="newObject.departmentName"></el-input>
           </el-form-item>
-          <el-form-item label="机构" required>
-            <el-input class="width350" v-model="newObject.projectName"></el-input>
+          <el-form-item label="部门所属机构" required prop="nnlightctlInstitutionIdBelong">
+            <el-select  v-model="newObject.nnlightctlInstitutionIdBelong">
+              <el-option
+                v-for="(item , index) in listAllInstitution"
+                :key="index"
+                :label="item.institutionName"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item label="上级部门" required>
-            <el-input class="width350" v-model="newObject.projectName"></el-input>
+          <el-form-item label="父部门" required>
+            <el-select  v-model="newObject.nnlightctlDepartmentIdParent">
+              <el-option
+                v-for="(item , index) in listAllDepartment"
+                :key="index"
+                :label="item.departmentName"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="是否是最高级别" required>
+            <el-radio-group v-model="newObject.departmentLevel">
+              <el-radio label="是"></el-radio>
+              <el-radio label="否"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="部门地址">
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 4}"
+              placeholder="请输入内容"
+              v-model="newObject.addr">
+            </el-input>
           </el-form-item>
           <el-form-item label="备注">
             <el-input
@@ -118,19 +152,32 @@
 </template>
 
 <script>
+import {addOrUpdateDepartment, listDepartment, getDepartment, deleteDepartment, listInstitution} from '@/api/RoadLighting/userAdmin'
+import '../../../utils/filter.js'
 export default {
   name: 'organization',
   data () {
     return {
+      addTypeText: ['添加', '修改'],
+      addType: 0,
       pageNumber: 1,
       pageSize: 10,
       multipleSelection: [],
       currentPage: 1,
       allTotal: null,
-      userList: [],
       newObject: {},
       addDialog: false,
-      passwordDialog: false
+      listDepartment: [],
+      listAllDepartment: [],
+      listAllInstitution: [],
+      addNewRules: {
+        departmentName: [
+          { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        nnlightctlInstitutionIdBelong: [
+          { required: true, message: '填写内容不得为空', trigger: 'change' }
+        ]
+      }
     }
   },
   methods: {
@@ -139,30 +186,139 @@ export default {
     },
     handleCurrentChange (val) {
       this.pageNumber = val
+      this.getListDepartment()
       // 翻页请求
     },
     handleSizeChange (val) {
       this.pageSize = val
+      this.getListDepartment()
     },
     addNewObject () {
+      this.addType = 0
       this.addDialog = true
     },
-    editPassword () {
-      this.passwordDialog = true
-    },
-    deleteRow () {
-    },
-    editRow () {
-    },
     onSubmit () {
+      this.addOrUpdateDepartment()
     },
     // 弹窗关闭时将数据清空
     handleCloseDialog (done) {
       this.newObject = {}
+      this.$refs['addNewForm'].resetFields()
       done()
+    },
+    addOrUpdateDepartment () {
+      if (this.newObject.departmentLevel === '是') {
+        this.newObject.departmentLevel = 0
+      } else {
+        this.newObject.departmentLevel = 1
+      }
+      addOrUpdateDepartment(this.newObject).then(response => {
+        this.$message({
+          type: 'success',
+          message: '修改成功!'
+        })
+        this.getListDepartment()
+        this.addDialog = false
+        this.newObject = {}
+        this.$refs['addNewForm'].resetFields()
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 获取列表
+    getListDepartment () {
+      let that = this
+      listDepartment(that.pageNumber, that.pageSize).then(response => {
+        that.listDepartment = response.data
+        if (that.listDepartment.length > 0) {
+          this.allTotal = response.total
+        } else {
+          this.allTotal = 0
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 获取部门不翻页列表
+    getAllListDepartment () {
+      let that = this
+      listDepartment().then(response => {
+        that.listAllDepartment = response.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 获取机构不翻页列表
+    getAllListInstitution () {
+      let that = this
+      listInstitution().then(response => {
+        that.listAllInstitution = response.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 获取单个部门信息进行修改
+    editRow (e) {
+      this.addType = 1
+      let that = this
+      getDepartment(this.listDepartment[e].id).then(response => {
+        if (response.data[0].departmentLevel === 0) {
+          response.data[0].departmentLevel = '是'
+        } else {
+          response.data[0].departmentLevel = '否'
+        }
+        that.newObject = response.data[0]
+        this.addDialog = true
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    // 删除
+    deleteRow (type, e) {
+      let _array = []
+      if (type === 1) {
+        _array.push(this.listDepartment[e].id)
+      } else {
+        if (this.multipleSelection.length > 0) {
+          this.multipleSelection.forEach(selectedItem => {
+            // 取出所有待删除选项id
+            _array.push(selectedItem.id)
+          })
+        } else {
+          this.$message({
+            message: '请勾选需要删除的数据',
+            type: 'warning'
+          })
+          return false
+        }
+      }
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteDepartment(_array).then(response => {
+          // that.projectList.splice(e, 1)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getListDepartment()
+        }).catch(error => {
+          console.log(error)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   },
   created () {
+    this.getListDepartment()
+    this.getAllListDepartment()
+    this.getAllListInstitution()
   },
   destroyed () {
   }

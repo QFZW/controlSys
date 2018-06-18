@@ -42,7 +42,9 @@ export function getInstitution (id) {
   return request({
     url: '/api/institution/getInstitution',
     method: 'get',
-    params: id
+    params: {
+      id
+    }
   })
 }
 /**
@@ -85,7 +87,7 @@ export function addOrUpdateDepartment (obj) {
  */
 export function listDepartment (pageNumber, pageSize) {
   return request({
-    url: '/api/institution/listDepartment',
+    url: '/api/department/listDepartment',
     method: 'get',
     params: {
       pageNumber,
@@ -101,9 +103,11 @@ export function listDepartment (pageNumber, pageSize) {
  */
 export function getDepartment (id) {
   return request({
-    url: '/api/institution/getDepartment',
+    url: '/api/department/getDepartment',
     method: 'get',
-    params: id
+    params: {
+      id
+    }
   })
 }
 /**
@@ -114,7 +118,7 @@ export function getDepartment (id) {
  */
 export function deleteDepartment (departmentIds) {
   return request({
-    url: '/api/institution/deleteDepartment',
+    url: '/api/department/deleteDepartment',
     method: 'post',
     data: {
       departmentIds
@@ -164,7 +168,9 @@ export function getUser (id) {
   return request({
     url: '/api/user/getUser',
     method: 'get',
-    params: id
+    params: {
+      id
+    }
   })
 }
 /**
@@ -186,17 +192,14 @@ export function deleteUser (userIds) {
  * 更改用户密码
  * @export
  * @param {any} id 用户id
- * @param {any} newPwd 新密码
+ * @param {any} newPwd 新密码 obj包括id 和 newPwd
  * @returns 成功或者失败。
  */
-export function updateUserPwd (id, newPwd) {
+export function updateUserPwd (obj) {
   return request({
     url: '/api/user/updateUserPwd',
     method: 'post',
-    data: {
-      id,
-      newPwd
-    }
+    data: obj
   })
 }
 /**
