@@ -7,19 +7,19 @@
       <div class="text">欢迎进入用户中心，您可以在系统用户内建立多个机构和用户账号，并分配权限，也可以在机构下建立子机构或部门岗位，每个机构具有独立的项目管理权限，子机构管理的项目将隶属于父机构。</div>
     </div>
     <div class="bar-list clearfix">
-      <div class="item">
+      <div @click="linkModule('/organization')" class="item">
         <p class="p1"><i class="iconfont">&#xe610;</i></p>
         <p class="p2">机构管理</p>
       </div>
-      <div class="item">
+      <div @click="linkModule('/department')" class="item">
         <p class="p1"><i class="iconfont">&#xe63c;</i></p>
         <p class="p2">部门岗位</p>
       </div>
-      <div class="item">
+      <div @click="linkModule('/userlist')" class="item">
         <p class="p1"><i class="iconfont">&#xe67c;</i></p>
         <p class="p2">用户列表</p>
       </div>
-      <div class="item">
+      <div @click="linkModule('/onlineuser')" class="item">
         <p class="p1"><i class="iconfont">&#xe69d;</i></p>
         <p class="p2">在线用户</p>
       </div>
@@ -39,6 +39,11 @@ export default {
     }
   },
   methods: {
+    linkModule: function (url) {
+      if (url) 
+      url ='/ucenter/user' + url
+      this.$router.push(url)
+    }
   },
   created () {
   },

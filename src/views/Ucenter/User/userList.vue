@@ -1,9 +1,18 @@
 <template>
   <div class="system-container">
       <div class="system-top clearfix">
-        <el-input placeholder="请输入内容" class="input-with-select">
-        </el-input>
-        <el-button slot="append" type="primary"  icon="el-icon-search"></el-button>
+        <span style="padding-right:10px">用户类型:</span>
+        <el-select v-model="userType" placeholder="请选择">
+          <el-option
+            v-for="item in userTypeList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
+        <!-- <el-input placeholder="请输入内容" class="input-with-select">
+        </el-input> -->
+        <!-- <el-button slot="append" type="primary" @click="goSearch()" icon="el-icon-search"></el-button> -->
         <!-- <div class="btn-block f-r">
           <el-button type="primary">查询</el-button>
         </div> -->
@@ -40,20 +49,22 @@
               width="100">
             </el-table-column>
             <el-table-column
-              prop="userType"
               label="用户类型"
               width="100">
+              <template slot-scope="scope">
+                {{userTypeList[scope.row.userType].name}}
+              </template>
             </el-table-column>
             <el-table-column
               prop="loginName"
               label="登录名"
               width="100">
             </el-table-column>
-             <el-table-column
+            <!-- <el-table-column
               prop="loginPwd"
               label="密码"
               width="100">
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column
               prop="place"
               label="职位"
@@ -118,7 +129,7 @@
           <el-form-item label="登录名" >
             <el-input class="width350" v-model="newUser.loginName"></el-input>
           </el-form-item>
-          <el-form-item label="密码" required>
+          <el-form-item v-if="addType===0" label="密码" required>
             <el-input class="width350" v-model="newUser.loginPwd"></el-input>
           </el-form-item>
           <el-form-item label="是否记住用户" required>
@@ -203,6 +214,7 @@ export default {
     return {
       addTypeText: ['添加', '修改'],
       addType: 0,
+      userType: 0,
       userTypeList: [
         {
           id: 0,
@@ -230,6 +242,11 @@ export default {
       newPwd: {}
     }
   },
+  watch: {
+    userType () {
+      this.goSearch()
+    }
+  },
   methods: {
     handleSelectionChange (val) {
       this.multipleSelection = val
@@ -241,6 +258,11 @@ export default {
     },
     handleSizeChange (val) {
       this.pageSize = val
+      this.getListUser()
+    },
+    goSearch () {
+      this.pageNumber = 1
+      this.pageSize = 10
       this.getListUser()
     },
     addUser () {
@@ -301,7 +323,7 @@ export default {
     // 获取列表
     getListUser () {
       let that = this
-      listUser(that.pageNumber, that.pageSize).then(response => {
+      listUser(that.pageNumber, that.pageSize, this.userType).then(response => {
         that.userList = response.data
         if (that.userList.length > 0) {
           this.allTotal = response.total

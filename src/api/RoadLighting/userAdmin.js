@@ -148,13 +148,14 @@ export function addOrUpdateUser (obj) {
  * @param {any} pageSize
  * @returns data
  */
-export function listUser (pageNumber, pageSize) {
+export function listUser (pageNumber, pageSize, userType) {
   return request({
     url: '/api/user/listUser',
     method: 'get',
     params: {
       pageNumber,
-      pageSize
+      pageSize,
+      userType
     }
   })
 }
@@ -212,5 +213,17 @@ export function listOnlineUser () {
     url: '/api/user/listOnlineUser',
     method: 'get',
     params: {}
+  })
+}
+/**
+ * 返回日志
+ * @export
+ * @returns list
+ */
+export function listUserOpLog (obj) {
+  return request({
+    url: '/api/user/listUserOpLog',
+    method: 'get',
+    params: obj
   })
 }

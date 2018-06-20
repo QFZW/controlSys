@@ -16,17 +16,17 @@
             <el-table-column
               fixed
               prop="codeNumber"
-              label="账号"
+              label="编码"
               width="100">
             </el-table-column>
              <el-table-column
-              prop="projectName"
-              label="名称"
+              prop="loginName"
+              label="登陆名"
               width="100">
             </el-table-column>
             <el-table-column
-              prop="countryName"
-              label="机构"
+              prop="place"
+              label="职位"
               width="100">
             </el-table-column>
             <el-table-column
@@ -35,17 +35,18 @@
               width="100">
             </el-table-column>
             <el-table-column
-              prop="cityName"
-              label="权限"
+              label="性别"
               width="100">
+              <template slot-scope="scope">
+                <span v-if="scope.row.userType===1">男</span>
+                <span v-else>女</span>
+              </template>
             </el-table-column>
             <el-table-column
-              label="状态"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="longitude"
-              label="登陆地点">
+              label="用户类型">
+              <template slot-scope="scope">
+                {{userTypeList[scope.row.userType].name}}
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -60,7 +61,21 @@ export default {
   name: 'organization',
   data () {
     return {
-      userList: []
+      userList: [],
+      userTypeList: [
+        {
+          id: 0,
+          name: '超级管理员用户'
+        },
+        {
+          id: 1,
+          name: '机构管理员用户'
+        },
+        {
+          id: 2,
+          name: '部门用户'
+        }
+      ]
     }
   },
   methods: {

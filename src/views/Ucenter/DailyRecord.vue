@@ -1,20 +1,20 @@
 <template>
   <div class="system-container">
       <div class="system-top clearfix">
-        <div class="item-block f-l">
+        <!-- <div class="item-block f-l">
           <span class="title">项目</span>
           <el-select v-model="value" placeholder="请选择">
-            <!-- <el-option
+            <el-option
               v-for="item in options"
               :key="item.value"
               :label="item.label"
               :value="item.value">
-            </el-option> -->
+            </el-option>
           </el-select>
-        </div>
+        </div> -->
         <div class="item-block f-l">
           <span class="title">类型</span>
-          <el-select v-model="value" placeholder="请选择">
+          <el-select v-model="searchObj.operationType" placeholder="请选择">
             <!-- <el-option
               v-for="item in options"
               :key="item.value"
@@ -23,30 +23,34 @@
             </el-option> -->
           </el-select>
         </div>
-        <div class="item-block f-l">
+        <!-- <div class="item-block f-l">
           <span class="title">包含</span>
           <el-select v-model="value" placeholder="请选择">
-            <!-- <el-option
+            <el-option
               v-for="item in options"
               :key="item.value"
               :label="item.label"
               :value="item.value">
-            </el-option> -->
+            </el-option>
           </el-select>
-        </div>
+        </div> -->
         <div class="item-block f-l">
           <span class="title">日期</span>
           <el-date-picker
-            style="width:260px"
-            v-model="value"
+            style="width:350px"
+            v-model="selectTime"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期">
           </el-date-picker>
         </div>
+        <div class="item-block f-l">
+          <span class="title">内容</span><el-input v-model="searchObj.content" placeholder="请输入内容" ></el-input>
+        </div>
+        
         <div class="btn-block f-r">
-          <el-button type="primary">查询</el-button>
+          <el-button @click="goSearch" type="primary">查询</el-button>
         </div>
       </div>
       <div class="system-center">
@@ -58,44 +62,30 @@
             style="width: 100%"
             header-row-class-name="datalist-header">
              <el-table-column
-              prop="projectName"
+              prop="loginName"
               fixed="left"
               label="账号"
               width="100">
             </el-table-column>
             <el-table-column
-              prop="countryName"
+              prop="userName"
               label="用户"
               width="100">
             </el-table-column>
             <el-table-column
-              prop="countryName"
-              label="项目"
-              width="100">
+              prop="operationDesc"
+              label="执行操作">
             </el-table-column>
-            <el-table-column
-              prop="countryName"
-              label="系统"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="countryName"
-              label="模块"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="provinceName"
-              label="执行操作"
-              width="100">
-            </el-table-column>
-            <el-table-column
+            <!-- <el-table-column
               prop="mem"
               label="描述">
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column
-              prop="countryName"
               label="操作时间"
-              width="100">
+              width="200">
+              <template slot-scope="scope">
+                {{scope.row.operationTime|timeFormat1}}
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -116,6 +106,8 @@
 </template>
 
 <script>
+import {listUserOpLog} from '@/api/RoadLighting/userAdmin'
+import '../../utils/filter.js'
 export default {
   name: 'DailyRecord',
   data () {
@@ -124,19 +116,53 @@ export default {
       pageSize: 10,
       currentPage: 1,
       allTotal: null,
-      List: []
+      List: [],
+      selectTime: null,
+      searchObj: {
+        content: '',
+        operationType: '',
+      }
     }
   },
   methods: {
     handleCurrentChange (val) {
       this.pageNumber = val
+      this.getList()
       // 翻页请求
     },
     handleSizeChange (val) {
       this.pageSize = val
+      this.getList()
+    },
+    selectTimeFun () {
+      if (this.selectTime !== null) {
+        this.searchObj.startDate = new Date(this.selectTime[0]).toString()
+        this.searchObj.endDate = new Date(this.selectTime[1]).toString()
+        console.log(this.searchObj)
+      }
+    },
+    goSearch () {
+      this.getList()
+    },
+    getList () {
+      let that = this
+      this.selectTimeFun()
+      this.searchObj.pageNumber = this.pageNumber
+      this.searchObj.pageSize = this.pageSize
+      listUserOpLog(this.searchObj).then(response => {
+        that.List = response.data
+        if (that.List.length > 0) {
+          this.allTotal = response.total
+        } else {
+          this.allTotal = 0
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     }
   },
   created () {
+    this.getList()
   },
   destroyed () {
   }
@@ -145,6 +171,9 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss">
 /* reset element-ui css */
+  .el-date-editor .el-range-separator{
+    width: 10%
+  }
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
