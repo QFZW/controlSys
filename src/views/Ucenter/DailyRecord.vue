@@ -48,7 +48,6 @@
         <div class="item-block f-l">
           <span class="title">内容</span><el-input v-model="searchObj.content" placeholder="请输入内容" ></el-input>
         </div>
-        
         <div class="btn-block f-r">
           <el-button @click="goSearch" type="primary">查询</el-button>
         </div>
@@ -120,7 +119,7 @@ export default {
       selectTime: null,
       searchObj: {
         content: '',
-        operationType: '',
+        operationType: ''
       }
     }
   },

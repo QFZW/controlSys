@@ -40,9 +40,10 @@ export default {
   },
   methods: {
     linkModule: function (url) {
-      if (url) 
-      url ='/ucenter/user' + url
-      this.$router.push(url)
+      if (url) {
+        url = '/ucenter/user' + url
+        this.$router.push(url)
+      }
     }
   },
   created () {
