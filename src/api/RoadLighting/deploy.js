@@ -342,3 +342,33 @@ export function deleteGIS (gisIDList, type) {
     }
   })
 }
+/**
+ * 控制柜的批量导出
+ * @export
+ * @param {any} eleboxIdList
+ * @returns
+ */
+export function exportElebox (eleboxIdList) {
+  return request({
+    url: '/api/roadlighting/exportElebox',
+    method: 'post',
+    data: {
+      eleboxIdList
+    }
+  })
+}
+/**
+ * 灯具的批量导出
+ * @export
+ * @param {any} lightIdList
+ * @returns
+ */
+export function exportLighting (lightIdList) {
+  return request({
+    url: '/api/roadlighting/exportLighting',
+    method: 'post',
+    data: {
+      lightIdList
+    }
+  })
+}

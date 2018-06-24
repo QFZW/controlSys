@@ -16,7 +16,16 @@
         <div class="system-center">
           <div class="operation-bar">
             <el-button icon='el-icon-plus' @click="addCabinet()" type="primary">增加</el-button>
-            <el-button icon='el-icon-upload2'>导入</el-button>
+            <el-upload
+              class="upload-demo"
+              :show-file-list = 'false'
+              action = "http://47.105.38.215:8080/nnlightctl/api/roadlighting/importElebox"
+              :on-success="uploadElBoxSuccess"
+              :on-error="uploadElBoxError"
+              name="batchEleboxFile">
+              <el-button icon='el-icon-upload2'>导入</el-button>
+            </el-upload>
+            <el-button icon='el-icon-download' @click="downloadEleBox">导出</el-button>
             <el-dropdown trigger="click" placement='bottom-start' @command="handleElboxEdit">
               <el-button icon='el-icon-edit'>批量编辑</el-button>
               <el-dropdown-menu slot="dropdown">
@@ -112,6 +121,17 @@
           <div class="operation-bar">
             <el-button icon='el-icon-plus' @click="addLamp()" type="primary">增加</el-button>
             <el-button icon='el-icon-plus' @click="addLampAll()" type="primary">批量增加</el-button>
+            <el-button icon='el-icon-plus' @click="addCabinet()" type="primary">增加</el-button>
+            <el-upload
+              class="upload-demo"
+              :show-file-list = 'false'
+              action = "http://47.105.38.215:8080/nnlightctl/api/roadlighting/importLighting"
+              :on-success="uploadLightSuccess"
+              :on-error="uploadLightError"
+              name="batchImportLightingFile">
+              <el-button icon='el-icon-upload2'>导入</el-button>
+            </el-upload>
+            <el-button icon='el-icon-download' @click="downloadLight">导出</el-button>
             <el-dropdown trigger="click" placement='bottom-start' @command="handleLightEdit">
               <el-button icon='el-icon-edit'>批量编辑</el-button>
               <el-dropdown-menu slot="dropdown">
@@ -994,7 +1014,7 @@
   </div>
 </template>
 <script>
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, exportElebox, exportLighting } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -1939,7 +1959,76 @@ export default {
       }).catch(error => {
         console.log(error)
       })
-    }
+    },
+    // 批量上传控制柜
+    uploadElBoxSuccess () {
+      this.$message({
+        type: 'success',
+        message: '上传成功'
+      })
+      this.getListElebox()
+    },
+    uploadElBoxError (error) {
+      console.log(error)
+    },
+    // 导出控制柜
+    downloadEleBox (){
+      let _array = []
+      if (this.boxMultipleSelection.length > 0) {
+        this.boxMultipleSelection.forEach(selectedItem => {
+          _array.push(selectedItem.id)
+        })
+      } else {
+        this.$message({
+          message: '请勾选需要导出的数据',
+          type: 'warning'
+        })
+        return false
+      }
+      exportElebox(_array).then(response => {
+        this.$message({
+          type: 'success',
+          message: '导出成功!'
+        })
+        this.boxMultipleSelection = []
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    uploadLightSuccess () {
+      this.$message({
+        type: 'success',
+        message: '上传成功'
+      })
+      this.getListElebox()
+    },
+    uploadLightError (error) {
+      console.log(error)
+    },
+    // 导出灯具
+    downloadLight (){
+      let _array = []
+      if (this.lightMultipleSelection.length > 0) {
+        this.lightMultipleSelection.forEach(selectedItem => {
+          _array.push(selectedItem.id)
+        })
+      } else {
+        this.$message({
+          message: '请勾选需要导出的数据',
+          type: 'warning'
+        })
+        return false
+      }
+      exportLighting(_array).then(response => {
+        this.$message({
+          type: 'success',
+          message: '导出成功!'
+        })
+        this.lightMultipleSelection = []
+      }).catch(error => {
+        console.log(error)
+      })
+    },
   },
   created () {
     this.getListGIS()
@@ -1975,6 +2064,9 @@ export default {
   .el-form-item__content{
     width: 160px
   }
+}
+.upload-demo{
+  display: inline-block;
 }
 </style>
 <style lang="scss" scoped>
