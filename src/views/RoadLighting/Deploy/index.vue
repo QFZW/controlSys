@@ -608,18 +608,26 @@
     <el-dialog title="新增灯具" width="1200px"
       :visible.sync="insertLanmpDialog" center>
       <div class="insert-lamp clearfix">
-        <p class="p-title">可选择</p>
         <div class="select-wrap">
+          <p class="p-title">可选择</p>
           <div class="operate-block clearfix">
             <a class="f-l" @click="addLamp()"><i class="iconfont ">&#xe648;</i>添加</a>
             <a class="f-l" @click="addLampAll()"><i class="iconfont ">&#xe648;</i>批量添加</a>
-            <a class="f-l"><i class="iconfont">&#xe605;</i>导入</a>
+            <el-upload
+              class="upload-demo"
+              :show-file-list = 'false'
+              action = "http://47.105.38.215:8080/nnlightctl/api/roadlighting/importLighting"
+              :on-success="uploadLightSuccess"
+              :on-error="uploadLightError"
+              name="batchImportLightingFile">
+              <a class="f-l" href="javascript:;"><i class="iconfont">&#xe605;</i>导入</a>
+            </el-upload>
           </div>
           <el-table
-            ref="multipleTable"
+            ref="lightTableOfLoof"
             :data="lightingList"
             tooltip-effect="dark"
-            height="320"
+            height="300"
             style="width: 100%"
             header-row-class-name="datalist-header"
             @selection-change="handleSelectionChangeLight">
@@ -661,10 +669,10 @@
           </div>
         </div>
         <div class="controll-wrap">
-          <div class="controll-btn">
+          <!-- <div class="controll-btn">
             <el-button size='small' icon="el-icon-arrow-left"></el-button>
-          </div>
-          <div class="controll-btn">
+          </div> -->
+          <div class="controll-btn" @click="goRightLoop">
             <el-button size='small' icon="el-icon-arrow-right"></el-button>
           </div>
         </div>
@@ -697,31 +705,29 @@
             </el-form-item>
           </el-form>
           <el-table
+            v-if="thisLoopList"
             ref="multipleTable"
-            :data="cabinetList"
+            :data="thisLoopList"
             tooltip-effect="dark"
-            height="350"
+            height="270"
             style="width: 100%"
-            header-row-class-name="datalist-header"
-            @selection-change="handleSelectionChangeBox">
-            <el-table-column type="selection" width="30"></el-table-column>
-            <el-table-column label="行号" width="50"></el-table-column>
-            <el-table-column label="灯杆" width="50"></el-table-column>
-            <el-table-column label="灯头号" width="65"></el-table-column>
-            <el-table-column label="终端" width="50"></el-table-column>
-            <el-table-column label="灯具型" width="65"></el-table-column>
-            <el-table-column label="终端输出" width="80"></el-table-column>
+            header-row-class-name="datalist-header">
+            <el-table-column fixed prop="uid" label="UID" width="60"></el-table-column>
+            <el-table-column prop="lamphead" label="灯头号" width="100"></el-table-column>
+            <el-table-column prop="lamppost" label="灯杆" width="100"></el-table-column>
+            <el-table-column prop="decay" label="光衰" width="100"></el-table-column>
+            <el-table-column prop="mem" label="备注"></el-table-column>
             <el-table-column fixed="right" label="操作">
               <template slot-scope="scope">
-                <el-button
+                <!-- <el-button
                   @click.native.prevent="editRow(scope.$index)"
                   type="text"
                   size="small">
                   编辑
-                </el-button>
+                </el-button> -->
                 <el-button
                   class="danger-text-btn"
-                  @click.native.prevent="deleteLightRow(1, scope.$index)"
+                  @click.native.prevent="deleteLightOfLoop(1, scope.$index)"
                   type="text"
                   size="small">
                   删除
@@ -735,7 +741,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="insertLanmpDialog = false">取 消</el-button>
-        <el-button @click="insertLanmpDialog = false" type="primary">确 定</el-button>
+        <el-button @click="updateLightBeEleboxBeLoop()" type="primary">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 编辑控制柜 -->
@@ -1014,7 +1020,9 @@
   </div>
 </template>
 <script>
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, exportElebox, exportLighting } from '@/api/RoadLighting/deploy'
+import axios from 'axios'
+import qs from 'qs'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -1240,7 +1248,11 @@ export default {
         uid: null,
         uidNum: 1,
         num: 1
-      }
+      },
+      //  一个备用的id 作为承载某些需要二次使用id的容器
+      useIdAfterTime: null,
+      // 获取指定回路的全部灯具，存储在当前数组
+      thisLoopList: []
     }
   },
   watch: {
@@ -1282,8 +1294,15 @@ export default {
         this.lightPageSizeBeifen = null
       }
     },
-    selectEleboxModelId: function (e) {
-      this.getListModelLoop(e)
+    selectEleboxModelId: function (val, oldVal) {
+      if (val) {
+        this.getListModelLoop(val)
+      }
+    },
+    selectModelLoopId: function (val, oldVal) {
+      if (val) {
+        this.getLoopLight(val)
+      }
     }
   },
   methods: {
@@ -1822,12 +1841,12 @@ export default {
       let _array = []
       if (this.lightMultipleSelection.length > 0) {
         this.lightMultipleSelection.forEach(selectedItem => {
-          // 取出所有待删除选项id
+          // 取出所有待设置选项id
           _array.push(selectedItem.id)
         })
       } else {
         this.$message({
-          message: '请勾选需要删除的数据',
+          message: '请勾选需要设置的数据',
           type: 'warning'
         })
         return false
@@ -1840,6 +1859,7 @@ export default {
         })
         this.lightMultipleSelection = []
         this.setLightBoxDialog = false
+        this.getListLighting()
       }).catch(error => {
         console.log(error)
       })
@@ -1913,6 +1933,7 @@ export default {
       // this.getListModelLoop(e)
     },
     getListModelLoop (e) {
+      this.useIdAfterTime = e //  一个备用的id，在提交成功后刷新数据使用
       listModelLoop(e).then(response => {
         this.listModelLoop = response.data
       }).catch(error => {
@@ -1956,6 +1977,7 @@ export default {
       console.log(this.splitNewLoopList)
       modelLoopSplite(this.selectModelLoopId, this.splitNewLoopList).then(response => {
         console.log(response)
+        this.getListModelLoop(this.useIdAfterTime)
       }).catch(error => {
         console.log(error)
       })
@@ -1972,7 +1994,7 @@ export default {
       console.log(error)
     },
     // 导出控制柜
-    downloadEleBox (){
+    downloadEleBox () {
       let _array = []
       if (this.boxMultipleSelection.length > 0) {
         this.boxMultipleSelection.forEach(selectedItem => {
@@ -1985,14 +2007,17 @@ export default {
         })
         return false
       }
-      exportElebox(_array).then(response => {
-        this.$message({
-          type: 'success',
-          message: '导出成功!'
-        })
+      let params = {
+        lightIdList: _array
+      }
+      params = qs.stringify(params, { allowDots: true })
+      let url = 'http://47.105.38.215:8080/nnlightctl/api/roadlighting/exportElebox'
+      axios.post(url, params, {ContentType: 'application/x-www-form-urlencoded', responseType: 'arraybuffer'}).then((res) => {
+        let blob = new Blob([res.data], {type: 'application/vnd.ms-excel'})
+        let objectUrl = URL.createObjectURL(blob)
+        window.location.href = objectUrl
         this.boxMultipleSelection = []
-      }).catch(error => {
-        console.log(error)
+      }).catch(function (res) {
       })
     },
     uploadLightSuccess () {
@@ -2000,13 +2025,13 @@ export default {
         type: 'success',
         message: '上传成功'
       })
-      this.getListElebox()
+      this.getListLighting()
     },
     uploadLightError (error) {
       console.log(error)
     },
     // 导出灯具
-    downloadLight (){
+    downloadLight () {
       let _array = []
       if (this.lightMultipleSelection.length > 0) {
         this.lightMultipleSelection.forEach(selectedItem => {
@@ -2019,16 +2044,72 @@ export default {
         })
         return false
       }
-      exportLighting(_array).then(response => {
-        this.$message({
-          type: 'success',
-          message: '导出成功!'
-        })
+      let params = {
+        lightIdList: _array
+      }
+      params = qs.stringify(params, { allowDots: true })
+      let url = 'http://47.105.38.215:8080/nnlightctl/api/roadlighting/exportLighting'
+      axios.post(url, params, {ContentType: 'application/x-www-form-urlencoded', responseType: 'arraybuffer'}).then((res) => {
+        let blob = new Blob([res.data], {type: 'application/vnd.ms-excel'})
+        let objectUrl = URL.createObjectURL(blob)
+        window.location.href = objectUrl
         this.lightMultipleSelection = []
+      }).catch(function (res) {
+      })
+    },
+    getLoopLight (e) {
+      getLoopLight(e).then(res => {
+        this.thisLoopList = res.data
+      })
+    },
+    goRightLoop () {
+      if (this.selectEleboxModelId && this.selectModelLoopId) {
+        for (var i = 0; i < this.lightMultipleSelection.length; i++) {
+          for (var j = 0; j < this.thisLoopList.length; j++) {
+            if (this.lightMultipleSelection[i].uid === this.thisLoopList[j].uid) {
+              this.lightMultipleSelection.splice(i, 1)
+            }
+          }
+        }
+        this.thisLoopList = this.thisLoopList.concat(this.lightMultipleSelection)
+        this.$refs.lightTableOfLoof.clearSelection()
+      } else {
+        this.$message({
+          message: '请选择模块、回路',
+          type: 'warning'
+        })
+      }
+    },
+    updateLightBeEleboxBeLoop () {
+      let _array = []
+      this.thisLoopList.forEach(selectedItem => {
+        // 取出所有待设置选项id
+        _array.push(selectedItem.id)
+      })
+      updateLightBeEleboxBeLoop(_array, this.eleboxIdBeifen, this.selectModelLoopId).then(response => {
+        this.insertLanmpDialog = false
       }).catch(error => {
         console.log(error)
       })
     },
+    deleteLightOfLoop (e) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.thisLoopList.splice(e, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    }
   },
   created () {
     this.getListGIS()

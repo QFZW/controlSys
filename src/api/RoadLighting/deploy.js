@@ -372,3 +372,37 @@ export function exportLighting (lightIdList) {
     }
   })
 }
+/**
+ * 获取指定回路的所有灯具
+ * @export
+ * @param {any} id
+ * @returns array
+ */
+export function getLoopLight (id) {
+  return request({
+    url: '/api/roadlighting/getLoopLight',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+/**
+ * 更新灯具所属控制柜和所属回路
+ * @export
+ * @param {any} lightIdList 变更所属控制柜的灯具id的数组
+ * beEleboxId 控制柜id
+ * modelLoopId 回路id
+ * @returns 成功或者失败
+ */
+export function updateLightBeEleboxBeLoop (lightIdList, beEleboxId, modelLoopId) {
+  return request({
+    url: '/api/roadlighting/updateLightBeEleboxBeLoop',
+    method: 'post',
+    data: {
+      lightIdList,
+      beEleboxId,
+      modelLoopId
+    }
+  })
+}
