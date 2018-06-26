@@ -406,3 +406,21 @@ export function updateLightBeEleboxBeLoop (lightIdList, beEleboxId, modelLoopId)
     }
   })
 }
+
+/**
+ *解除控制柜与灯具的所属关系
+ * @export
+ * @param {*} beEleboxId 控制柜id
+ * @param {*} lightIdList 灯具的id集合
+ * @returns
+ */
+export function unbindLightBeElebox (beEleboxId, lightIdList) {
+  return request({
+    url: '/api/roadlighting/unbindLightBeElebox',
+    method: 'post',
+    data: {
+      lightIdList,
+      beEleboxId
+    }
+  })
+}

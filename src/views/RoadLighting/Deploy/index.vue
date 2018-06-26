@@ -547,7 +547,7 @@
         <div class="operation-bar">
           <el-button icon='el-icon-plus' @click="insertLamp()" type="primary">批量增加</el-button>
           <!-- <el-button icon='el-icon-edit'>批量编辑</el-button> -->
-          <el-button icon='el-icon-delete'  @click="deleteLightRow(2)">批量删除</el-button>
+          <el-button icon='el-icon-delete'  @click="unbindLightBeElebox(2)">批量删除</el-button>
         </div>
         <el-table
           ref="multipleTable"
@@ -578,7 +578,7 @@
               </el-button>
               <el-button
                 class="danger-text-btn"
-                @click.native.prevent="deleteLightRow(1, scope.$index)"
+                @click.native.prevent="unbindLightBeElebox(1, scope.$index)"
                 type="text"
                 size="small">
                 删除
@@ -1022,7 +1022,7 @@
 <script>
 import axios from 'axios'
 import qs from 'qs'
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -2102,6 +2102,46 @@ export default {
         this.$message({
           type: 'success',
           message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    // 接触灯具和控制柜的联系
+    unbindLightBeElebox (type, e) {
+      let _array = []
+      if (type === 1) {
+        _array.push(this.lightingList[e].id)
+      } else {
+        if (this.lightMultipleSelection.length > 0) {
+          this.lightMultipleSelection.forEach(selectedItem => {
+            // 取出所有待解除选项id
+            _array.push(selectedItem.id)
+          })
+        } else {
+          this.$message({
+            message: '请勾选需要删除的数据',
+            type: 'warning'
+          })
+          return false
+        }
+      }
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        unbindLightBeElebox(this.eleboxId, _array).then(response => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.getListLighting()
+        }).catch(error => {
+          console.log(error)
         })
       }).catch(() => {
         this.$message({
