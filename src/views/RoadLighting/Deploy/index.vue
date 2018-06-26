@@ -145,7 +145,7 @@
           </div>
           <div class="data-list">
             <el-table
-              ref="multipleTable"
+              ref="lightListTable"
               :data="lightingList"
               tooltip-effect="dark"
               style="width: 100%"
@@ -1858,6 +1858,7 @@ export default {
           type: 'success'
         })
         this.lightMultipleSelection = []
+        this.$refs.lightListTable.clearSelection()
         this.setLightBoxDialog = false
         this.getListLighting()
       }).catch(error => {
