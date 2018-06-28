@@ -1,6 +1,17 @@
 <template>
   <div class="container">
-    
+    <div class="item">
+      <img src="@/assets/asset/index1.png">
+    </div>
+    <div class="item">
+      <img src="@/assets/asset/index2.png">
+    </div>
+    <div class="item">
+      <img src="@/assets/asset/index3.png">
+    </div>
+    <div class="item">
+      <img src="@/assets/asset/index4.png">
+    </div>
   </div>
 </template>
 <script>
@@ -15,5 +26,14 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
+  .container{
+    padding: 110px 100px;
+    .item{
+      width: 25%;
+      padding: 0 10px;
+      img{
+        width: 100%
+      }
+    }
+  }
 </style>

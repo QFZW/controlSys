@@ -199,6 +199,20 @@ export const constantRouterMap = [
       name: 'DailyRecord',
       meta: { title: '日志', icon: '' }
     }]
+  },
+  // 资产管理
+  {
+    path: '/assetadmin',
+    component: Layout,
+    name: 'AssetAdmin',
+    redirect: '/AssetAdmin/index',
+    meta: { title: '资产管理', icon: '&#xe668;' },
+    children: [{
+      path: 'index',
+      component: () => import('@/views/AssetAdmin/index'),
+      name: 'AssetAdminIndex',
+      meta: { title: '资产管理首页', icon: '' }
+    }]
   }
 ]
 export default new Router({

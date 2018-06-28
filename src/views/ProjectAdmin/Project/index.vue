@@ -5,33 +5,14 @@
           全球项目概况
         </p>
         <div class="item-list">
-          <span class="item">
-            <span>中国</span>
-            <span class="sub-num">{{allTotal}}</span>
+          <span v-for="(item, index) in countryList" v-bind:key="index" class="item">
+            <span>{{index}}</span>
+            <span class="sub-num">{{item}}</span>
           </span>
           <!-- <span class="item">
             <span>中国</span>
             <span class="sub-num">1</span>
           </span> -->
-        </div>
-        <div class="children-module">
-          <p class="title">
-            全球
-          </p>
-          <div class="item-list">
-            <span class="item">
-              <span>中国</span>
-              <span class="sub-num">{{allTotal}}</span>
-            </span>
-            <!-- <span class="item">
-              <span>中国</span>
-              <span class="sub-num">1</span>
-            </span>
-            <span class="item">
-              <span>中国</span>
-              <span class="sub-num">1</span>
-            </span> -->
-          </div>
         </div>
       </div>
       <div class="module-item module-item2">
@@ -67,23 +48,31 @@ export default {
     return {
       allTotal: 0,
       kzTotal: 0,
-      dTotal: 0
+      dTotal: 0,
+      countryList: {}
     }
   },
   methods: {
     getListProject () {
       let that = this
-      listProject(that.pageNumber, that.pageSize).then(response => {
+      let countryList = {}
+      listProject().then(response => {
         that.projectList = response.data
         if (that.projectList.length > 0) {
-          this.allTotal = response.total
           for (var i in response.data) {
-            this.kzTotal = this.kzTotal + response.data[i].eleboxs
-            this.dTotal = this.dTotal + response.data[i].lights
+            let project = response.data[i]
+            let countryName = project.contryName
+            if (countryList[countryName]) {
+              countryList[countryName] += 1
+            } else {
+              countryList[countryName] = 1
+            }
+            this.kzTotal = this.kzTotal + project.eleboxs
+            this.dTotal = this.dTotal + project.lights
           }
         } else {
-          this.allTotal = 0
         }
+        this.countryList = countryList
       }).catch(error => {
         console.log(error)
       })
