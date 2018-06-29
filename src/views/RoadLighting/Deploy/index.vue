@@ -1978,6 +1978,7 @@ export default {
       console.log(this.splitNewLoopList)
       modelLoopSplite(this.selectModelLoopId, this.splitNewLoopList).then(response => {
         console.log(response)
+        this.splitNewLoopList = []
         this.getListModelLoop(this.useIdAfterTime)
       }).catch(error => {
         console.log(error)
