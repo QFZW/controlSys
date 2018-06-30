@@ -172,7 +172,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="所属部门" required prop="nnlightctlInstitutionIdBelong">
+          <el-form-item label="所属部门" required>
             <el-select  v-model="newUser.nnlightctlInstitutionIdBelong">
               <el-option
                 v-for="(item , index) in listAllDepartment"

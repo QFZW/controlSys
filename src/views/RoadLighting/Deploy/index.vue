@@ -121,7 +121,6 @@
           <div class="operation-bar">
             <el-button icon='el-icon-plus' @click="addLamp()" type="primary">增加</el-button>
             <el-button icon='el-icon-plus' @click="addLampAll()" type="primary">批量增加</el-button>
-            <el-button icon='el-icon-plus' @click="addCabinet()" type="primary">增加</el-button>
             <el-upload
               class="upload-demo"
               :show-file-list = 'false'
@@ -465,7 +464,7 @@
       </div>
     </el-dialog>
     <!-- 增加灯具 -->
-    <el-dialog title="增加灯具" width="630px"
+    <el-dialog :title="addTypeText[addType]+'灯具'" width="630px"
       :visible.sync="addLampDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
       :before-close="handleCloseAddNewLight">
       <el-form ref="addNewLightForm" class="lamp-form" :model="newLight" :rules="addNewLightRules" label-width="140px" size='small'>
@@ -605,7 +604,7 @@
       </div>
     </el-dialog>
     <!-- 新增灯具 -->
-    <el-dialog title="新增灯具" width="1200px"
+    <el-dialog title="增加灯具" width="1200px"
       :visible.sync="insertLanmpDialog" center>
       <div class="insert-lamp clearfix">
         <div class="select-wrap">
@@ -1252,7 +1251,9 @@ export default {
       //  一个备用的id 作为承载某些需要二次使用id的容器
       useIdAfterTime: null,
       // 获取指定回路的全部灯具，存储在当前数组
-      thisLoopList: []
+      thisLoopList: [],
+      addTypeText: ['增加', '编辑'] ,
+      addType: 0
     }
   },
   watch: {
@@ -1431,6 +1432,7 @@ export default {
     },
     // 添加灯具
     addLamp () {
+      this.addType = 0
       this.addLampDialog = true
     },
     addLampAll () {
@@ -1708,6 +1710,7 @@ export default {
       })
     },
     editLightRow (e) {
+      this.addType = 1
       this.editIndex = e
       getLighting(this.lightingList[e].id).then(res => {
         this.newLight = res.data[0]
@@ -1907,6 +1910,7 @@ export default {
       // 弹窗关闭时将数据清空
       this.$refs['addNewLightForm'].resetFields()
       this.newLight = {}
+      console.log("111")
       done()
     },
     handleCloseAddMoreNewLight (done) {
@@ -2084,12 +2088,20 @@ export default {
     },
     updateLightBeEleboxBeLoop () {
       let _array = []
+      if (this.thisLoopList.length < 1) {
+        this.$message({
+          message: '请勾选数据',
+          type: 'warning'
+        })
+        return false
+      }
       this.thisLoopList.forEach(selectedItem => {
         // 取出所有待设置选项id
         _array.push(selectedItem.id)
       })
       updateLightBeEleboxBeLoop(_array, this.eleboxIdBeifen, this.selectModelLoopId).then(response => {
         this.insertLanmpDialog = false
+        this.thisLoopList = []
       }).catch(error => {
         console.log(error)
       })
