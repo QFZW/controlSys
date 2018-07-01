@@ -636,7 +636,7 @@
             <el-table-column prop="lamppost" label="灯杆" width="100"></el-table-column>
             <el-table-column prop="decay" label="光衰" width="100"></el-table-column>
             <el-table-column prop="mem" label="备注"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="60">
+            <!-- <el-table-column fixed="right" label="操作" width="60">
               <template slot-scope="scope">
                 <el-button
                   @click.native.prevent="editLightRow(scope.$index)"
@@ -644,17 +644,17 @@
                   size="small">
                   编辑
                 </el-button>
-                <!-- <el-button
+                <el-button
                   class="danger-text-btn"
                   @click.native.prevent="deleteLightRow(1, scope.$index)"
                   type="text"
                   size="small">
                   删除
-                </el-button> -->
+                </el-button>
               </template>
-            </el-table-column>
+            </el-table-column> -->
           </el-table>
-          <div class="pagelist-block">
+          <!-- <div class="pagelist-block">
             <el-pagination
               @size-change="handleSizeChangeLight"
               background
@@ -665,12 +665,12 @@
               layout="total, sizes, prev, pager, next, jumper"
               :total="allLightTotal">
             </el-pagination>
-          </div>
+          </div> -->
         </div>
         <div class="controll-wrap">
-          <!-- <div class="controll-btn">
+          <div class="controll-btn" @click="goLeftLoop">
             <el-button size='small' icon="el-icon-arrow-left"></el-button>
-          </div> -->
+          </div>
           <div class="controll-btn" @click="goRightLoop">
             <el-button size='small' icon="el-icon-arrow-right"></el-button>
           </div>
@@ -710,20 +710,22 @@
             tooltip-effect="dark"
             height="270"
             style="width: 100%"
-            header-row-class-name="datalist-header">
+            header-row-class-name="datalist-header"
+            @selection-change="handleSelectionThisLoopList">
+            <el-table-column type="selection" width="30"></el-table-column>
             <el-table-column fixed prop="uid" label="UID" width="60"></el-table-column>
             <el-table-column prop="lamphead" label="灯头号" width="100"></el-table-column>
             <el-table-column prop="lamppost" label="灯杆" width="100"></el-table-column>
             <el-table-column prop="decay" label="光衰" width="100"></el-table-column>
             <el-table-column prop="mem" label="备注"></el-table-column>
-            <el-table-column fixed="right" label="操作">
+            <!-- <el-table-column fixed="right" label="操作">
               <template slot-scope="scope">
-                <!-- <el-button
+                <el-button
                   @click.native.prevent="editRow(scope.$index)"
                   type="text"
                   size="small">
                   编辑
-                </el-button> -->
+                </el-button>
                 <el-button
                   class="danger-text-btn"
                   @click.native.prevent="deleteLightOfLoop(1, scope.$index)"
@@ -732,7 +734,7 @@
                   删除
                 </el-button>
               </template>
-            </el-table-column>
+            </el-table-column> -->
           </el-table>
         </div>
       </div>
@@ -1252,8 +1254,9 @@ export default {
       useIdAfterTime: null,
       // 获取指定回路的全部灯具，存储在当前数组
       thisLoopList: [],
-      addTypeText: ['增加', '编辑'] ,
-      addType: 0
+      addTypeText: ['增加', '编辑'],
+      addType: 0,
+      thisLoopListSelection: []
     }
   },
   watch: {
@@ -1276,8 +1279,8 @@ export default {
         this.eleboxIdBeifen = this.eleboxId
         this.lightPageNumberBeifen = this.lightPageNumber
         this.lightPageSizeBeifen = this.lightPageSize
-        this.lightPageNumber = 1
-        this.lightPageSize = 10
+        this.lightPageNumber = null
+        this.lightPageSize = null
         this.eleboxId = null
         this.notBe = 1
         this.getListLighting()
@@ -1297,6 +1300,7 @@ export default {
     },
     selectEleboxModelId: function (val, oldVal) {
       if (val) {
+        this.selectModelLoopId = null
         this.getListModelLoop(val)
       }
     },
@@ -1319,6 +1323,10 @@ export default {
     },
     handleSelectionChangeLight (val) {
       this.lightMultipleSelection = val
+    },
+    handleSelectionThisLoopList (val) {
+      console.log(val)
+      this.thisLoopListSelection = val
     },
     // 控制柜翻页相关
     handleSizeChangeBox (val) {
@@ -1910,7 +1918,6 @@ export default {
       // 弹窗关闭时将数据清空
       this.$refs['addNewLightForm'].resetFields()
       this.newLight = {}
-      console.log("111")
       done()
     },
     handleCloseAddMoreNewLight (done) {
@@ -2068,12 +2075,31 @@ export default {
         this.thisLoopList = res.data
       })
     },
+    goLeftLoop () {
+      console.log(this.thisLoopListSelection)
+      if (this.selectEleboxModelId && this.selectModelLoopId) {
+        for (var i = 0; i < this.thisLoopListSelection.length; i++) {
+          for (var j = 0; j < this.thisLoopList.length; j++) {
+            if (this.thisLoopListSelection[i].id === this.thisLoopList[j].id) {
+              this.thisLoopList.splice(j, 1)
+            }
+          }
+        }
+        this.lightingList = this.lightingList.concat(this.thisLoopListSelection)
+        // this.$refs.lightTableOfLoof.clearSelection()
+      } else {
+        this.$message({
+          message: '请选择模块、回路',
+          type: 'warning'
+        })
+      }
+    },
     goRightLoop () {
       if (this.selectEleboxModelId && this.selectModelLoopId) {
         for (var i = 0; i < this.lightMultipleSelection.length; i++) {
-          for (var j = 0; j < this.thisLoopList.length; j++) {
-            if (this.lightMultipleSelection[i].uid === this.thisLoopList[j].uid) {
-              this.lightMultipleSelection.splice(i, 1)
+          for (var j = 0; j < this.lightingList.length; j++) {
+            if (this.lightMultipleSelection[i].id === this.lightingList[j].id) {
+              this.lightingList.splice(j, 1)
             }
           }
         }
