@@ -3,7 +3,7 @@
  * @Author: Vincent
  * @Date: 2018-05-13 12:37:54
  * @Last Modified by: Vincent
- * @Last Modified time: 2018-06-10 22:57:32
+ * @Last Modified time: 2018-07-01 14:19:17
  */
 
 <template>
@@ -12,14 +12,15 @@
       <el-amap-marker v-for="(marker, index) in markers" :key="index" :template='marker.template' :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable" :vid="index"></el-amap-marker>
     </el-amap>
     <div class='search-wrap'>
-      <el-autocomplete
-        style='width:320px'
-        v-model='state4'
-        :fetch-suggestions='querySearchAsync'
-        placeholder='请输入内容'
-        @select='handleSelect'
-      ></el-autocomplete>
-      <el-button type='primary' icon='el-icon-search'></el-button>
+      <el-select v-model="selectProject" filterable placeholder="请输入内容">
+        <el-option
+          v-for="item in projects"
+          :key="item.id"
+          :label="item.projectName"
+          :value="item.id">
+        </el-option>
+      </el-select>
+      <el-button type='primary' icon='el-icon-search' @click="setCurrentProject"></el-button>
     </div>
   </div>
 </template>
@@ -27,6 +28,7 @@
 <script>
 import Vue from 'vue'
 import VueAMap from 'vue-amap'
+import { listProject } from '@/api/GisService/project'
 Vue.use(VueAMap)
 
 // 初始化vue-amap
@@ -44,135 +46,69 @@ export default {
   data () {
     return {
       zooms: '14',
-      markers: [ {
-        position: [112.5273285, 38.21515044],
-        events: {
-          click: () => {
-            console.log(this)
-            // this.$router.push('/gisservice/project')
-          },
-          dragend: (e) => {
-            console.log('---event---: dragend')
-            this.markers[0].position = [e.lnglat.lng, e.lnglat.lat]
-          }
-        },
-        visible: true,
-        draggable: false,
-        template: `
-          <el-tooltip placement="bottom-start">
-            <div slot="content">经度：112.5273285<br/>纬度：38.21515044</div>
-            <div class="project-mark">
-              <span class="project-name">xxx项目</span>
-              <i class="iconfont">&#xe638;</i>
-            </div>
-          </el-tooltip>
-        `
-      },
-      {
-        position: [102.5273285, 31.21515044],
-        events: {
-          click: () => {
-            console.log(this)
-            // this.$router.push('/gisservice/project')
-          },
-          dragend: (e) => {
-            console.log('---event---: dragend')
-            this.markers[0].position = [e.lnglat.lng, e.lnglat.lat]
-          }
-        },
-        visible: true,
-        draggable: false,
-        template: `
-          <el-tooltip placement="bottom-start">
-            <div slot="content">经度：102.5273285<br/>纬度：31.21515044</div>
-            <div class="project-mark">
-              <span class="project-name">xxx项目</span>
-              <i class="iconfont">&#xe638;</i>
-            </div>
-          </el-tooltip>
-        `
-      },
-      {
-        position: [111.5273285, 24.21515044],
-        events: {
-          click: () => {
-            console.log(this)
-            // this.$router.push('/gisservice/project')
-          },
-          dragend: (e) => {
-            console.log('---event---: dragend')
-            this.markers[0].position = [e.lnglat.lng, e.lnglat.lat]
-          }
-        },
-        visible: true,
-        draggable: false,
-        template: `
-          <el-tooltip placement="bottom-start">
-            <div slot="content">经度：111.5273285<br/>纬度：24.21515044</div>
-            <div class="project-mark">
-              <span class="project-name">xxx项目</span>
-              <i class="iconfont">&#xe638;</i>
-            </div>
-          </el-tooltip>
-        `
-      }],
+      markers: [],
       center: [108.59996, 32.197646],
       plugin: [{
         pName: 'MapType',
-        defaultType: 0,
-        events: {
-          init (instance) {
-            console.log(instance)
-          }
-        }
+        defaultType: 0
       },
       {
         pName: 'ToolBar',
         position: 'RB',
         liteStyle: true,
         locate: true,
-        events: {
-          init (instance) {
-            console.log(instance)
-          }
-        }
+        noIpLocate: true
       }],
-      restaurants: [],
-      state4: '',
-      timeout: null
+      projects: [],
+      selectProject: ''
     }
   },
   methods: {
-    loadAll () {
-      return [
-        { 'value': '路灯1', 'address': '长宁区新渔路144号' },
-        { 'value': '控制柜12', 'address': '上海市长宁区淞虹路661号' },
-        { 'value': '控制柜13', 'address': '上海市普陀区真北路988号创邑金沙谷6号楼113' },
-        { 'value': '控制柜14', 'address': '天山西路438号' },
-        { 'value': '控制柜15', 'address': '上海市长宁区金钟路968号1幢18号楼一层商铺18-101' },
-        { 'value': '控制柜16', 'address': '上海市长宁区金钟路633号' },
-        { 'value': '控制柜17', 'address': '上海市嘉定区曹安公路曹安路1685号' }
-      ]
+    loadProjectList () {
+      let that = this
+      let marks = []
+      listProject().then(res => {
+        let projectList = res.data
+        projectList.forEach(element => {
+          let _data = {
+            position: [element.longitude, element.latitude],
+            events: {
+              click: () => {
+                this.$router.push('/gisservice/lamp')
+              }
+            },
+            visible: true,
+            draggable: false,
+            template: `
+              <el-tooltip placement="bottom-start">
+                <div slot="content">经度：${element.latitude}<br/>纬度：${element.longitude}</div>
+                <div class="project-mark">
+                  <span class="project-name">${element.projectName}</span>
+                  <i class="iconfont">&#xe638;</i>
+                </div>
+              </el-tooltip>
+            `
+          }
+          marks.push(_data)
+        })
+        that.projects = projectList
+        that.markers = marks
+      })
     },
-    querySearchAsync (queryString, cb) {
-      var restaurants = this.restaurants
-      var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants
-      clearTimeout(this.timeout)
-      this.timeout = setTimeout(() => {
-        cb(results)
-      }, 3000 * Math.random())
-    },
-    createStateFilter (queryString) {
-      return (state) => {
-        return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
+    setCurrentProject () {
+      let pid = this.selectProject
+      if (pid) {
+        this.$router.push('/gisservice/lamp')
+      } else {
+        this.$message({
+          message: '请选择一个项目',
+          type: 'warning'
+        })
       }
-    },
-    handleSelect (item) {
-      console.log(item)
     }
   },
-  mounted () {
-    this.restaurants = this.loadAll()
+  created () {
+    this.loadProjectList()
   }
 }
 </script>

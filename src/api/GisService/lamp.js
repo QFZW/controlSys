@@ -2,7 +2,7 @@
  * @Author: Vincent
  * @Date: 2018-06-05 22:53:01
  * @Last Modified by: Vincent
- * @Last Modified time: 2018-06-12 20:57:49
+ * @Last Modified time: 2018-07-01 14:52:01
  */
 
 import request from '@/utils/request'
@@ -13,12 +13,13 @@ import request from '@/utils/request'
  * @param {*} projectId 项目id
  * @returns
  */
-export function listElebox (projectId) {
+export function listElebox (pageNumber, pageSize) {
   return request({
     url: '/api/gis/listElebox',
     method: 'get',
     params: {
-      projectId
+      pageNumber,
+      pageSize
     }
   })
 }

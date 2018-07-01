@@ -3,12 +3,19 @@
  * @Author: Vincent
  * @Date: 2018-05-13 12:37:54
  * @Last Modified by: Vincent
- * @Last Modified time: 2018-06-11 09:53:08
+ * @Last Modified time: 2018-07-02 00:55:19
  */
 
 <template>
   <div class='map-wrap'>
-    <el-amap vid='amapDemo' :center="center" :plugin='plugin'>
+    <el-amap vid='amapDemo' :zoom="zoom" :zooms="zooms" :center="center" :plugin='plugin'>
+      <!-- 控制柜 -->
+      <el-amap-marker v-for="(marker, index) in EleBoxMarks" :key="index" :template='marker.template' :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable" :offset='[-20, -8]' :vid="index"></el-amap-marker>
+      <!-- 灯具 -->
+      <el-amap-marker v-for="(marker, index) in LightMarks" :key="index" :template='marker.template' :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable" :offset='[-8, -10]' :vid="index" title="点击调节灯具信息"></el-amap-marker>
+      <!-- 连线 -->
+      <!-- <el-amap-polyline :editable="false"  v-for="(marker, index) in LightLine" :key="index"  :path="marker.path"></el-amap-polyline> -->
+      <el-amap-polyline v-for="(marker, index) in LightLine" :key="index"  :editable="marker.editable"  :path="marker.path" :events="marker.events" :strokeColor="marker.state === 1 ? '#17BEB0' : '#FF2851'"></el-amap-polyline>
     </el-amap>
     <!-- 搜索栏 -->
     <!-- <div class='search-wrap'>
@@ -21,7 +28,7 @@
       ></el-autocomplete>
       <el-button type='primary' icon='el-icon-search'></el-button>
     </div> -->
-    <el-tooltip :value='true' placement="bottom-start" effect="light">
+    <!-- <el-tooltip :value='true' placement="bottom-start" effect="light">
       <div slot="content">
         <div class="select-device">
           <el-tabs type="card">
@@ -47,7 +54,7 @@
       <div class="located-tool">
         <i class="iconfont">&#xe662;</i>
       </div>
-    </el-tooltip>
+    </el-tooltip> -->
     <!-- 工具栏 -->
     <div class="lamp-tool">
         <a class="tool-li tool-li-1" href="javascript:;" @click="getLightGroupList()"><span>灯具<br />分组</span></a>
@@ -58,6 +65,7 @@
     </div>
     <!-- 警告信息 -->
     <div class="sys-warnning" @click="sysWarnningDialog = true"><i class="iconfont">&#xe623;</i>警报信息</div>
+    <div class="shortcut-key" @click="shortcutKeyDialog = true"><i class="iconfont">&#xe609;</i>快捷键</div>
     <!-- 场景  ***start -->
     <el-dialog title="场景" :visible.sync="sceneDialog" width="540px" center>
       <div class="scene-dialog">
@@ -287,14 +295,22 @@
               <el-input type="textarea" v-model="addScene.desc" placeholder="请输入" style="width:500px" size='small'></el-input>
             </el-form-item>
             <el-form-item label="定时设置">
-              <el-date-picker
+              <el-time-picker
+                is-range
+                v-model="value5"
+                range-separator="至"
+                start-placeholder="开始时间"
+                end-placeholder="结束时间"
+                placeholder="选择时间范围">
+              </el-time-picker>
+              <!-- <el-date-picker
                 v-model="value7"
                 type="datetimerange"
                 align="center"
                 start-placeholder="开始时间"
                 end-placeholder="结束时间"
                 :default-time="['00:00:00', '00:00:00']">
-              </el-date-picker>
+              </el-date-picker> -->
             </el-form-item>
             <el-form-item label="">
               <el-checkbox v-model="checked">是否启用光照计</el-checkbox>
@@ -341,16 +357,6 @@
           <el-table-column prop='powerRating' label="额定功率"></el-table-column>
           <el-table-column prop='ratedElectricty' label="额定电流"></el-table-column>
           <el-table-column prop='ratedVoltage' label="额定电压"></el-table-column>
-          <!-- <el-table-column label="创建时间">
-            <template slot-scope="scope" >
-              {{scope.row.gmtCreated | timeFormat}}
-            </template>
-          </el-table-column>
-          <el-table-column label="更新时间">
-            <template slot-scope="scope">
-              {{scope.row.gmtUpdated | timeFormat}}
-            </template>
-          </el-table-column> -->
           <el-table-column label="使用时间">
             <template slot-scope="scope">
               {{scope.row.useDate | timeFormat}}
@@ -362,9 +368,9 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage3"
-            :page-size="100"
+            :page-size="5"
             layout="total, prev, pager, next, jumper"
-            :total="1000">
+            :total="10">
           </el-pagination>
         </div>
       </div>
@@ -413,13 +419,13 @@
         <div class="operate">
           <el-button type="text" icon='el-icon-plus' @click="addLampGroupDialog = true">新建灯具分组</el-button>
         </div>
-        <el-table ref="multipleTable"
+        <el-table
+          v-loading="loading.loadLampGroup"
           :data="lightGroupList"
           tooltip-effect="dark"
           style="width: 100%"
           height="340px"
-          header-row-class-name="datalist-header"
-          @selection-change="handleSelectionChange">>
+          header-row-class-name="datalist-header">
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column prop="cGroupName" label="灯具分组名称" width="140"></el-table-column>
           <el-table-column prop="mem" label="描述"></el-table-column>
@@ -450,99 +456,109 @@
     <!-- 新建灯具分组 -->
     <el-dialog title="新建灯具分组" :visible.sync="addLampGroupDialog" width="1100px" center>
       <div class="lamp-group-dialog">
-      <el-tabs v-model="activemode" @tab-click="handleClick">
-        <el-tab-pane label="地图模式" name="mapMode">
-          <div class="map-mode">
-            <el-amap vid='amapDemo2' :center="center" :plugin='plugins'></el-amap>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="控制柜模式" name="ctrlBoxMode">
-          <div class="transfer-wrap clearfix">
-            <div class="select-wrap">
-              <div class="title">可添加灯具列表</div>
-              <el-table
-                ref="multipleTable"
-                :data="cabinetList"
-                tooltip-effect="dark"
-                style="width: 100%"
-                header-row-class-name="datalist-header"
-                @selection-change="handleSelectionChangeBox">
-                <el-table-column type="selection" width="30"></el-table-column>
-                <el-table-column label="UID" width="100"></el-table-column>
-                <el-table-column label="灯杆" width="100"></el-table-column>
-                <el-table-column label="灯头号"></el-table-column>
-                <el-table-column label="经度" width="60"></el-table-column>
-                <el-table-column label="纬度" width="60"></el-table-column>
-              </el-table>
+        <div class="form-wrap">
+          <el-form :model="addScene" ref="addScene" label-width="120px">
+            <el-form-item label="灯具分组名称" required  prop="name">
+              <el-input size='small' style="width:360px"></el-input>
+            </el-form-item>
+            <el-form-item label="描述" required prop="desc">
+              <el-input type="textarea" placeholder="请输入" style="width:500px" size='small'></el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+        <el-tabs v-model="activemode" @tab-click="handleClick">
+          <el-tab-pane label="地图模式" name="mapMode">
+            <div class="map-mode">
+              <el-amap vid='amapDemo2' :center="center" :plugin='plugins'></el-amap>
             </div>
-            <div class="controll-wrap">
-              <div class="controll-btn">
-                <el-button size='small' icon="el-icon-arrow-left"></el-button>
+          </el-tab-pane>
+          <el-tab-pane label="控制柜模式" name="ctrlBoxMode">
+            <div class="transfer-wrap clearfix">
+              <div class="select-wrap">
+                <div class="title">可添加灯具列表</div>
+                <el-table
+                  ref="multipleTable"
+                  :data="cabinetList"
+                  tooltip-effect="dark"
+                  style="width: 100%"
+                  header-row-class-name="datalist-header"
+                  @selection-change="handleSelectionChangeBox">
+                  <el-table-column type="selection" width="30"></el-table-column>
+                  <el-table-column label="UID" width="100"></el-table-column>
+                  <el-table-column label="灯杆" width="100"></el-table-column>
+                  <el-table-column label="灯头号"></el-table-column>
+                  <el-table-column label="经度" width="60"></el-table-column>
+                  <el-table-column label="纬度" width="60"></el-table-column>
+                </el-table>
               </div>
-              <div class="controll-btn">
-                <el-button size='small' icon="el-icon-arrow-right"></el-button>
+              <div class="controll-wrap">
+                <div class="controll-btn">
+                  <el-button size='small' icon="el-icon-arrow-left"></el-button>
+                </div>
+                <div class="controll-btn">
+                  <el-button size='small' icon="el-icon-arrow-right"></el-button>
+                </div>
               </div>
-            </div>
-            <div class="select-wrap">
-              <div class="title">已添加灯具列表</div>
-              <el-table
-                ref="multipleTable"
-                :data="cabinetList"
-                tooltip-effect="dark"
-                style="width: 100%"
-                header-row-class-name="datalist-header"
-                @selection-change="handleSelectionChangeBox">
-                <el-table-column type="selection" width="30"></el-table-column>
-                <el-table-column label="UID" width="100"></el-table-column>
-                <el-table-column label="灯杆" width="100"></el-table-column>
-                <el-table-column label="灯头号"></el-table-column>
-                <el-table-column label="经度" width="60"></el-table-column>
-                <el-table-column label="纬度" width="60"></el-table-column>
-              </el-table>
-            </div>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="组组模式" name="groupMode">
-           <div class="transfer-wrap clearfix">
-            <div class="select-wrap">
-              <div class="title">可添加灯具分组</div>
-              <el-table
-                ref="multipleTable"
-                :data="cabinetList"
-                tooltip-effect="dark"
-                style="width: 100%"
-                header-row-class-name="datalist-header"
-                @selection-change="handleSelectionChangeBox">
-                <el-table-column type="selection" width="30"></el-table-column>
-                <el-table-column label="灯具分组名称" width="140"></el-table-column>
-                <el-table-column label="描述"></el-table-column>
-              </el-table>
-            </div>
-            <div class="controll-wrap">
-              <div class="controll-btn">
-                <el-button size='small' icon="el-icon-arrow-left"></el-button>
-              </div>
-              <div class="controll-btn">
-                <el-button size='small' icon="el-icon-arrow-right"></el-button>
+              <div class="select-wrap">
+                <div class="title">已添加灯具列表</div>
+                <el-table
+                  ref="multipleTable"
+                  :data="cabinetList"
+                  tooltip-effect="dark"
+                  style="width: 100%"
+                  header-row-class-name="datalist-header"
+                  @selection-change="handleSelectionChangeBox">
+                  <el-table-column type="selection" width="30"></el-table-column>
+                  <el-table-column label="UID" width="100"></el-table-column>
+                  <el-table-column label="灯杆" width="100"></el-table-column>
+                  <el-table-column label="灯头号"></el-table-column>
+                  <el-table-column label="经度" width="60"></el-table-column>
+                  <el-table-column label="纬度" width="60"></el-table-column>
+                </el-table>
               </div>
             </div>
-            <div class="select-wrap">
-              <div class="title">已添加灯具分组</div>
-              <el-table
-                ref="multipleTable"
-                :data="cabinetList"
-                tooltip-effect="dark"
-                style="width: 100%"
-                header-row-class-name="datalist-header"
-                @selection-change="handleSelectionChangeBox">
-                <el-table-column type="selection" width="30"></el-table-column>
-                <el-table-column label="灯具分组名称" width="140"></el-table-column>
-                <el-table-column label="描述"></el-table-column>
-              </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="组组模式" name="groupMode">
+            <div class="transfer-wrap clearfix">
+              <div class="select-wrap">
+                <div class="title">可添加灯具分组</div>
+                <el-table
+                  ref="multipleTable"
+                  :data="cabinetList"
+                  tooltip-effect="dark"
+                  style="width: 100%"
+                  header-row-class-name="datalist-header"
+                  @selection-change="handleSelectionChangeBox">
+                  <el-table-column type="selection" width="30"></el-table-column>
+                  <el-table-column label="灯具分组名称" width="140"></el-table-column>
+                  <el-table-column label="描述"></el-table-column>
+                </el-table>
+              </div>
+              <div class="controll-wrap">
+                <div class="controll-btn">
+                  <el-button size='small' icon="el-icon-arrow-left"></el-button>
+                </div>
+                <div class="controll-btn">
+                  <el-button size='small' icon="el-icon-arrow-right"></el-button>
+                </div>
+              </div>
+              <div class="select-wrap">
+                <div class="title">已添加灯具分组</div>
+                <el-table
+                  ref="multipleTable"
+                  :data="cabinetList"
+                  tooltip-effect="dark"
+                  style="width: 100%"
+                  header-row-class-name="datalist-header"
+                  @selection-change="handleSelectionChangeBox">
+                  <el-table-column type="selection" width="30"></el-table-column>
+                  <el-table-column label="灯具分组名称" width="140"></el-table-column>
+                  <el-table-column label="描述"></el-table-column>
+                </el-table>
+              </div>
             </div>
-          </div>
-        </el-tab-pane>
-      </el-tabs>
+          </el-tab-pane>
+        </el-tabs>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addLampGroupDialog = false" size="small">取 消</el-button>
@@ -583,6 +599,173 @@
         <el-button type="primary" @click="sysWarnningDialog = false" size="small">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 快捷键 -->
+    <el-dialog title="设置快捷键" :visible.sync="shortcutKeyDialog" width="700px" center>
+      <div class="shortcut-wrap">
+        <el-row>
+          <el-col :span="12">
+            <div class="grid-content">
+              <div class="select-wrap">
+                <span>快捷键1</span>
+                <el-select v-model="value" placeholder="选择场景">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+              <div class="select-wrap">
+                <span>快捷键2</span>
+                <el-select v-model="value" placeholder="选择场景">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+              <div class="select-wrap">
+                <span>快捷键3</span>
+                <el-select v-model="value" placeholder="选择场景">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+              <div class="select-wrap">
+                <span>快捷键4</span>
+                <el-select v-model="value" placeholder="选择场景">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="grid-content">
+              <div class="select-wrap">
+                <span>快捷键1</span>
+                <el-select v-model="value" placeholder="选择场景">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+              <div class="select-wrap">
+                <span>快捷键2</span>
+                <el-select v-model="value" placeholder="选择场景">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+              <div class="select-wrap">
+                <span>快捷键3</span>
+                <el-select v-model="value" placeholder="选择场景">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+              <div class="select-wrap">
+                <span>快捷键4</span>
+                <el-select v-model="value" placeholder="选择场景">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="shortcutKeyDialog = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="shortcutKeyDialog = false" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 灯具信息调节 -->
+    <el-dialog title="灯具信息调节" :visible.sync="loghtInfoDialog" width="700px" center>
+      <div class="lightinfo-wrap">
+        <el-row>
+          <el-col :span="12">
+            <div class="info">
+              灯具坐标：<span>经度：122.12312</span><span>纬度：22.12123</span>
+            </div>
+          </el-col>
+          <el-col :span="12">光衰：<span>10年</span></el-col>
+        </el-row>
+        <el-row style="margin: 20px 0">
+          <el-col :span="12">
+            <div class="light-wrap">
+              <i class="iconfont">&#xe62b;</i>
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <div class="select-btn">
+              <div class="btn-wrap">
+                <el-button style="width:90px" size="medium">半开</el-button>
+              </div>
+              <div class="btn-wrap">
+                <el-button type="primary" style="width:90px" size="medium">80%</el-button>
+              </div>
+              <div class="btn-wrap">
+                <el-button style="width:90px" size="medium">70%</el-button>
+              </div>
+              <div class="btn-wrap">
+                <el-button style="width:90px" size="medium">40%</el-button>
+              </div>
+              <div class="btn-wrap">
+                <el-button style="width:90px" size="medium">30%</el-button>
+              </div>
+              <div class="btn-wrap">
+                <el-button style="width:90px" size="medium">10%</el-button>
+              </div>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <!-- dqw -->
+          </el-col>
+        </el-row>
+        <el-table
+          tooltip-effect="dark"
+          style="width: 100%"
+          height="120px"
+          header-row-class-name="datalist-header">
+          <el-table-column prop="cGroupName" label="灯具型号" width="140"></el-table-column>
+          <el-table-column prop="mem" label="资产编号"></el-table-column>
+          <el-table-column prop="mem" label="灯杆"></el-table-column>
+          <el-table-column prop="mem" label="生产日期"></el-table-column>
+          <el-table-column fixed="right" label="使用日期" width="100"></el-table-column>
+        </el-table>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="loghtInfoDialog = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="loghtInfoDialog = false" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -603,18 +786,16 @@ VueAMap.initAMapApiLoader({
   v: '1.4.4'
 })
 
-// lazyAMapApiLoaderInstance.load().then(() => {
-//   // your code ...
-//   this.map = new AMap.Map('amapContainer', {
-//     center: new AMap.LngLat(121.59996, 31.197646)
-//   })
-// })
-
 export default {
   name: 'GisIndex',
   data () {
     return {
+      // 控制柜图标示例
+      EleBoxMarks: [],
+      LightMarks: [],
       center: [108.59996, 32.197646],
+      zoom: 17,
+      zooms: [14, 18],
       plugin: [{
         pName: 'MapType',
         defaultType: 0,
@@ -629,6 +810,7 @@ export default {
         position: 'RB',
         liteStyle: true,
         locate: true,
+        noIpLocate: true,
         events: {
           init (instance) {
             console.log(instance)
@@ -650,9 +832,6 @@ export default {
         desc: 'wqlwlqwl'
       }],
       addScene: {},
-      restaurants: [],
-      state4: '',
-      timeout: null,
       sceneDialog: false,
       addSceneDialog: false,
       selectlampGroupDialog: false,
@@ -664,7 +843,12 @@ export default {
       lampGroupDialog: false,
       addLampGroupDialog: false,
       sysWarnningDialog: false,
+      shortcutKeyDialog: false,
+      loghtInfoDialog: false,
       activemode: 'mapMode',
+      loading: {
+        loadLampGroup: false
+      },
       addScenerRules: {
         name: [
           { required: true, message: '请输入场景名称', trigger: 'blur' },
@@ -778,23 +962,20 @@ export default {
     getLightGroupList () {
       // 按条件获取分页的灯具分组数据
       let that = this
+      that.loading.loadLampGroup = true
+      that.lampGroupDialog = true
       listLightGroup(1, 10).then(res => {
         that.lightGroupList = res.data
-        that.lampGroupDialog = true
-      }).catch(error => {
-        console.log(error)
-      })
+        that.loading.loadLampGroup = false
+      }).catch(() => {})
     },
     getLightList () {
       // 获取项目下全部灯具
       let that = this
-      that.lampsDialog = true
       listLighting().then(res => {
         that.lightList = res.data
-        console.log(res.data)
-      }).catch(error => {
-        console.log(error)
-      })
+        that.lampsDialog = true
+      }).catch(() => {})
     },
     getEleboxList () {
       // 获取项目下全部控制柜
@@ -802,21 +983,15 @@ export default {
       listElebox().then(res => {
         that.EleboxList = res.data
         that.ctrlBoxDialog = true
-        console.log(res.data)
-      }).catch(error => {
-        console.log(error)
-      })
+      }).catch(() => {})
     },
     getSwitchTaskList () {
-      // 获取项目下全部控制柜
+      // 获取任务开关
       let that = this
       listSwitchTask(1, 10).then(res => {
         that.switchTaskList = res.data
         that.taskSwitchDialog = true
-        console.log(res.data)
-      }).catch(error => {
-        console.log(error)
-      })
+      }).catch(() => {})
     },
     getSceneList () {
       // 按搜索条件获取分页的场景模式数据
@@ -824,14 +999,142 @@ export default {
       listScene(1, 10).then(res => {
         that.sceneList = res.data
         that.sceneDialog = true
-        console.log(res.data)
-      }).catch(error => {
-        console.log(error)
+      }).catch(() => {})
+    },
+    editLightInfo () {
+      this.loghtInfoDialog = true
+    },
+    generalEleboxMarks (elebox) {
+      // 生成控制柜地图标
+      let that = this
+      let eleboxMarks = []
+      elebox.forEach(element => {
+        let _data = {
+          position: [element.longitude, element.latitude],
+          events: {
+            click: () => {
+              that.$router.push('/gisservice/lamp')
+            }
+          },
+          visible: true,
+          draggable: false,
+          template: `
+            <div class="elebox-mark">
+              <i class="iconfont">&#xe602;</i>
+            </div>
+          `
+        }
+        eleboxMarks.push(_data)
       })
+      that.EleBoxMarks = eleboxMarks
+    },
+    generalLightMarks (lightList) {
+      // 生成灯具地图标
+      lightList = [{
+        longitude: '113.939800',
+        latitude: '22.512570',
+        state: 1
+      },
+      {
+        longitude: '113.940400',
+        latitude: '22.512570',
+        state: 1
+      },
+      {
+        longitude: '113.940400',
+        latitude: '22.511870',
+        state: 1
+      },
+      {
+        longitude: '113.940500',
+        latitude: '22.513170',
+        state: 0
+      }]
+      // 生成控制柜地图标
+      let that = this
+      let lightMarks = []
+      lightList.forEach(element => {
+        let _data = {
+          position: [element.longitude, element.latitude],
+          events: {
+            click: () => {
+              that.editLightInfo()
+            }
+          },
+          visible: true,
+          draggable: false,
+          template: `
+            <div class="light-mark">
+              <i class="iconfont ${element.state === 1 ? '' : 'not-work'}">&#xe60b;</i>
+            </div>
+          `
+        }
+        lightMarks.push(_data)
+      })
+      that.LightMarks = lightMarks
+    },
+    generalLightLine (devices) {
+      // 连线
+      devices = [{
+        path: [[113.938930, 22.512570], [113.939800, 22.512570]],
+        events: {
+          click (e) {
+            console.log(e, '点击了连线')
+          }
+        },
+        editable: false,
+        state: 1
+      },
+      {
+        path: [[113.939800, 22.512570], [113.940400, 22.512570]],
+        events: {
+          click (e) {
+            console.log(e, '点击了连线')
+          }
+        },
+        editable: false,
+        state: 1
+      },
+      {
+        path: [[113.940400, 22.512570], [113.940400, 22.511870]],
+        events: {
+          click (e) {
+            console.log(e, '点击了连线')
+          }
+        },
+        editable: false,
+        state: 1
+      },
+      {
+        path: [[113.940500, 22.513170], [113.939800, 22.512570]],
+        events: {
+          click (e) {
+            console.log(e, '点击了连线')
+          }
+        },
+        editable: false,
+        state: 0
+      }]
+      // 生成控制柜地图标
+      let that = this
+      that.LightLine = devices
+      console.log(that.LightLine)
+    },
+    setCenter (longitude, latitude) {
+      // 经度 纬度
+      this.center = [longitude, latitude]
     }
   },
-  mounted () {
-    this.restaurants = this.loadAll()
+  created () {
+    let that = this
+    // 初始化中心点坐标
+    listElebox().then(res => {
+      that.EleboxList = res.data
+      that.setCenter(res.data[0].longitude, res.data[0].latitude)
+      that.generalEleboxMarks(res.data)
+      that.generalLightMarks([])
+      that.generalLightLine([])
+    }).catch(() => {})
   }
 }
 </script>
@@ -919,6 +1222,7 @@ export default {
   padding: 10px 15px;
   text-align: center;
   background: #FAE58C;
+  box-shadow: 2px 3px 4px 0 rgba($color: #CCCACA, $alpha: .5);
   font-size: 14px;
   cursor: pointer;
   .iconfont{
@@ -928,6 +1232,38 @@ export default {
     font-size: 20px;
     margin-right: 10px;
     vertical-align: middle;
+  }
+}
+.shortcut-key{
+  position: absolute;
+  top: 15px;
+  right: 230px;
+  padding: 10px 15px;
+  text-align: center;
+  background: #ffffff;
+  box-shadow: 2px 3px 4px 0 rgba($color: #CCCACA, $alpha: .5);
+  font-size: 14px;
+  cursor: pointer;
+  .iconfont{
+    position: relative;
+    top: 1px;
+    color: #999999;
+    font-size: 20px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+}
+.shortcut-wrap{
+  padding: 20px 20px;
+  .grid-content{
+    padding-left: 25px;
+  }
+  .select-wrap{
+    span{
+      margin-right: 5px;
+      color: #333333;
+    }
+    padding-bottom: 10px;
   }
 }
 .system-warning{
@@ -976,13 +1312,16 @@ export default {
   margin-bottom: 120px;
 }
 .lamp-group-dialog{
-  height: 540px;
+  height: 580px;
+  .el-form-item{
+    margin-bottom: 15px;
+  }
   .map-mode{
     height: 100%;
     width: 100%;
   }
   .el-tab-pane{
-    height: 470px;
+    height: 400px;
   }
 }
 .transfer-wrap{
@@ -990,7 +1329,7 @@ export default {
     padding:20px;
     float: left;
     width: 490px;
-    height: 470px;
+    height: 400px;
     border:1px solid #dedede;
     box-sizing:border-box;
   }
@@ -1001,10 +1340,57 @@ export default {
     padding-top: 150px;
     float: left;
     width: 80px;
-    height: 470px;
+    height: 400px;
     text-align: center;
     .controll-btn {
       margin: 20px 0;
+    }
+  }
+}
+.lightinfo-wrap{
+  .info{
+    color: #FF947D;
+    span{
+      margin-right: 10px;
+      color: #999999;
+    }
+  }
+  .light-wrap{
+    height: 290px;
+    width: 320px;
+    position: relative;
+    border: 1px #EBEBEB solid;
+    .iconfont{
+      position: absolute;
+      top: 130px;
+      left: 70px;
+      font-size: 180px;
+      color: #F8E71C;
+    }
+  }
+  .select-btn{
+    margin-bottom: -21px;
+  }
+  .btn-wrap{
+    padding-bottom: 15px;
+  }
+}
+</style>
+<style lang="scss">
+.elebox-mark{
+  .iconfont{
+    color: #5789FA;
+    font-size: 36px;
+  }
+}
+.light-mark{
+  .iconfont{
+    color: #ffeb00;
+    font-size: 16px;
+    box-shadow: 0 0 4px 0 rgba(0,0,0,.4);
+    border-radius: 50%;
+    &.not-work{
+      color: #DADAD6;
     }
   }
 }

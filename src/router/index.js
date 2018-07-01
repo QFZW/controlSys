@@ -32,6 +32,7 @@ export const constantRouterMap = [
     },
     {
       path: 'lamp',
+      // hidden: true,
       component: () => import('@/views/GisService/Lamp/index'),
       name: 'Lamp',
       meta: { title: '灯具地理信息', icon: '' }
