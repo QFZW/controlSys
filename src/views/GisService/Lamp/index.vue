@@ -10,12 +10,12 @@
   <div class='map-wrap'>
     <el-amap vid='amapDemo' :zoom="zoom" :zooms="zooms" :center="center" :plugin='plugin'>
       <!-- 控制柜 -->
-      <el-amap-marker v-for="(marker, index) in EleBoxMarks" :key="index" :template='marker.template' :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable" :offset='[-20, -8]' :vid="index"></el-amap-marker>
+      <el-amap-marker v-for="(marker, index) in EleBoxMarks" :key="index + 'a'" :template='marker.template' :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable" :offset='[-20, -8]' :vid="index"></el-amap-marker>
       <!-- 灯具 -->
-      <el-amap-marker v-for="(marker, index) in LightMarks" :key="index" :template='marker.template' :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable" :offset='[-8, -10]' :vid="index" title="点击调节灯具信息"></el-amap-marker>
+      <el-amap-marker v-for="(marker, index) in LightMarks" :key="index + 'b'" :template='marker.template' :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable" :offset='[-8, -10]' :vid="index" title="点击调节灯具信息"></el-amap-marker>
       <!-- 连线 -->
       <!-- <el-amap-polyline :editable="false"  v-for="(marker, index) in LightLine" :key="index"  :path="marker.path"></el-amap-polyline> -->
-      <el-amap-polyline v-for="(marker, index) in LightLine" :key="index"  :editable="marker.editable"  :path="marker.path" :events="marker.events" :strokeColor="marker.state === 1 ? '#17BEB0' : '#FF2851'"></el-amap-polyline>
+      <el-amap-polyline v-for="(marker, index) in LightLine" :key="index + 'c'"  :editable="marker.editable"  :path="marker.path" :events="marker.events" :strokeColor="marker.state === 1 ? '#17BEB0' : '#FF2851'"></el-amap-polyline>
     </el-amap>
     <!-- 搜索栏 -->
     <!-- <div class='search-wrap'>
@@ -607,7 +607,7 @@
             <div class="grid-content">
               <div class="select-wrap">
                 <span>快捷键1</span>
-                <el-select v-model="value" placeholder="选择场景">
+                <el-select v-model="valuesation" placeholder="选择场景">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -618,7 +618,7 @@
               </div>
               <div class="select-wrap">
                 <span>快捷键2</span>
-                <el-select v-model="value" placeholder="选择场景">
+                <el-select v-model="valuesation" placeholder="选择场景">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -629,7 +629,7 @@
               </div>
               <div class="select-wrap">
                 <span>快捷键3</span>
-                <el-select v-model="value" placeholder="选择场景">
+                <el-select v-model="valuesation" placeholder="选择场景">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -640,7 +640,7 @@
               </div>
               <div class="select-wrap">
                 <span>快捷键4</span>
-                <el-select v-model="value" placeholder="选择场景">
+                <el-select v-model="valuesation" placeholder="选择场景">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -655,7 +655,7 @@
             <div class="grid-content">
               <div class="select-wrap">
                 <span>快捷键1</span>
-                <el-select v-model="value" placeholder="选择场景">
+                <el-select v-model="valuesation" placeholder="选择场景">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -666,7 +666,7 @@
               </div>
               <div class="select-wrap">
                 <span>快捷键2</span>
-                <el-select v-model="value" placeholder="选择场景">
+                <el-select v-model="valuesation" placeholder="选择场景">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -677,7 +677,7 @@
               </div>
               <div class="select-wrap">
                 <span>快捷键3</span>
-                <el-select v-model="value" placeholder="选择场景">
+                <el-select v-model="valuesation" placeholder="选择场景">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -688,7 +688,7 @@
               </div>
               <div class="select-wrap">
                 <span>快捷键4</span>
-                <el-select v-model="value" placeholder="选择场景">
+                <el-select v-model="valuesation" placeholder="选择场景">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -793,6 +793,16 @@ export default {
       // 控制柜图标示例
       EleBoxMarks: [],
       LightMarks: [],
+      LightLine: '',
+      value5: '',
+      valuesation: '',
+      options: [],
+      checked: false,
+      EleboxList: null,
+      lightList: null,
+      lightGroupList: null,
+      plugins: '',
+      cabinetList: [],
       center: [108.59996, 32.197646],
       zoom: 17,
       zooms: [14, 18],
@@ -943,6 +953,24 @@ export default {
         { 'value': '控制柜17', 'address': '上海市嘉定区曹安公路曹安路1685号' }
       ]
     },
+    currentPage3 () {
+      console.log('同步处理方法')
+    },
+    handleNodeClick () {
+      console.log('handleNodeClick')
+    },
+    handleSizeChange () {
+      console.log('处理尺寸变更')
+    },
+    handleCurrentChange () {
+      console.log('处理尺寸变更')
+    },
+    handleClick () {
+      console.log('处理点击事件')
+    },
+    handleSelectionChangeBox () {
+      console.log('handleSelectionChangeBox')
+    },
     querySearchAsync (queryString, cb) {
       var restaurants = this.restaurants
       var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants
@@ -950,6 +978,14 @@ export default {
       this.timeout = setTimeout(() => {
         cb(results)
       }, 3000 * Math.random())
+    },
+
+    // 排除错误事件
+    handleSelectionChange () {
+      console.log('handlechange')
+    },
+    switchTaskList () {
+      console.log('sdsds')
     },
     createStateFilter (queryString) {
       return (state) => {
@@ -1030,6 +1066,7 @@ export default {
     },
     generalLightMarks (lightList) {
       // 生成灯具地图标
+      console.log(lightList)
       lightList = [{
         longitude: '113.939800',
         latitude: '22.512570',
@@ -1129,6 +1166,8 @@ export default {
     let that = this
     // 初始化中心点坐标
     listElebox().then(res => {
+      console.log(res, '1111111')
+      // console.log(22222);
       that.EleboxList = res.data
       that.setCenter(res.data[0].longitude, res.data[0].latitude)
       that.generalEleboxMarks(res.data)
