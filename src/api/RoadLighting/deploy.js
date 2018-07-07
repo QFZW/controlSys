@@ -207,13 +207,14 @@ export function deleteLighting (deleteLightIdList) {
 }
 // 通过id获取单个灯具信息
 export function getLighting (id) {
-  return request({
-    url: '/api/roadlighting/getLighting',
-    method: 'post',
-    params: {
-      id
-    }
-  })
+  // return request({
+  //   url: '/api/roadlighting/getLighting',
+  //   method: 'post',
+  //   params: {
+  //     id
+  //   }
+  // })
+  console.log('测试接口')
 }
 /**
  * 添加编辑灯具

@@ -712,10 +712,10 @@
         <el-row>
           <el-col :span="12">
             <div class="info">
-              灯具坐标：<span>经度：122.12312</span><span>纬度：22.12123</span>
+              灯具坐标：<span>经度：{{ this.lightData.longitude }}</span><span>纬度：{{ this.lightData.latitude }}</span>
             </div>
           </el-col>
-          <el-col :span="12">光衰：<span>10年</span></el-col>
+          <el-col :span="12">光衰：<span>{{ this.lightData.decay }}年 </span></el-col>
         </el-row>
         <el-row style="margin: 20px 0">
           <el-col :span="12">
@@ -724,24 +724,9 @@
             </div>
           </el-col>
           <el-col :span="6">
-            <div class="select-btn">
-              <div class="btn-wrap">
-                <el-button style="width:90px" size="medium">半开</el-button>
-              </div>
-              <div class="btn-wrap">
-                <el-button type="primary" style="width:90px" size="medium">80%</el-button>
-              </div>
-              <div class="btn-wrap">
-                <el-button style="width:90px" size="medium">70%</el-button>
-              </div>
-              <div class="btn-wrap">
-                <el-button style="width:90px" size="medium">40%</el-button>
-              </div>
-              <div class="btn-wrap">
-                <el-button style="width:90px" size="medium">30%</el-button>
-              </div>
-              <div class="btn-wrap">
-                <el-button style="width:90px" size="medium">10%</el-button>
+            <div class="select-btn" v-for="(item, key, index) in brightness" v-bind:key="index">
+              <div class="btn-wrap" v-bind:key="index">
+                <el-button style="width:90px" :class="{active:item===selectitem}" size="medium" @click="active(item)">{{item}}</el-button>
               </div>
             </div>
           </el-col>
@@ -750,20 +735,21 @@
           </el-col>
         </el-row>
         <el-table
+          :data="tableData"
           tooltip-effect="dark"
           style="width: 100%"
           height="120px"
           header-row-class-name="datalist-header">
-          <el-table-column prop="cGroupName" label="灯具型号" width="140"></el-table-column>
-          <el-table-column prop="mem" label="资产编号"></el-table-column>
-          <el-table-column prop="mem" label="灯杆"></el-table-column>
-          <el-table-column prop="mem" label="生产日期"></el-table-column>
-          <el-table-column fixed="right" label="使用日期" width="100"></el-table-column>
+          <el-table-column prop="lamphead" label="灯具型号" width="140"></el-table-column>
+          <el-table-column prop="propertySerialNumber" label="资产编号"></el-table-column>
+          <el-table-column prop="lamppost" label="灯杆"></el-table-column>
+          <el-table-column prop="manufacture" label="生产日期"></el-table-column>
+          <el-table-column prop="useDate" label="使用日期" width="100"></el-table-column>
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="loghtInfoDialog = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="loghtInfoDialog = false" size="small">确 定</el-button>
+        <el-button type="primary" @click="handleUpdateLightInof" size="small">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -773,6 +759,7 @@
 import Vue from 'vue'
 import VueAMap from 'vue-amap'
 import { listElebox, listLighting, listLightGroup, listSwitchTask, listScene } from '@/api/GisService/lamp'
+import { getLighting, addOrUpdateGIS } from '@/api/RoadLighting/deploy'
 import '../../../utils/filter.js'
 Vue.use(VueAMap)
 
@@ -802,9 +789,43 @@ export default {
       lightList: null,
       lightGroupList: null,
       plugins: '',
+      selectitem: '80%',
+      brightness: ['半开', '80%', '70%', '40%', '30%', '10%'],
+      lightData: {
+        decay: 20, // -- 光衰
+        gmtCreated: 1527662927000,
+        gmtUpdated: 1527662927000,
+        longitude: '113.920400',
+        latitude: '22.533800',
+        id: 1,
+        lamphead: 'LL650', // -- 灯头号
+        lamppost: '5米长灯标', // -- 灯杆
+        manufacture: 1526453346000, // -- 生产日期
+        maxUseTime: 15, // -- 最大使用时间（年）
+        mem: '测试灯具1', // -- 备注
+        propertySerialNumber: 'P0092929', // -- 资产编号
+        uid: '0010101010', // -- 灯具uid
+        useDate: 1527662952000, // -- 使用日期
+        brightness: '70%'
+      },
+      mockList: [{
+        longitude: '113.920400',
+        latitude: '22.533800',
+        state: 1
+      },
+      {
+        longitude: '113.940400',
+        latitude: '22.522600',
+        state: 1
+      },
+      {
+        longitude: '113.940400',
+        latitude: '22.511200',
+        state: 0
+      }], // mockdataA
       cabinetList: [],
-      center: [108.59996, 32.197646],
-      zoom: 17,
+      center: [113.939800, 32.197646],
+      zoom: 14,
       zooms: [14, 18],
       plugin: [{
         pName: 'MapType',
@@ -941,6 +962,19 @@ export default {
       }]
     }
   },
+  computed: {
+    tableData: function () {
+      return [
+        {
+          lamphead: this.lightData.lamphead,
+          propertySerialNumber: this.lightData.propertySerialNumber,
+          lamppost: this.lightData.lamppost,
+          manufacture: this.lightData.manufacture,
+          useDate: this.lightData.useDate
+        }
+      ]
+    }
+  },
   methods: {
     loadAll () {
       return [
@@ -952,6 +986,27 @@ export default {
         { 'value': '控制柜16', 'address': '上海市长宁区金钟路633号' },
         { 'value': '控制柜17', 'address': '上海市嘉定区曹安公路曹安路1685号' }
       ]
+    },
+    active (item) {
+      this.selectitem = item
+    },
+    handleUpdateLightInof () {
+      this.loghtInfoDialog = false
+      let params = {
+        id: this.lightData.id,
+        longitude: this.lightData.longitude,
+        latitude: this.lightData.latitude,
+        mem: this.lightData.mem,
+        type: 0
+      }
+      addOrUpdateGIS(params).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          console.log('更新灯具信息成功')
+        }
+      }).catch((res) => {
+        console.log(res)
+      })
     },
     currentPage3 () {
       console.log('同步处理方法')
@@ -1037,12 +1092,24 @@ export default {
         that.sceneDialog = true
       }).catch(() => {})
     },
-    editLightInfo () {
+    editLightInfo (litghtid) {
       this.loghtInfoDialog = true
+      // 获取灯具具体信息
+      // let that = this
+      console.log(getLighting)
+      getLighting()
+      // getLighting(litghtid).then(res => {
+      //   console.log(res)
+      //   // if (res.data) {
+      //   //   that.lightData = res.data // 数据接口正常则使用数据接口数据，不正常显示默认数据
+      //   // }
+      //   // that.taskSwitchDialog = true
+      // }).catch(() => {})
     },
     generalEleboxMarks (elebox) {
       // 生成控制柜地图标
       let that = this
+      console.log('生成点')
       let eleboxMarks = []
       elebox.forEach(element => {
         let _data = {
@@ -1066,26 +1133,21 @@ export default {
     },
     generalLightMarks (lightList) {
       // 生成灯具地图标
-      console.log(lightList)
+      // console.log(lightList,22222)
       lightList = [{
-        longitude: '113.939800',
-        latitude: '22.512570',
+        longitude: '113.920400',
+        latitude: '22.533800',
         state: 1
       },
       {
         longitude: '113.940400',
-        latitude: '22.512570',
+        latitude: '22.522600',
         state: 1
       },
       {
         longitude: '113.940400',
-        latitude: '22.511870',
+        latitude: '22.511200',
         state: 1
-      },
-      {
-        longitude: '113.940500',
-        latitude: '22.513170',
-        state: 0
       }]
       // 生成控制柜地图标
       let that = this
@@ -1095,7 +1157,7 @@ export default {
           position: [element.longitude, element.latitude],
           events: {
             click: () => {
-              that.editLightInfo()
+              that.editLightInfo(element.id)
             }
           },
           visible: true,
@@ -1113,7 +1175,7 @@ export default {
     generalLightLine (devices) {
       // 连线
       devices = [{
-        path: [[113.938930, 22.512570], [113.939800, 22.512570]],
+        path: [[this.mockList[0].longitude, this.mockList[0].latitude], [this.mockList[1].longitude, this.mockList[1].latitude]],
         events: {
           click (e) {
             console.log(e, '点击了连线')
@@ -1123,7 +1185,7 @@ export default {
         state: 1
       },
       {
-        path: [[113.939800, 22.512570], [113.940400, 22.512570]],
+        path: [[this.mockList[1].longitude, this.mockList[1].latitude], [this.mockList[2].longitude, this.mockList[2].latitude]],
         events: {
           click (e) {
             console.log(e, '点击了连线')
@@ -1169,8 +1231,9 @@ export default {
       console.log(res, '1111111')
       // console.log(22222);
       that.EleboxList = res.data
-      that.setCenter(res.data[0].longitude, res.data[0].latitude)
-      that.generalEleboxMarks(res.data)
+      // that.setCenter(res.data[0].longitude, res.data[0].latitude)
+      that.setCenter(113.939800, 22.511870) // 假数据假数据
+      that.generalEleboxMarks([])
       that.generalLightMarks([])
       that.generalLightLine([])
     }).catch(() => {})
@@ -1185,6 +1248,10 @@ export default {
   right: 0;
   left: 200px;
   bottom: 0;
+}
+.active {
+  background: #5789fa;
+  color: white;
 }
 .search-wrap{
   position: absolute;
@@ -1408,7 +1475,7 @@ export default {
     }
   }
   .select-btn{
-    margin-bottom: -21px;
+    margin-bottom: 0px;
   }
   .btn-wrap{
     padding-bottom: 15px;
