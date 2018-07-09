@@ -131,6 +131,51 @@ export const constantRouterMap = [
       meta: { title: '全球地区', icon: '' }
     }]
   },
+  // 能耗分析
+  {
+    path: '/engery',
+    component: Layout,
+    name: 'Energy',
+    redirect: '/energy/analyze',
+    meta: { title: '能耗分析', icon: '&#xe6c1;' },
+    children: [{
+      path: 'analyze',
+      component: () => import('@/views/Energy/EnergyAnalyze/index'),
+      name: 'EnergyAnalyze',
+      meta: { title: '能耗分析', icon: '' }
+    },
+    {
+      path: 'energyMonitor',
+      component: () => import('@/views/Energy/EnergyMonitor/index'),
+      name: 'EnergyMonitor',
+      meta: { title: '能耗监测', icon: '' }
+    },
+    {
+      path: 'energyReport',
+      component: () => import('@/views/Energy/EnergyReport/index'),
+      name: 'EnergyReport',
+      meta: { title: '能耗报表', icon: '' }
+    },
+    {
+      path: 'terReport',
+      component: () => import('@/views/Energy/TerReport/index'),
+      name: 'TerReport',
+      meta: { title: '终端报表', icon: '' }
+    },
+    {
+      path: 'history',
+      component: () => import('@/views/Energy/History/index'),
+      name: 'History',
+      meta: { title: '历史', icon: '' }
+    },
+    {
+      path: 'lamp',
+      // hidden: true,
+      component: () => import('@/views/GisService/Lamp/index'),
+      name: 'Lamp',
+      meta: { title: '灯具地理信息', icon: '' }
+    }]
+  },
   // 用户管理
   {
     path: '/ucenter',
