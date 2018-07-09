@@ -8,4 +8,5 @@
 export default {
   name: 'App'
 }
+console.log('开始做工')
 </script>
