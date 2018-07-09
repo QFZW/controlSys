@@ -139,6 +139,12 @@ export const constantRouterMap = [
     redirect: '/energy/analyze',
     meta: { title: '能耗分析', icon: '&#xe6c1;' },
     children: [{
+      path: 'analyze',
+      component: () => import('@/views/Energy/EnergyAnalyze/index'),
+      name: 'EnergyAnalyze',
+      meta: { title: '能耗分析', icon: '' }
+    },
+    {
       path: 'energyMonitor',
       component: () => import('@/views/Energy/EnergyMonitor/index'),
       name: 'EnergyMonitor',
