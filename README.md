@@ -20,19 +20,6 @@ npm run build --report
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
-## easy mock
-
-> 可以在以下地址模拟数据接口
-
-``` javascript
-/*
- * easy Mock
- * URL: https://www.easy-mock.com/
- * user Vincent13T
- * pwd 123321123
- */
-```
-
 ## axios 使用
 
 > 注入到全局
@@ -51,7 +38,7 @@ this.$HTTP.get('/mock/5aeeba99ee70f3596f06e54a/example/mock')
 
 ## 项目预览地址
 
-http://111.230.236.185/
+http://http://39.104.66.11//
 
 ## 目录结构
 
