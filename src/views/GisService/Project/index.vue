@@ -71,7 +71,7 @@ export default {
         let projectList = res.data
         projectList.forEach(element => {
           let _data = {
-            position: [element.longitude, element.latitude],
+            position: [element.latitude, element.longitude],
             events: {
               click: () => {
                 this.$router.push('/gisservice/lamp')

@@ -214,7 +214,6 @@ export function getLighting (id) {
       id
     }
   })
-  console.log('测试接口')
 }
 /**
  * 添加编辑灯具
