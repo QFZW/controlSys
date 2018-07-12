@@ -24,7 +24,7 @@
               </el-table-column> -->
               <el-table-column
                 prop="codeNumber"
-                label="序号"
+                label="编码"
                 width="100">
               </el-table-column>
               <el-table-column
@@ -77,7 +77,7 @@
               </el-table-column> -->
               <el-table-column
                 prop="codeNumber"
-                label="序号"
+                label="编码"
                 width="100">
               </el-table-column>
               <el-table-column
@@ -132,7 +132,7 @@
               </el-table-column> -->
               <el-table-column
                 prop="codeNumber"
-                label="序号"
+                label="编码"
                 width="100">
               </el-table-column>
               <el-table-column
@@ -141,7 +141,7 @@
                 width="120">
               </el-table-column>
               <el-table-column
-                prop="longitude "
+                prop="longitude"
                 label="经度"
                 width="80">
               </el-table-column>
@@ -285,6 +285,7 @@ export default {
       let that = this
       listCity().then(response => {
         that.listCity = response.data
+        // console.log( that.listCity );
       }).catch(error => {
         console.log(error)
       })
@@ -338,6 +339,7 @@ export default {
       this.addNewObjShow = true
     },
     goRules (formName) {
+      // console.log("编辑城市");
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.onSubmit()

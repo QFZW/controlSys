@@ -18,8 +18,8 @@
       <div class="system-center">
         <div class="operation-bar">
           <el-button @click="addProject()" type="primary">增加</el-button>
-          <el-button @click="importData()">导入</el-button>
-          <el-button @click="exportData()">导出</el-button>
+          <!-- <el-button @click="importData()">导入</el-button>
+          <el-button @click="exportData()">导出</el-button> -->
           <el-button @click="deleteRow(2)">删除</el-button>
         </div>
         <div class="data-list">
@@ -500,11 +500,11 @@ export default {
       })
     },
     // 数据导出
-    exportData () {
-    },
+    // exportData () {
+    // },
     // 数据导入
-    importData () {
-    },
+    // importData () {
+    // },
     goRules (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
