@@ -1508,7 +1508,6 @@ export default {
       let that = this
       listElebox().then(response => {
         that.allEleboxList = response.data
-        console.log(this.allEleboxList)
       }).catch(error => {
         console.log(error)
       })
@@ -1707,7 +1706,6 @@ export default {
       let that = this
       listLighting(that.lightPageNumber, that.lightPageSize, that.eleboxId, that.notBe).then(response => {
         that.lightingList = response.data
-        console.log(that.lightingList)
         if (that.lightingList.length > 0) {
           this.allLightTotal = response.total
         } else {

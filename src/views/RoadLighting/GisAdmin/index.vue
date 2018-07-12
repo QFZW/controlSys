@@ -244,7 +244,6 @@ export default {
       this.TITLE = '修改'
       this.addOrUpdateStatus = 'edit'
       this.newObject = Object.assign({}, this.List[e])
-      console.log( this.newObject );
       this.addDialog = true
     },
     onSubmit () {
