@@ -27,10 +27,9 @@
             </el-upload>
             <el-button icon='el-icon-download' @click="downloadEleBox">导出</el-button>
             <el-dropdown trigger="click" placement='bottom-start' @command="handleElboxEdit">
-              <el-button icon='el-icon-edit'>批量编辑</el-button>
+              <el-button icon='el-icon-edit'>批量设置</el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="1">设置区域</el-dropdown-item>
-                <el-dropdown-item command="2">设置控制柜型号</el-dropdown-item>
                 <el-dropdown-item command="3">设置地图图标</el-dropdown-item>
                 <!-- <el-dropdown-item command="4">设置启用/停用</el-dropdown-item> -->
               </el-dropdown-menu>
@@ -132,7 +131,7 @@
             </el-upload>
             <el-button icon='el-icon-download' @click="downloadLight">导出</el-button>
             <el-dropdown trigger="click" placement='bottom-start' @command="handleLightEdit">
-              <el-button icon='el-icon-edit'>批量编辑</el-button>
+              <el-button icon='el-icon-edit'>批量设置</el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="1">设置区域</el-dropdown-item>
                 <el-dropdown-item command="2">设置所属控制柜</el-dropdown-item>
