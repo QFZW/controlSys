@@ -34,7 +34,7 @@
             width="40">
           </el-table-column>
           <el-table-column
-            prop="lantitude"
+            prop="latitude"
             label="经度"
             width="150">
           </el-table-column>
@@ -101,8 +101,8 @@
     :visible.sync="addDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
     :before-close="handleCloseDialog">
       <el-form ref="addEditForm" :model="newObject" :rules="addNewObjectRules" label-width="100px">
-        <el-form-item label="经度" required prop="lantitude">
-          <el-input class="width350" v-model="newObject.lantitude"></el-input>
+        <el-form-item label="经度" required prop="latitude">
+          <el-input class="width350" v-model="newObject.latitude"></el-input>
         </el-form-item>
         <el-form-item label="纬度" required prop="longitude">
           <el-input class="width350" v-model="newObject.longitude"></el-input>

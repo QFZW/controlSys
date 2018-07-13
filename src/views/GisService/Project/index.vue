@@ -81,7 +81,7 @@ export default {
             draggable: false,
             template: `
               <el-tooltip placement="bottom-start">
-                <div slot="content">经度：${element.latitude}<br/>纬度：${element.longitude}</div>
+                <div slot="content">经度：${element.longitude}<br/>纬度：${element.latitude}</div>
                 <div class="project-mark">
                   <span class="project-name">${element.projectName}</span>
                   <i class="iconfont">&#xe638;</i>

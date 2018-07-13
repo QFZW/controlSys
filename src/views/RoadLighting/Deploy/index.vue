@@ -57,8 +57,8 @@
               <el-table-column prop="powerRating" label="额定功率" width="120"></el-table-column>
               <el-table-column prop="mainSwitch" label="主控制开关" width="120"></el-table-column>
               <el-table-column prop="spd" label="spd" width="120"></el-table-column>
-              <el-table-column prop="latitude" label="经度"></el-table-column>
-              <el-table-column prop="longitude" label="纬度"></el-table-column>
+              <el-table-column prop="latitude" label="维度"></el-table-column>
+              <el-table-column prop="longitude" label="经度"></el-table-column>
               <el-table-column fixed="right" label="操作" width="240">
                 <!-- 240 -->
                 <template slot-scope="scope">
@@ -764,10 +764,10 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="纬度" required prop="longitude">
+        <el-form-item label="经度" required prop="longitude">
           <el-input class="input-wrap" v-model="newElebox.longitude"></el-input>
         </el-form-item>
-        <el-form-item label="经度" required prop="latitude">
+        <el-form-item label="纬度" required prop="latitude">
           <el-input class="input-wrap" v-model="newElebox.latitude"></el-input>
         </el-form-item>
         <el-form-item label="配电柜使用日期" required prop="useDate">
