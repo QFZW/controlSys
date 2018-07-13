@@ -352,8 +352,8 @@
           <el-table-column prop='uid' label="UID"></el-table-column>
           <el-table-column prop='codeNumber' label="编码"></el-table-column>
           <el-table-column prop='mainSwitch' label="主进线开关"></el-table-column>
-          <el-table-column prop='latitude' label="经度"></el-table-column>
-          <el-table-column prop='longitude' label="纬度"></el-table-column>
+          <el-table-column prop='latitude' label="维度"></el-table-column>
+          <el-table-column prop='longitude' label="经度"></el-table-column>
           <el-table-column prop='powerRating' label="额定功率"></el-table-column>
           <el-table-column prop='ratedElectricty' label="额定电流"></el-table-column>
           <el-table-column prop='ratedVoltage' label="额定电压"></el-table-column>
