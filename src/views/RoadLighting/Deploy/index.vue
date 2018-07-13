@@ -1698,6 +1698,8 @@ export default {
     // 获取灯具列表
     getListLighting () {
       let that = this
+      // add by liupeng
+      that.eleboxId = null
       listLighting(that.lightPageNumber, that.lightPageSize, that.eleboxId, that.notBe).then(response => {
         that.lightingList = response.data
         if (that.lightingList.length > 0) {
