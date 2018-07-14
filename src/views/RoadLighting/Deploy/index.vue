@@ -27,10 +27,9 @@
             </el-upload>
             <el-button icon='el-icon-download' @click="downloadEleBox">导出</el-button>
             <el-dropdown trigger="click" placement='bottom-start' @command="handleElboxEdit">
-              <el-button icon='el-icon-edit'>批量编辑</el-button>
+              <el-button icon='el-icon-edit'>批量设置</el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="1">设置区域</el-dropdown-item>
-                <el-dropdown-item command="2">设置控制柜型号</el-dropdown-item>
                 <el-dropdown-item command="3">设置地图图标</el-dropdown-item>
                 <!-- <el-dropdown-item command="4">设置启用/停用</el-dropdown-item> -->
               </el-dropdown-menu>
@@ -57,8 +56,8 @@
               <el-table-column prop="powerRating" label="额定功率" width="120"></el-table-column>
               <el-table-column prop="mainSwitch" label="主控制开关" width="120"></el-table-column>
               <el-table-column prop="spd" label="spd" width="120"></el-table-column>
-              <el-table-column prop="latitude" label="经度"></el-table-column>
-              <el-table-column prop="longitude" label="纬度"></el-table-column>
+              <el-table-column prop="latitude" label="纬度"></el-table-column>
+              <el-table-column prop="longitude" label="经度"></el-table-column>
               <el-table-column fixed="right" label="操作" width="240">
                 <!-- 240 -->
                 <template slot-scope="scope">
@@ -132,7 +131,7 @@
             </el-upload>
             <el-button icon='el-icon-download' @click="downloadLight">导出</el-button>
             <el-dropdown trigger="click" placement='bottom-start' @command="handleLightEdit">
-              <el-button icon='el-icon-edit'>批量编辑</el-button>
+              <el-button icon='el-icon-edit'>批量设置</el-button>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="1">设置区域</el-dropdown-item>
                 <el-dropdown-item command="2">设置所属控制柜</el-dropdown-item>
@@ -316,7 +315,7 @@
             <el-table-column prop="voltage" label="电压" width="100"></el-table-column>
             <el-table-column prop="electricity" label="电流" width="100"></el-table-column>
             <el-table-column prop="lightCount" label="灯具数量" width="100"></el-table-column>
-            <el-table-column prop="state" label="状态" width="100"></el-table-column>
+            <!-- <el-table-column prop="state" label="状态" width="100"></el-table-column> -->
             <el-table-column fixed="right" label="操作" width="120">
                 <template slot-scope="scope">
                   <el-button
@@ -359,9 +358,9 @@
         <el-form-item label="回路灯具数量" required prop="lightCount">
           <el-input v-model="newModelLoop.lightCount"></el-input>
         </el-form-item>
-        <el-form-item label="回路状态" required prop="state">
+        <!-- <el-form-item label="回路状态" required prop="state">
           <el-input v-model="newModelLoop.state"></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addLoopDialog = false">取 消</el-button>
@@ -764,10 +763,10 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="纬度" required prop="longitude">
+        <el-form-item label="经度" required prop="longitude">
           <el-input class="input-wrap" v-model="newElebox.longitude"></el-input>
         </el-form-item>
-        <el-form-item label="经度" required prop="latitude">
+        <el-form-item label="纬度" required prop="latitude">
           <el-input class="input-wrap" v-model="newElebox.latitude"></el-input>
         </el-form-item>
         <el-form-item label="配电柜使用日期" required prop="useDate">
@@ -816,9 +815,6 @@
               :value="item.id">
             </el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="控制柜所属项目" required>
-          <!-- <el-input class="input-wrap" v-model="newElebox.nnlightctlProjectId"></el-input> -->
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -1009,9 +1005,9 @@
         <el-form-item label="回路灯具数量" required prop="lightCount">
           <el-input v-model="newModelLoop.lightCount"></el-input>
         </el-form-item>
-        <el-form-item label="回路状态" required prop="state">
+        <!-- <el-form-item label="回路状态" required prop="state">
           <el-input v-model="newModelLoop.state"></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addSplitLoopDialog = false">取 消</el-button>
@@ -1223,9 +1219,6 @@ export default {
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ],
         lightCount: [
-          { required: true, message: '填写内容不得为空', trigger: 'blur' }
-        ],
-        state: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ]
       },
@@ -1704,6 +1697,9 @@ export default {
     // 获取灯具列表
     getListLighting () {
       let that = this
+      // add by liupeng
+      that.eleboxId = null
+      that.notBe = null
       listLighting(that.lightPageNumber, that.lightPageSize, that.eleboxId, that.notBe).then(response => {
         that.lightingList = response.data
         if (that.lightingList.length > 0) {
