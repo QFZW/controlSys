@@ -1010,7 +1010,7 @@ export default {
       })
     },
     currentPage3 () {
-      console.log('同步处理方法')
+      return 1
     },
     handleNodeClick () {
       console.log('handleNodeClick')
@@ -1242,14 +1242,13 @@ export default {
       listLighting(projectId).then(res => {
         that.lightList = res.data
         that.generalLightMarks(that.lightList)
-        that.lampsDialog = true
+        // that.lampsDialog = true
       }).catch(() => {})
       // that.setCenter(res.data[0].longitude, res.data[0].latitude)
       that.setCenter(113.939800, 22.511870) // 假数据假数据
       that.generalEleboxMarks(that.EleboxList)
       that.generalLightLine([])
     }).catch(() => {})
-    that.getLightList(that.projectId)
   }
 }
 </script>
