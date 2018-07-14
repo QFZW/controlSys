@@ -68,13 +68,14 @@ export default {
       let that = this
       let marks = []
       listProject().then(res => {
+        console.log(res.data)
         let projectList = res.data
         projectList.forEach(element => {
           let _data = {
-            position: [element.latitude, element.longitude],
+            position: [element.longitude, element.latitude],
             events: {
               click: () => {
-                this.$router.push('/gisservice/lamp')
+                this.$router.push({path: '/gisservice/lamp', query: { projectId: element.id }})
               }
             },
             visible: true,

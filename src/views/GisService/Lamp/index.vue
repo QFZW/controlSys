@@ -862,6 +862,7 @@ export default {
         name: 'aqw',
         desc: 'wqlwlqwl'
       }],
+      projectId: '',
       addScene: {},
       sceneDialog: false,
       addSceneDialog: false,
@@ -1060,18 +1061,18 @@ export default {
         that.loading.loadLampGroup = false
       }).catch(() => {})
     },
-    getLightList () {
+    getLightList (projectId) {
       // 获取项目下全部灯具
       let that = this
-      listLighting().then(res => {
+      listLighting(projectId).then(res => {
         that.lightList = res.data
         that.lampsDialog = true
       }).catch(() => {})
     },
-    getEleboxList () {
+    getEleboxList (projectId) {
       // 获取项目下全部控制柜
       let that = this
-      listElebox().then(res => {
+      listElebox(projectId).then(res => {
         that.EleboxList = res.data
         that.ctrlBoxDialog = true
       }).catch(() => {})
@@ -1226,17 +1227,29 @@ export default {
   },
   created () {
     let that = this
+    let projectQuery = that.$router.history.current.query;
+    that.projectId = projectQuery.projectId;
+    // console.log(that.$router.history.current.query.projectId,222222222)
     // 初始化中心点坐标
-    listElebox().then(res => {
-      console.log(res, '1111111')
+
+    // 获取所有项目下面的控制柜
+    listElebox(that.projectId).then(res => {
+      console.log(res, '111111122222222')
       // console.log(22222);
-      that.EleboxList = res.data
+      let eleList = res.data ? res.data : []
+      that.EleboxList = res.data ? res.data : that.EleboxList
+      // 获取项目下面所有灯具
+      listLighting(projectId).then(res => {
+        that.lightList = res.data
+        that.generalLightMarks(that.lightList)
+        that.lampsDialog = true
+      }).catch(() => {})
       // that.setCenter(res.data[0].longitude, res.data[0].latitude)
       that.setCenter(113.939800, 22.511870) // 假数据假数据
-      that.generalEleboxMarks([])
-      that.generalLightMarks([])
+      that.generalEleboxMarks(that.EleboxList)
       that.generalLightLine([])
     }).catch(() => {})
+    that.getLightList(that.projectId)
   }
 }
 </script>

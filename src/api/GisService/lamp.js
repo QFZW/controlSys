@@ -13,13 +13,14 @@ import request from '@/utils/request'
  * @param {*} projectId 项目id
  * @returns
  */
-export function listElebox (pageNumber, pageSize) {
+export function listElebox (projectId, pageNumber, pageSize) {
   return request({
     url: '/api/gis/listElebox',
     method: 'get',
     params: {
       pageNumber,
-      pageSize
+      pageSize,
+      projectId
     }
   })
 }
