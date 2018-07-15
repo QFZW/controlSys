@@ -267,3 +267,36 @@ export function deleteSceneShotcut (sceneShotcutIds) {
     params: sceneShotcutIds
   })
 }
+
+/**
+ * 17、获取控制柜下全部回路信息
+ * @export
+ * @param {*}
+ * @returns
+ */
+export function listEleboxLoop (eleboxId) {
+  return request({
+    url: '/api/roadlighting/listEleboxLoop',
+    method: 'get',
+    params: {
+      eleboxId
+    }
+  })
+}
+
+/**
+ * 18、获取控指定项目指定回路下的灯具信息
+ * @export
+ * @param {*}
+ * @returns
+ */
+export function listLoopLighting (projectId, loopId) {
+  return request({
+    url: '/api/gis/listLoopLighting',
+    method: 'get',
+    params: {
+      projectId,
+      loopId
+    }
+  })
+}

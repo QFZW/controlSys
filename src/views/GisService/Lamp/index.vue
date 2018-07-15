@@ -758,11 +758,11 @@
 <script>
 import Vue from 'vue'
 import VueAMap from 'vue-amap'
-import { listElebox, listLighting, listLightGroup, listSwitchTask, listScene } from '@/api/GisService/lamp'
+import { listElebox, listLighting, listLightGroup, listSwitchTask, listScene, listEleboxLoop, listLoopLighting } from '@/api/GisService/lamp'
 import { getLighting, addOrUpdateGIS } from '@/api/RoadLighting/deploy'
 import '../../../utils/filter.js'
 Vue.use(VueAMap)
-
+console.log(listLoopLighting, '回路灯具接口')
 // 初始化vue-amap
 VueAMap.initAMapApiLoader({
   // 高德的key
@@ -1158,73 +1158,54 @@ export default {
       })
       that.LightMarks = lightMarks
     },
-    generalLightLine (lightList) {
-      console.log(lightList, '输入的连线数据')
-      let lines = []
-      lightList.map((item, index) => {
-        let unit = {}
-        if (index !== lightList.length - 1) {
-          unit.path = [[lightList[index].longitude, lightList[index].latitude], [lightList[index + 1].longitude, lightList[index + 1].latitude]]
-          unit.events = {
-            click (e) {
-              console.log(e, '点击了连线')
-            }
-          }
-          unit.ditable = false
-          unit.state = 1
-          lines.push(unit)
-        }
-      })
-      // console.log(lines, 899999)
-      // 连线
-      // devices = [{
-      //   path: [[this.mockList[0].longitude, this.mockList[0].latitude], [this.mockList[1].longitude, this.mockList[1].latitude]],
-      //   events: {
-      //     click (e) {
-      //       console.log(e, '点击了连线')
-      //     }
-      //   },
-      //   editable: false,
-      //   state: 1
-      // },
-      // {
-      //   path: [[this.mockList[1].longitude, this.mockList[1].latitude], [this.mockList[2].longitude, this.mockList[2].latitude]],
-      //   events: {
-      //     click (e) {
-      //       console.log(e, '点击了连线')
-      //     }
-      //   },
-      //   editable: false,
-      //   state: 1
-      // },
-      // {
-      //   path: [[113.940400, 22.512570], [113.940400, 22.511870]],
-      //   events: {
-      //     click (e) {
-      //       console.log(e, '点击了连线')
-      //     }
-      //   },
-      //   editable: false,
-      //   state: 1
-      // },
-      // {
-      //   path: [[113.940500, 22.513170], [113.939800, 22.512570]],
-      //   events: {
-      //     click (e) {
-      //       console.log(e, '点击了连线')
-      //     }
-      //   },
-      //   editable: false,
-      //   state: 0
-      // }]
-      // 生成控制柜地图标
+    generalLightLine (projectId, EleboxList) {
       let that = this
+      // console.log(lightList, '输入的连线数据')
+      // console.log(projectId, '项目ID')
+      let lines = []
+      EleboxList.map((item, index) => {
+        let eleboxInfo = item
+        listEleboxLoop(item.id).then((res) => {
+          // console.log(res, '回路信息')
+          if (res.data) {
+            let loops = res.data
+            // 遍历所有回路依次根据回路ID和项目ID获取灯具信息，划线
+            loops.map((item, index) => {
+              let loopState = item.state
+              // console.log(loopState, '回路状态')
+              listLoopLighting(projectId, item.id).then((res) => {
+                // console.log(projectId, item.id, '请求回路灯具信息参数')
+                // console.log(res.data, '指定项目指定回路下所有灯具信息')
+                let lightList = res.data
+                // console.log(eleboxInfo, '控制柜信息')
+                lightList.splice(0, 0, eleboxInfo)
+                lightList.map((item, index) => {
+                  let unit = {}
+                  if (index !== lightList.length - 1) {
+                    unit.path = [[lightList[index].longitude, lightList[index].latitude], [lightList[index + 1].longitude, lightList[index + 1].latitude]]
+                    unit.events = {
+                      click (e) {
+                        console.log(e, '点击了连线')
+                      }
+                    }
+                    unit.ditable = false
+                    unit.state = loopState
+                    lines.push(unit)
+                  }
+                })
+              })
+            })
+          }
+        })
+      })
+      // let lines = []
+      // console.log(lines, '连线数组')
       that.LightLine = lines
-      console.log(that.LightLine)
+      // console.log(that.LightLine)
     },
     setCenter (longitude, latitude) {
       // 经度 纬度
-      console.log(longitude, latitude, 888888)
+      // console.log(longitude, latitude, 888888)
       this.center = [longitude, latitude]
     }
   },
@@ -1237,22 +1218,23 @@ export default {
 
     // 获取所有项目下面的控制柜
     listElebox(that.projectId).then(res => {
-      console.log(res, '111111122222222')
+      // console.log(res, '111111122222222')
       // console.log(22222);
       let projectId = that.projectId
       // let eleList = res.data ? res.data : []
       that.EleboxList = res.data ? res.data : that.EleboxList
+      // 获取到所有控制柜之后生成每个控制柜的连线
+      that.generalLightLine(that.projectId, that.EleboxList)
       // 获取项目下面所有灯具
       listLighting(projectId).then(res => {
         that.lightList = res.data
-        console.log(res.data)
+        // console.log(res.data)
         that.generalLightMarks(that.lightList)
-        that.generalLightLine(that.lightList)
         // that.lampsDialog = true
       }).catch(() => {})
       that.setCenter(res.data[0].longitude, res.data[0].latitude)
       // that.setCenter(113.939800, 22.511870) // 假数据假数据
-      that.generalEleboxMarks(that.EleboxList)  
+      that.generalEleboxMarks(that.EleboxList)
     }).catch(() => {})
   }
 }
