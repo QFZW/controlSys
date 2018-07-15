@@ -825,7 +825,7 @@ export default {
       }], // mockdataA
       cabinetList: [],
       center: [113.939800, 32.197646],
-      zoom: 14,
+      zoom: 16,
       zooms: [14, 18],
       plugin: [{
         pName: 'MapType',
@@ -1134,22 +1134,7 @@ export default {
     },
     generalLightMarks (lightList) {
       // 生成灯具地图标
-      // console.log(lightList,22222)
-      lightList = [{
-        longitude: '113.920400',
-        latitude: '22.533800',
-        state: 1
-      },
-      {
-        longitude: '113.940400',
-        latitude: '22.522600',
-        state: 1
-      },
-      {
-        longitude: '113.940400',
-        latitude: '22.511200',
-        state: 1
-      }]
+      console.log(lightList, 222222222)
       // 生成控制柜地图标
       let that = this
       let lightMarks = []
@@ -1173,62 +1158,80 @@ export default {
       })
       that.LightMarks = lightMarks
     },
-    generalLightLine (devices) {
+    generalLightLine (lightList) {
+      console.log(lightList, '输入的连线数据')
+      let lines = []
+      lightList.map((item, index) => {
+        let unit = {}
+        if (index !== lightList.length - 1) {
+          unit.path = [[lightList[index].longitude, lightList[index].latitude], [lightList[index + 1].longitude, lightList[index + 1].latitude]]
+          unit.events = {
+            click (e) {
+              console.log(e, '点击了连线')
+            }
+          }
+          unit.ditable = false
+          unit.state = 1
+          lines.push(unit)
+        }
+      })
+      // console.log(lines, 899999)
       // 连线
-      devices = [{
-        path: [[this.mockList[0].longitude, this.mockList[0].latitude], [this.mockList[1].longitude, this.mockList[1].latitude]],
-        events: {
-          click (e) {
-            console.log(e, '点击了连线')
-          }
-        },
-        editable: false,
-        state: 1
-      },
-      {
-        path: [[this.mockList[1].longitude, this.mockList[1].latitude], [this.mockList[2].longitude, this.mockList[2].latitude]],
-        events: {
-          click (e) {
-            console.log(e, '点击了连线')
-          }
-        },
-        editable: false,
-        state: 1
-      },
-      {
-        path: [[113.940400, 22.512570], [113.940400, 22.511870]],
-        events: {
-          click (e) {
-            console.log(e, '点击了连线')
-          }
-        },
-        editable: false,
-        state: 1
-      },
-      {
-        path: [[113.940500, 22.513170], [113.939800, 22.512570]],
-        events: {
-          click (e) {
-            console.log(e, '点击了连线')
-          }
-        },
-        editable: false,
-        state: 0
-      }]
+      // devices = [{
+      //   path: [[this.mockList[0].longitude, this.mockList[0].latitude], [this.mockList[1].longitude, this.mockList[1].latitude]],
+      //   events: {
+      //     click (e) {
+      //       console.log(e, '点击了连线')
+      //     }
+      //   },
+      //   editable: false,
+      //   state: 1
+      // },
+      // {
+      //   path: [[this.mockList[1].longitude, this.mockList[1].latitude], [this.mockList[2].longitude, this.mockList[2].latitude]],
+      //   events: {
+      //     click (e) {
+      //       console.log(e, '点击了连线')
+      //     }
+      //   },
+      //   editable: false,
+      //   state: 1
+      // },
+      // {
+      //   path: [[113.940400, 22.512570], [113.940400, 22.511870]],
+      //   events: {
+      //     click (e) {
+      //       console.log(e, '点击了连线')
+      //     }
+      //   },
+      //   editable: false,
+      //   state: 1
+      // },
+      // {
+      //   path: [[113.940500, 22.513170], [113.939800, 22.512570]],
+      //   events: {
+      //     click (e) {
+      //       console.log(e, '点击了连线')
+      //     }
+      //   },
+      //   editable: false,
+      //   state: 0
+      // }]
       // 生成控制柜地图标
       let that = this
-      that.LightLine = devices
+      that.LightLine = lines
       console.log(that.LightLine)
     },
     setCenter (longitude, latitude) {
       // 经度 纬度
+      console.log(longitude, latitude, 888888)
       this.center = [longitude, latitude]
     }
   },
   created () {
     let that = this
-    let projectQuery = that.$router.history.current.query;
-    that.projectId = projectQuery.projectId;
+    let projectQuery = that.$router.history.current.query
+    that.projectId = projectQuery.projectId
     // console.log(that.$router.history.current.query.projectId,222222222)
     // 初始化中心点坐标
 
@@ -1236,18 +1239,20 @@ export default {
     listElebox(that.projectId).then(res => {
       console.log(res, '111111122222222')
       // console.log(22222);
-      let eleList = res.data ? res.data : []
+      let projectId = that.projectId
+      // let eleList = res.data ? res.data : []
       that.EleboxList = res.data ? res.data : that.EleboxList
       // 获取项目下面所有灯具
       listLighting(projectId).then(res => {
         that.lightList = res.data
+        console.log(res.data)
         that.generalLightMarks(that.lightList)
+        that.generalLightLine(that.lightList)
         // that.lampsDialog = true
       }).catch(() => {})
-      // that.setCenter(res.data[0].longitude, res.data[0].latitude)
-      that.setCenter(113.939800, 22.511870) // 假数据假数据
-      that.generalEleboxMarks(that.EleboxList)
-      that.generalLightLine([])
+      that.setCenter(res.data[0].longitude, res.data[0].latitude)
+      // that.setCenter(113.939800, 22.511870) // 假数据假数据
+      that.generalEleboxMarks(that.EleboxList)  
     }).catch(() => {})
   }
 }
