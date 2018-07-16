@@ -712,10 +712,10 @@
         <el-row>
           <el-col :span="12">
             <div class="info">
-              灯具坐标：<span>经度：{{ this.lightData.longitude }}</span><span>纬度：{{ this.lightData.latitude }}</span>
+              灯具坐标：<span>经度：{{ this.lightData[0].longitude }}</span><span>纬度：{{ this.lightData[0].latitude }}</span>
             </div>
           </el-col>
-          <el-col :span="12">光衰：<span>{{ this.lightData.decay }}年 </span></el-col>
+          <el-col :span="12">光衰：<span>{{ this.lightData[0].decay }}年 </span></el-col>
         </el-row>
         <el-row style="margin: 20px 0">
           <el-col :span="12">
@@ -726,16 +726,24 @@
           <el-col :span="6">
             <div class="select-btn" v-for="(item, key, index) in brightness" v-bind:key="index">
               <div class="btn-wrap" v-bind:key="index">
-                <el-button style="width:90px" :class="{active:item===selectitem}" size="medium" @click="active(item)">{{item}}</el-button>
+                <el-button style="width:90px" :class="{active:item===selectitem + '%'}" size="medium" @click="active(item)">{{item}}</el-button>
               </div>
             </div>
           </el-col>
           <el-col :span="5">
-            <!-- dqw -->
+            <div class="slide-block">
+              <el-slider
+                v-model="selectitem"
+                vertical
+                @change="handleslidechange"
+                height="200px">
+              </el-slider>
+              <p class="show-lightness">灯具亮度: {{selectitem}}% </p>
+            </div>
           </el-col>
         </el-row>
         <el-table
-          :data="tableData"
+          :data="lightData"
           tooltip-effect="dark"
           style="width: 100%"
           height="120px"
@@ -758,11 +766,11 @@
 <script>
 import Vue from 'vue'
 import VueAMap from 'vue-amap'
-import { listElebox, listLighting, listLightGroup, listSwitchTask, listScene, listEleboxLoop, listLoopLighting } from '@/api/GisService/lamp'
-import { getLighting, addOrUpdateGIS } from '@/api/RoadLighting/deploy'
+import { listElebox, listLighting, listLightGroup, listSwitchTask, listScene, listEleboxLoop, listLoopLighting, commandLightAdjust } from '@/api/GisService/lamp'
+import { getLighting } from '@/api/RoadLighting/deploy'
 import '../../../utils/filter.js'
 Vue.use(VueAMap)
-console.log(listLoopLighting, '回路灯具接口')
+// console.log(listLoopLighting, '回路灯具接口')
 // 初始化vue-amap
 VueAMap.initAMapApiLoader({
   // 高德的key
@@ -789,9 +797,9 @@ export default {
       lightList: null,
       lightGroupList: null,
       plugins: '',
-      selectitem: '80%',
-      brightness: ['半开', '80%', '70%', '40%', '30%', '10%'],
-      lightData: {
+      selectitem: 75,
+      brightness: ['100%', '75%', '50%', '25%', '0%'],
+      lightData: [{
         decay: 20, // -- 光衰
         gmtCreated: 1527662927000,
         gmtUpdated: 1527662927000,
@@ -807,7 +815,7 @@ export default {
         uid: '0010101010', // -- 灯具uid
         useDate: 1527662952000, // -- 使用日期
         brightness: '70%'
-      },
+      }],
       mockList: [{
         longitude: '113.920400',
         latitude: '22.533800',
@@ -964,17 +972,17 @@ export default {
     }
   },
   computed: {
-    tableData: function () {
-      return [
-        {
-          lamphead: this.lightData.lamphead,
-          propertySerialNumber: this.lightData.propertySerialNumber,
-          lamppost: this.lightData.lamppost,
-          manufacture: this.lightData.manufacture,
-          useDate: this.lightData.useDate
-        }
-      ]
-    }
+    // tableData: function () {
+    //   return [
+    //     {
+    //       lamphead: this.lightData.lamphead,
+    //       propertySerialNumber: this.lightData.propertySerialNumber,
+    //       lamppost: this.lightData.lamppost,
+    //       manufacture: this.lightData.manufacture,
+    //       useDate: this.lightData.useDate
+    //     }
+    //   ]
+    // }
   },
   methods: {
     loadAll () {
@@ -989,18 +997,38 @@ export default {
       ]
     },
     active (item) {
-      this.selectitem = item
+      switch (item) {
+        case '100%':
+          this.selectitem = 100
+          break
+        case '75%':
+          this.selectitem = 75
+          break
+        case '50%':
+          this.selectitem = 50
+          break
+        case '25%':
+          this.selectitem = 25
+          break
+        case '0%':
+          this.selectitem = 0
+          break
+      }
+    },
+    handleslidechange (event) {
+      // this.selectitem = 
     },
     handleUpdateLightInof () {
       this.loghtInfoDialog = false
-      let params = {
-        id: this.lightData.id,
-        longitude: this.lightData.longitude,
-        latitude: this.lightData.latitude,
-        mem: this.lightData.mem,
-        type: 0
-      }
-      addOrUpdateGIS(params).then(res => {
+      let lightness = this.selectitem
+      // let params = {
+      //   id: this.lightData.id,
+      //   longitude: this.lightData.longitude,
+      //   latitude: this.lightData.latitude,
+      //   mem: this.lightData.mem,
+      //   type: 0
+      // }
+      commandLightAdjust(lightness).then(res => {
         console.log(res)
         if (res.error === 0) {
           console.log('更新灯具信息成功')
@@ -1096,16 +1124,16 @@ export default {
     editLightInfo (litghtid) {
       this.loghtInfoDialog = true
       // 获取灯具具体信息
-      // let that = this
-      console.log(getLighting)
-      getLighting()
-      // getLighting(litghtid).then(res => {
-      //   console.log(res)
-      //   // if (res.data) {
-      //   //   that.lightData = res.data // 数据接口正常则使用数据接口数据，不正常显示默认数据
-      //   // }
-      //   // that.taskSwitchDialog = true
-      // }).catch(() => {})
+      let that = this
+      // console.log(getLighting)
+      // getLighting(litghtid)
+      getLighting(litghtid).then(res => {
+        console.log(res, '灯具信息')
+        if (res.data) {
+          that.lightData = res.data // 数据接口正常则使用数据接口数据，不正常显示默认数据
+        }
+        // that.taskSwitchDialog = true
+      }).catch(() => {})
     },
     generalEleboxMarks (elebox) {
       // 生成控制柜地图标
@@ -1205,7 +1233,7 @@ export default {
     },
     setCenter (longitude, latitude) {
       // 经度 纬度
-      // console.log(longitude, latitude, 888888)
+      console.log(longitude, latitude, 888888)
       this.center = [longitude, latitude]
     }
   },
@@ -1218,6 +1246,7 @@ export default {
 
     // 获取所有项目下面的控制柜
     listElebox(that.projectId).then(res => {
+      // console.log('获取灯具柜', res)
       // console.log(res, '111111122222222')
       // console.log(22222);
       let projectId = that.projectId
@@ -1232,8 +1261,10 @@ export default {
         that.generalLightMarks(that.lightList)
         // that.lampsDialog = true
       }).catch(() => {})
+      // console.log('开始测测测测测二测')
       that.setCenter(res.data[0].longitude, res.data[0].latitude)
       // that.setCenter(113.939800, 22.511870) // 假数据假数据
+      // console.log(res.data[0].longitude, res.data[0].latitude, '中心点坐标')
       that.generalEleboxMarks(that.EleboxList)
     }).catch(() => {})
   }
@@ -1498,5 +1529,8 @@ export default {
       color: #DADAD6;
     }
   }
+}
+.show-lightness {
+  margin-top: 20px;
 }
 </style>

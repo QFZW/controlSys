@@ -300,3 +300,19 @@ export function listLoopLighting (projectId, loopId) {
     }
   })
 }
+
+/**
+ * 19、调节灯具亮度信息
+ * @export
+ * @param {*}
+ * @returns
+ */
+export function commandLightAdjust (lightPercent) {
+  return request({
+    url: '/api/command/',
+    method: 'get',
+    params: {
+      lightPercent
+    }
+  })
+}

@@ -45,7 +45,7 @@ export default {
   name: 'GisIndex',
   data () {
     return {
-      zooms: '14',
+      zooms: [1, 14],
       markers: [],
       center: [108.59996, 32.197646],
       plugin: [{
@@ -70,6 +70,7 @@ export default {
       listProject().then(res => {
         console.log(res.data)
         let projectList = res.data
+        that.setCenter(res.data[0].longitude, res.data[0].latitude) // 设置地图中心点
         projectList.forEach(element => {
           let _data = {
             position: [element.longitude, element.latitude],
@@ -106,6 +107,12 @@ export default {
           type: 'warning'
         })
       }
+    },
+    // 设置地图中心点
+    setCenter (longitude, latitude) {
+      // 经度 纬度
+      // console.log(longitude, latitude, 888888)
+      this.center = [longitude, latitude]
     }
   },
   created () {
