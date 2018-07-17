@@ -974,7 +974,7 @@ export default {
   },
   computed: {
     lightOpacity: function () {
-      return this.selectitem/100
+      return this.selectitem / 100
     }
     // tableData: function () {
     //   return [

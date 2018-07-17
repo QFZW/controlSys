@@ -796,6 +796,16 @@
         <el-form-item label="主进线开关型号" required prop="mainSwitch">
           <el-input class="input-wrap" v-model="newElebox.mainSwitch"></el-input>
         </el-form-item>
+        <el-form-item label="所属项目" required prop="nnlightctlProjectId">
+          <el-select class="input-wrap" v-model="newElebox.nnlightctlProjectId">
+            <el-option
+              v-for="item in allProjectList"
+              :key="item.id"
+              :label="item.mem"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="控制柜GIS" required prop="nnlightctlEleboxGisId">
           <el-select class="input-wrap" v-model="newElebox.nnlightctlEleboxGisId">
             <el-option
@@ -1019,7 +1029,7 @@
 <script>
 import axios from 'axios'
 import qs from 'qs'
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox, listProject } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -1074,6 +1084,7 @@ export default {
       listArea: [], // 区域列表
       eleboxList: [],
       allEleboxList: [], // 所有控制柜列表
+      allProjectList: [], // 所有项目
       newElebox: [],
       boxPageNumber: 1,
       boxPageSize: 10,
@@ -1173,6 +1184,9 @@ export default {
           { required: true, message: '选择内容不得为空', trigger: 'blur' }
         ],
         nnlightctlRegionId: [
+          { required: true, message: '选择内容不得为空', trigger: 'blur' }
+        ],
+        nnlightctlProjectId: [
           { required: true, message: '选择内容不得为空', trigger: 'blur' }
         ]
       },
@@ -1482,11 +1496,21 @@ export default {
         console.log(error)
       })
     },
+    // 获取所有项目列表
+    getAllProjectList () {
+      let that = this
+      listProject().then((res) => {
+        if (res.data) {
+          that.allProjectList = res.data
+        }
+      })
+    },
     // 获取控制柜相关信息
     getListElebox () {
       let that = this
       listElebox(that.boxPageNumber, that.boxPageSize).then(response => {
         that.eleboxList = response.data
+        console.log('控制柜信息', response.data)
         if (that.eleboxList.length > 0) {
           this.allEleboxTotal = response.total
         } else {
@@ -1579,7 +1603,7 @@ export default {
           message: '编辑成功'
         })
         this.getListElebox()
-        this.getAllListElebox()
+        this.getAllProjectList()
         this.editCabinetDialog = false
         this.$refs['editCabinetForm'].resetFields()
         this.newElebox = {}
@@ -2192,6 +2216,7 @@ export default {
     this.getAllListElebox()
     this.getListLighting()
     this.getListArea()
+    this.getAllProjectList()
   }
 }
 </script>
