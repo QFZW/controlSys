@@ -475,7 +475,7 @@
             <el-option
               v-for="item in allProjectList"
               :key="item.id"
-              :label="item.mem"
+              :label="item.projectName"
               :value="item.id">
             </el-option>
           </el-select>
@@ -821,7 +821,7 @@
             <el-option
               v-for="item in gisAllList"
               :key="item.id"
-              :label="item.projectName"
+              :label="item.mem"
               :value="item.id">
             </el-option>
           </el-select>
