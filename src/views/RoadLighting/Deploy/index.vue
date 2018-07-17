@@ -470,6 +470,16 @@
         <el-form-item label="灯具编码" required prop="uid">
           <el-input v-model="newLight.uid" class="input-wrap"></el-input>
         </el-form-item>
+        <el-form-item label="所属项目" required prop="nnlightctlProjectId">
+          <el-select class="input-wrap" v-model="newLight.nnlightctlProjectId">
+            <el-option
+              v-for="item in allProjectList"
+              :key="item.id"
+              :label="item.mem"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="生产日期" required prop="manufacture">
           <el-date-picker
             v-model="newLight.manufacture "
@@ -801,7 +811,7 @@
             <el-option
               v-for="item in allProjectList"
               :key="item.id"
-              :label="item.mem"
+              :label="item.projectName"
               :value="item.id">
             </el-option>
           </el-select>
@@ -811,7 +821,7 @@
             <el-option
               v-for="item in gisAllList"
               :key="item.id"
-              :label="item.mem"
+              :label="item.projectName"
               :value="item.id">
             </el-option>
           </el-select>
@@ -1455,6 +1465,7 @@ export default {
     },
     editCabinet (e) {
       this.newElebox = Object.assign({}, this.eleboxList[e])
+      console.log(this.allProjectList, '所有项目信息')
       this.editCabinetDialog = true
     },
     // 批量添加灯具
@@ -1735,6 +1746,7 @@ export default {
         console.log(error)
       })
     },
+    // 编辑灯具
     editLightRow (e) {
       this.addType = 1
       this.editIndex = e
