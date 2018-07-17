@@ -1014,9 +1014,26 @@ export default {
           this.selectitem = 0
           break
       }
+      commandLightAdjust(this.selectitem).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          console.log('更新灯具信息成功')
+        }
+      }).catch((res) => {
+        console.log(res)
+      })
     },
     handleslidechange (event) {
-      // this.selectitem = 
+      // this.selectitem =
+      console.log('滑动条指改变')
+      commandLightAdjust(this.selectitem).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          console.log('更新灯具信息成功')
+        }
+      }).catch((res) => {
+        console.log(res)
+      })
     },
     handleUpdateLightInof () {
       this.loghtInfoDialog = false
