@@ -720,7 +720,7 @@
         <el-row style="margin: 20px 0">
           <el-col :span="12">
             <div class="light-wrap">
-              <i class="iconfont">&#xe62b;</i>
+              <i class="iconfont" :style="{ opacity: lightOpacity }" >&#xe62b;</i>
             </div>
           </el-col>
           <el-col :span="6">
@@ -816,6 +816,7 @@ export default {
         useDate: 1527662952000, // -- 使用日期
         brightness: '70%'
       }],
+      // lightOpacity: 0.5, //灯的亮度
       mockList: [{
         longitude: '113.920400',
         latitude: '22.533800',
@@ -972,6 +973,9 @@ export default {
     }
   },
   computed: {
+    lightOpacity: function () {
+      return this.selectitem/100
+    }
     // tableData: function () {
     //   return [
     //     {
