@@ -411,7 +411,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="所属项目" required prop="nnlightctlProjectId">
-          <el-select class="input-wrap" v-model="newLight.nnlightctlProjectId">
+          <el-select class="input-wrap" v-model="newMoreLight.nnlightctlProjectId">
             <el-option
               v-for="item in allProjectList"
               :key="item.id"
@@ -1234,6 +1234,9 @@ export default {
         ],
         propertySerialNumber: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        nnlightctlProjectId: [
+          { required: true, message: '选择内容不得为空', trigger: 'blur' }
         ],
         // decay: [
         //   { required: true, message: '填写内容不得为空', trigger: 'blur' }
