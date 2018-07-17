@@ -410,6 +410,16 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="所属项目" required prop="nnlightctlProjectId">
+          <el-select class="input-wrap" v-model="newLight.nnlightctlProjectId">
+            <el-option
+              v-for="item in allProjectList"
+              :key="item.id"
+              :label="item.projectName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="灯杆" required prop="lamppost">
           <el-input v-model="newMoreLight.lamppost" class="input-wrap"></el-input>
         </el-form-item>
