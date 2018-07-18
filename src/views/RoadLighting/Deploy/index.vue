@@ -610,7 +610,7 @@
           <p class="p-title">可选择</p>
           <div class="operate-block clearfix">
             <a class="f-l" @click="addLamp()"><i class="iconfont ">&#xe648;</i>添加</a>
-            <a class="f-l" @click="addLampAll()"><i class="iconfont ">&#xe648;</i>批量添加</a>
+            <a class="f-l" @click="addLampAll()"><i class="iconfont ">&#xe648;</i>批量1添加</a>
             <el-upload
               class="upload-demo"
               :show-file-list = 'false'
@@ -631,6 +631,7 @@
             @selection-change="handleSelectionChangeLight">
             <el-table-column type="selection" width="30"></el-table-column>
             <el-table-column fixed prop="uid" label="UID" width="60"></el-table-column>
+            <!-- <el-table-column fixed prop="loopPriority" label="序号" width="60"></el-table-column> -->
             <el-table-column prop="lamphead" label="灯头号" width="100"></el-table-column>
             <el-table-column prop="lamppost" label="灯杆" width="100"></el-table-column>
             <el-table-column prop="decay" label="光衰" width="100"></el-table-column>
@@ -713,10 +714,23 @@
             @selection-change="handleSelectionThisLoopList">
             <el-table-column type="selection" width="30"></el-table-column>
             <el-table-column fixed prop="uid" label="UID" width="60"></el-table-column>
+            
             <el-table-column prop="lamphead" label="灯头号" width="100"></el-table-column>
             <el-table-column prop="lamppost" label="灯杆" width="100"></el-table-column>
             <el-table-column prop="decay" label="光衰" width="100"></el-table-column>
             <el-table-column prop="mem" label="备注"></el-table-column>
+            <el-table-column fixed label="序号" width="130">
+              <template slot-scope="scope">
+              <el-select v-model="scope.row.loopPriority" placeholder="请选择">
+                <el-option
+                  v-for="item in options"
+                  :key="options[item]"
+                  :label="options[item]"
+                  :value="options[item]">
+                </el-option>
+              </el-select>
+            </template>
+            </el-table-column>
             <!-- <el-table-column fixed="right" label="操作">
               <template slot-scope="scope">
                 <el-button
@@ -1019,7 +1033,7 @@
 <script>
 import axios from 'axios'
 import qs from 'qs'
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox ,listLightingData } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -1027,6 +1041,8 @@ export default {
   data () {
     return {
       filterText: '',
+      options: [],
+        value: '',
       data2: [{
         id: 1,
         label: '杭州',
@@ -1700,8 +1716,9 @@ export default {
       // add by liupeng
       that.eleboxId = null
       that.notBe = null
-      listLighting(that.lightPageNumber, that.lightPageSize, that.eleboxId, that.notBe).then(response => {
+      listLightingData(that.lightPageNumber, that.lightPageSize, that.eleboxId, that.notBe).then(response => {
         that.lightingList = response.data
+
         if (that.lightingList.length > 0) {
           this.allLightTotal = response.total
         } else {
@@ -2071,6 +2088,8 @@ export default {
     },
     goLeftLoop () {
       console.log(this.thisLoopListSelection)
+      // alert(this.thisLoopList)
+      
       if (this.selectEleboxModelId && this.selectModelLoopId) {
         for (var i = 0; i < this.thisLoopListSelection.length; i++) {
           for (var j = 0; j < this.thisLoopList.length; j++) {
@@ -2089,16 +2108,27 @@ export default {
       }
     },
     goRightLoop () {
+      // alert(this.thisLoopList)
+
       if (this.selectEleboxModelId && this.selectModelLoopId) {
+        console.log(this.lightMultipleSelection)
         for (var i = 0; i < this.lightMultipleSelection.length; i++) {
           for (var j = 0; j < this.lightingList.length; j++) {
             if (this.lightMultipleSelection[i].id === this.lightingList[j].id) {
               this.lightingList.splice(j, 1)
+              // console.log(this.lightingList)
             }
           }
         }
         this.thisLoopList = this.thisLoopList.concat(this.lightMultipleSelection)
+        console.log(this.thisLoopList)
+        this.thisLoopList.divNum=''
+        for(var i=0; i<this.thisLoopList.length;i++){
+          this.options.push(i)
+        }
         this.$refs.lightTableOfLoof.clearSelection()
+        // alert(this.lightingList)
+        
       } else {
         this.$message({
           message: '请选择模块、回路',
@@ -2107,6 +2137,7 @@ export default {
       }
     },
     updateLightBeEleboxBeLoop () {
+      // alert(this.thisLoopList.length)
       let _array = []
       if (this.thisLoopList.length < 1) {
         this.$message({

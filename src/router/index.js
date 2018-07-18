@@ -189,12 +189,13 @@ export const constantRouterMap = [
       name: 'User',
       redirect: '/ucenter/user/index',
       meta: { title: '用户', icon: '' },
-      children: [{
-        path: 'index',
-        component: () => import('@/views/Ucenter/User/index'),
-        name: 'userindex',
-        meta: { title: '用户中心', icon: '' }
-      },
+      children:[
+      //{
+      //   path: 'index',
+      //   component: () => import('@/views/Ucenter/User/index'),
+      //   name: 'userindex',
+      //   meta: { title: '用户中心', icon: '' }
+      // },
       {
         path: 'organization',
         component: () => import('@/views/Ucenter/User/organization'),
@@ -256,8 +257,40 @@ export const constantRouterMap = [
     children: [{
       path: 'index',
       component: () => import('@/views/AssetAdmin/index'),
-      name: 'AssetAdminIndex',
+      name: 'indexIndex',
       meta: { title: '资产管理首页', icon: '' }
+    },{
+      path: 'general',
+      component: () => import('@/views/AssetAdmin/general/index'),
+      name: 'generalIndex',
+      meta: { title: '维修概况', icon: '' }
+    },
+    {
+      path: 'manage',
+      component: () => import('@/views/AssetAdmin/manage/index'),
+      name: 'manageIndex',
+      meta: { title: '维修管理', icon: '' }
+    },
+    {
+      path: 'linkman',
+      component: () => import('@/views/AssetAdmin/linkman/index'),
+      name: 'linkmanIndex',
+      meta: { title: '联系人管理', icon: '' }
+    },{
+      path: 'inventory',
+      component: () => import('@/views/AssetAdmin/inventory/index'),
+      name: 'inventoryIndex',
+     
+      meta: { title: '库存管理', icon: '' },
+      // children:[
+      //   {
+      //     path: 'inventory/index',
+      //     component: () => import('@/views/AssetAdmin/inventory/index'),
+      //     name: 'inventoryIndex1',
+      //     meta: { title: '资产申请', icon: '' }
+          
+      //   }
+      // ]
     }]
   }
 ]

@@ -190,6 +190,16 @@ export function listLighting (pageNumber, pageSize, eleboxId, notBe) {
     }
   })
 }
+
+export function listLightingData (notBe) {
+  return request({
+    url: '/api/roadlighting/listLighting',
+    method: 'get',
+    params: {
+      notBe:1
+    }
+  })
+}
 /**
  * 删除灯具
  * @export
