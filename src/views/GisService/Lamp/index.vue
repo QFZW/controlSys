@@ -720,7 +720,7 @@
         <el-row style="margin: 20px 0">
           <el-col :span="12">
             <div class="light-wrap">
-              <i class="iconfont">&#xe62b;</i>
+              <i class="iconfont" :style="{ opacity: lightOpacity }" >&#xe62b;</i>
             </div>
           </el-col>
           <el-col :span="6">
@@ -816,6 +816,7 @@ export default {
         useDate: 1527662952000, // -- 使用日期
         brightness: '70%'
       }],
+      // lightOpacity: 0.5, //灯的亮度
       mockList: [{
         longitude: '113.920400',
         latitude: '22.533800',
@@ -972,6 +973,9 @@ export default {
     }
   },
   computed: {
+    lightOpacity: function () {
+      return this.selectitem / 100
+    }
     // tableData: function () {
     //   return [
     //     {
@@ -1014,9 +1018,26 @@ export default {
           this.selectitem = 0
           break
       }
+      commandLightAdjust(this.selectitem).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          console.log('更新灯具信息成功')
+        }
+      }).catch((res) => {
+        console.log(res)
+      })
     },
     handleslidechange (event) {
-      // this.selectitem = 
+      // this.selectitem =
+      console.log('滑动条指改变')
+      commandLightAdjust(this.selectitem).then(res => {
+        console.log(res)
+        if (res.error === 0) {
+          console.log('更新灯具信息成功')
+        }
+      }).catch((res) => {
+        console.log(res)
+      })
     },
     handleUpdateLightInof () {
       this.loghtInfoDialog = false

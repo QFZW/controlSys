@@ -434,3 +434,19 @@ export function unbindLightBeElebox (beEleboxId, lightIdList) {
     }
   })
 }
+
+/**
+ *获取全部项目列表信息
+ * @export
+ * @param {*}  控制柜id
+ * @param {*}  灯具的id集合
+ * @returns
+ */
+export function listProject () {
+  return request({
+    url: '/api/project/listproject',
+    method: 'get',
+    data: {
+    }
+  })
+}

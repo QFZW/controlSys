@@ -309,7 +309,7 @@ export function listLoopLighting (projectId, loopId) {
  */
 export function commandLightAdjust (lightPercent) {
   return request({
-    url: '/api/command/',
+    url: '/api/command/sendLightAdjustCommand',
     method: 'get',
     params: {
       lightPercent

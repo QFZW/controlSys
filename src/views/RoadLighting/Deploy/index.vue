@@ -410,6 +410,16 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="所属项目" required prop="nnlightctlProjectId">
+          <el-select class="input-wrap" v-model="newMoreLight.nnlightctlProjectId">
+            <el-option
+              v-for="item in allProjectList"
+              :key="item.id"
+              :label="item.projectName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="灯杆" required prop="lamppost">
           <el-input v-model="newMoreLight.lamppost" class="input-wrap"></el-input>
         </el-form-item>
@@ -469,6 +479,16 @@
       <el-form ref="addNewLightForm" class="lamp-form" :model="newLight" :rules="addNewLightRules" label-width="140px" size='small'>
         <el-form-item label="灯具编码" required prop="uid">
           <el-input v-model="newLight.uid" class="input-wrap"></el-input>
+        </el-form-item>
+        <el-form-item label="所属项目" required prop="nnlightctlProjectId">
+          <el-select class="input-wrap" v-model="newLight.nnlightctlProjectId">
+            <el-option
+              v-for="item in allProjectList"
+              :key="item.id"
+              :label="item.projectName"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="生产日期" required prop="manufacture">
           <el-date-picker
@@ -810,6 +830,16 @@
         <el-form-item label="主进线开关型号" required prop="mainSwitch">
           <el-input class="input-wrap" v-model="newElebox.mainSwitch"></el-input>
         </el-form-item>
+        <el-form-item label="所属项目" required prop="nnlightctlProjectId">
+          <el-select class="input-wrap" v-model="newElebox.nnlightctlProjectId">
+            <el-option
+              v-for="item in allProjectList"
+              :key="item.id"
+              :label="item.projectName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="控制柜GIS" required prop="nnlightctlEleboxGisId">
           <el-select class="input-wrap" v-model="newElebox.nnlightctlEleboxGisId">
             <el-option
@@ -1090,6 +1120,7 @@ export default {
       listArea: [], // 区域列表
       eleboxList: [],
       allEleboxList: [], // 所有控制柜列表
+      allProjectList: [], // 所有项目
       newElebox: [],
       boxPageNumber: 1,
       boxPageSize: 10,
@@ -1190,6 +1221,9 @@ export default {
         ],
         nnlightctlRegionId: [
           { required: true, message: '选择内容不得为空', trigger: 'blur' }
+        ],
+        nnlightctlProjectId: [
+          { required: true, message: '选择内容不得为空', trigger: 'blur' }
         ]
       },
       addNewLightRules: {
@@ -1216,6 +1250,9 @@ export default {
         ],
         propertySerialNumber: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
+        ],
+        nnlightctlProjectId: [
+          { required: true, message: '选择内容不得为空', trigger: 'blur' }
         ],
         // decay: [
         //   { required: true, message: '填写内容不得为空', trigger: 'blur' }
@@ -1457,6 +1494,7 @@ export default {
     },
     editCabinet (e) {
       this.newElebox = Object.assign({}, this.eleboxList[e])
+      console.log(this.allProjectList, '所有项目信息')
       this.editCabinetDialog = true
     },
     // 批量添加灯具
@@ -1498,11 +1536,21 @@ export default {
         console.log(error)
       })
     },
+    // 获取所有项目列表
+    getAllProjectList () {
+      let that = this
+      listProject().then((res) => {
+        if (res.data) {
+          that.allProjectList = res.data
+        }
+      })
+    },
     // 获取控制柜相关信息
     getListElebox () {
       let that = this
       listElebox(that.boxPageNumber, that.boxPageSize).then(response => {
         that.eleboxList = response.data
+        console.log('控制柜信息', response.data)
         if (that.eleboxList.length > 0) {
           this.allEleboxTotal = response.total
         } else {
@@ -1595,7 +1643,7 @@ export default {
           message: '编辑成功'
         })
         this.getListElebox()
-        this.getAllListElebox()
+        this.getAllProjectList()
         this.editCabinetDialog = false
         this.$refs['editCabinetForm'].resetFields()
         this.newElebox = {}
@@ -1728,6 +1776,7 @@ export default {
         console.log(error)
       })
     },
+    // 编辑灯具
     editLightRow (e) {
       this.addType = 1
       this.editIndex = e
@@ -2223,6 +2272,7 @@ export default {
     this.getAllListElebox()
     this.getListLighting()
     this.getListArea()
+    this.getAllProjectList()
   }
 }
 </script>
