@@ -569,7 +569,7 @@
         </div>
         <el-table
           ref="multipleTable"
-          :data="lightingList"
+          :data="eleboxList2"
           tooltip-effect="dark"
           style="width: 100%"
           header-row-class-name="datalist-header"
@@ -630,7 +630,7 @@
           <p class="p-title">可选择</p>
           <div class="operate-block clearfix">
             <a class="f-l" @click="addLamp()"><i class="iconfont ">&#xe648;</i>添加</a>
-            <a class="f-l" @click="addLampAll()"><i class="iconfont ">&#xe648;</i>批量1添加</a>
+            <a class="f-l" @click="addLampAll()"><i class="iconfont ">&#xe648;</i>批量添加</a>
             <el-upload
               class="upload-demo"
               :show-file-list = 'false'
@@ -643,7 +643,7 @@
           </div>
           <el-table
             ref="lightTableOfLoof"
-            :data="lightingList"
+            :data="nobeIDlist"
             tooltip-effect="dark"
             height="300"
             style="width: 100%"
@@ -1064,7 +1064,7 @@
 import axios from 'axios'
 import qs from 'qs'
 
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox, listProject ,listLightingData } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox, listProject ,listLightingData ,listElebox2 } from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -1120,6 +1120,7 @@ export default {
       listLightModel: [], // 所有灯具类型列表
       listArea: [], // 区域列表
       eleboxList: [],
+      eleboxList2:[],
       allEleboxList: [], // 所有控制柜列表
       allProjectList: [], // 所有项目
       newElebox: [],
@@ -1134,6 +1135,8 @@ export default {
       EleboxModelCount: null, // 设备个数
       disabled: false, // 编辑时无法设置个数
       newEleboxModel: {},
+      nobeID:'1',
+      nobeIDlist:[],
       addNewEleboxModel: {
         modelName: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
@@ -1501,6 +1504,20 @@ export default {
     // 批量添加灯具
     insertLamp () {
       this.insertLanmpDialog = true
+      // listLightingData
+        let that = this
+      listLightingData(that.nobeID).then(response => {
+        
+        that.nobeIDlist = response.data
+        console.log('控制柜信息2', response.data)
+        // if (that.eleboxList.length > 0) {
+        //   this.allEleboxTotal = response.total
+        // } else {
+        //   this.allEleboxTotal = 0
+        // }
+      }).catch(error => {
+        console.log(error)
+      })
     },
     // 管理灯具
     manageLamp (e) {
@@ -1510,6 +1527,18 @@ export default {
       this.lightPageSize = 10
       this.getListLighting()
       this.manageLanmpDialog = true
+       let that = this
+      listElebox2(that.boxPageNumber, that.boxPageSize,that.eleboxId).then(response => {
+        that.eleboxList2 = response.data
+        console.log('控制柜信息', response.data)
+        if (that.eleboxList.length > 0) {
+          this.allEleboxTotal = response.total
+        } else {
+          this.allEleboxTotal = 0
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     },
     // 获取GIS列表
     getListGIS () {
@@ -1765,7 +1794,7 @@ export default {
       // add by liupeng
       that.eleboxId = null
       that.notBe = null
-      listLightingData(that.lightPageNumber, that.lightPageSize, that.eleboxId, that.notBe).then(response => {
+      listLighting(that.lightPageNumber, that.lightPageSize, that.eleboxId).then(response => {
         that.lightingList = response.data
 
         if (that.lightingList.length > 0) {
@@ -2047,6 +2076,7 @@ export default {
     },
     // 提交回路修改
     subAllSplitLoop () {
+      
       console.log(this.splitNewLoopList)
       modelLoopSplite(this.selectModelLoopId, this.splitNewLoopList).then(response => {
         console.log(response)

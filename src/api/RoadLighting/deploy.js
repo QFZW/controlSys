@@ -87,13 +87,26 @@ export function deleteElebox (eleboxIdList) {
  * @param {any} pageSize
  * @returns
  */
-export function listElebox (pageNumber, pageSize) {
+export function listElebox (pageNumber, pageSize,eleboxId) {
   return request({
     url: '/api/roadlighting/listelebox',
     method: 'get',
     params: {
       pageNumber,
-      pageSize
+      pageSize,
+      eleboxId
+    }
+  })
+}
+
+export function listElebox2 (pageNumber, pageSize,eleboxId) {
+  return request({
+    url: '/api/roadlighting/listelebox',
+    method: 'get',
+    params: {
+      pageNumber,
+      pageSize,
+      eleboxId
     }
   })
 }
@@ -191,6 +204,19 @@ export function listLighting (pageNumber, pageSize, eleboxId, notBe) {
   })
 }
 
+
+export function listLightingList (pageNumber, pageSize, eleboxId, notBe) {
+  return request({
+    url: '/api/roadlighting/listLighting',
+    method: 'get',
+    params: {
+      pageNumber,
+      pageSize,
+      eleboxId,
+      notBe
+    }
+  })
+}
 export function listLightingData (notBe) {
   return request({
     url: '/api/roadlighting/listLighting',
