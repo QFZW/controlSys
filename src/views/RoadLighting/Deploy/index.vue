@@ -703,9 +703,9 @@
           </div> -->
           <el-form :inline="true" class="demo-form-inline">
             <el-form-item required label="模块">
-              <el-select v-model="selectEleboxModelId" placeholder="模块">
+              <el-select v-model="selectEleboxModelId" @change="changeMokuai($event)" placeholder="模块">
                 <el-option
-                  v-for="item in listEleboxModel"
+                  v-for="item in listEleboxModel22"
                   :key="item.id"
                   :label="item.modelName"
                   :value="item.id">
@@ -715,7 +715,7 @@
             <el-form-item required label="回路">
               <el-select v-model="selectModelLoopId" placeholder="回路">
                 <el-option
-                  v-for="item in listModelLoop"
+                  v-for="item in listModelLoop2"
                   :key="item.id"
                   :label="item.loopCode"
                   :value="item.id">
@@ -1064,7 +1064,7 @@
 import axios from 'axios'
 import qs from 'qs'
 
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox, listProject ,listLightingData ,listElebox2 } from '@/api/RoadLighting/deploy'
+import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox, listProject ,listLightingData ,listElebox2 ,listEleboxModel2 ,listModelLoopList} from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -1072,6 +1072,7 @@ export default {
   data () {
     return {
       filterText: '',
+      listEleboxModel22:[],
       options: [],
         value: '',
       data2: [{
@@ -1290,6 +1291,7 @@ export default {
       // 管理模块，获取单个控制柜下所有模块
       listEleboxModel: [],
       listModelLoop: [],
+      listModelLoop2:[],
       selectEleboxModelId: null,
       selectModelLoopId: null,
       // 存放拆分回路
@@ -1510,6 +1512,20 @@ export default {
         
         that.nobeIDlist = response.data
         console.log('控制柜信息2', response.data)
+        // if (that.eleboxList.length > 0) {
+        //   this.allEleboxTotal = response.total
+        // } else {
+        //   this.allEleboxTotal = 0
+        // }
+      }).catch(error => {
+        console.log(error)
+      })
+
+      
+       listEleboxModel2(that.nobeID).then(response => {
+        that.listEleboxModel22=response.data
+        
+        console.log('控制柜信息3', response.data)
         // if (that.eleboxList.length > 0) {
         //   this.allEleboxTotal = response.total
         // } else {
@@ -2022,7 +2038,7 @@ export default {
       let that = this
       listEleboxModel(eleboxId).then(response => {
         that.listEleboxModel = response.data
-        console.log(that.listEleboxModel)
+        // console.log('模块',that.listEleboxModel)
       }).catch(error => {
         console.log(error)
       })
@@ -2290,6 +2306,15 @@ export default {
           type: 'info',
           message: '已取消删除'
         })
+      })
+    },
+    changeMokuai:function(index){
+      var that=this
+      console.log('id',index)
+      listModelLoopList(index).then(res =>{
+        // console.log('id',res.data)
+          that.listModelLoop2=res.data
+          that.selectModelLoopId=res.data[0].loopCode
       })
     }
   },

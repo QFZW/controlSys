@@ -127,6 +127,18 @@ export function listEleboxModel (eleboxId, pageNumber, pageSize) {
     }
   })
 }
+
+export function listEleboxModel2 (eleboxId, pageNumber, pageSize) {
+  return request({
+    url: '/api/roadlighting/listmodel',
+    method: 'get',
+    params: {
+      eleboxId,
+      pageNumber,
+      pageSize
+    }
+  })
+}
 /**
  * 获取某一模块下全部回路
  * @export
@@ -134,6 +146,16 @@ export function listEleboxModel (eleboxId, pageNumber, pageSize) {
  * @returns
  */
 export function listModelLoop (modelId) {
+  return request({
+    url: '/api/roadlighting/listmodelloop',
+    method: 'get',
+    params: {
+      modelId
+    }
+  })
+}
+
+export function listModelLoopList (modelId) {
   return request({
     url: '/api/roadlighting/listmodelloop',
     method: 'get',
