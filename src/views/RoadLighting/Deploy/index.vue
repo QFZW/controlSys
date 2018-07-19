@@ -1528,14 +1528,11 @@ export default {
       this.getListLighting()
       this.manageLanmpDialog = true
        let that = this
-      listElebox2(that.boxPageNumber, that.boxPageSize,that.eleboxId).then(response => {
+      listElebox2(e).then(response => {
         that.eleboxList2 = response.data
+        console.log('测试',response.data)
         console.log('控制柜信息', response.data)
-        if (that.eleboxList.length > 0) {
-          this.allEleboxTotal = response.total
-        } else {
-          this.allEleboxTotal = 0
-        }
+        
       }).catch(error => {
         console.log(error)
       })

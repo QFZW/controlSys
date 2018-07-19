@@ -99,13 +99,11 @@ export function listElebox (pageNumber, pageSize,eleboxId) {
   })
 }
 
-export function listElebox2 (pageNumber, pageSize,eleboxId) {
+export function listElebox2 (eleboxId) {
   return request({
-    url: '/api/roadlighting/listelebox',
-    method: 'get',
+    url: '/api/roadlighting/listLighting',
+    method: 'post',
     params: {
-      pageNumber,
-      pageSize,
       eleboxId
     }
   })
