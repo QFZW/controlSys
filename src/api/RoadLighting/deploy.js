@@ -452,7 +452,7 @@ export function getLoopLight (id) {
  * modelLoopId 回路id
  * @returns 成功或者失败
  */
-export function updateLightBeEleboxBeLoop (lightIdList, beEleboxId, modelLoopId) {
+export function updateLightBeEleboxBeLoop (originalLightIds,lightIdList, beEleboxId, modelLoopId) {
   return request({
     url: '/api/roadlighting/updateLightBeEleboxBeLoop',
     method: 'post',

@@ -1172,6 +1172,8 @@ export default {
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
         ]
       },
+      originalLightIds:[],
+      lightIdListIDss:[],
       // 回路
       modelLoopList: [],
       newModelLoop: {},
@@ -1509,8 +1511,9 @@ export default {
     // 批量添加灯具
     insertLamp () {
       this.insertLanmpDialog = true
-      // listLightingData
+      // listLightingDatalistLightingData
         let that = this
+       
       listLightingData(that.nobeID).then(response => {
         
         that.nobeIDlist = response.data
@@ -2273,9 +2276,12 @@ export default {
         // 取出所有待设置选项id
         _array.push(selectedItem.id)
       })
-      updateLightBeEleboxBeLoop(_array, this.eleboxIdBeifen, this.selectModelLoopId3).then(response => {
+
+      console.log('cccccc',_array)
+      console.log('cdcdcd',this.originalLightIds)
+      updateLightBeEleboxBeLoop(this.originalLightIds,_array, this.selectEleboxModelId2, this.selectModelLoopId3).then(response => {
         this.insertLanmpDialog = false
-        this.thisLoopList1 = []
+        // this.thisLoopList1 = []
       }).catch(error => {
         console.log(error)
       })
@@ -2347,6 +2353,12 @@ export default {
           that.selectModelLoopId3=res.data[0].loopCode
            getLoopLight(res.data[0].id).then(response =>{
             that.thisLoopList1=response.data
+            var a=[]
+            for(var i=0;i<that.thisLoopList1.length;i++){
+              console.log('ididid',that.thisLoopList1[i].id)
+              a.push(that.thisLoopList1[i].id)
+            }
+            that.originalLightIds=a
             console.log('回路',response.data)
             var a=new Array();
             for(var i=0; i<response.data.length;i++){
