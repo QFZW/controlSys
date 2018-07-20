@@ -724,7 +724,7 @@
             </el-form-item>
           </el-form>
           <el-table
-            v-if="thisLoopList"
+            v-if="thisLoopList1"
             ref="multipleTable"
             :data="thisLoopList1"
             tooltip-effect="dark"
@@ -741,7 +741,7 @@
             <el-table-column prop="mem" label="备注"></el-table-column>
             <el-table-column fixed label="序号" width="130">
               <template slot-scope="scope">
-              <el-select v-model="scope.row.loopPriority" placeholder="请选择">
+              <el-select v-model="scope.row.loopPriority" @change="loopdatachange(scope.row,scope.$index)" placeholder="请选择">
                 <el-option
                   v-for="item in options"
                   :key="item"
@@ -1064,7 +1064,7 @@
 import axios from 'axios'
 import qs from 'qs'
 
-import { listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox, listProject ,listLightingData ,listElebox2 ,listEleboxModel2 ,listModelLoopList} from '@/api/RoadLighting/deploy'
+import {getLoopLight1, listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox, listProject ,listLightingData ,listElebox2 ,listEleboxModel2 ,listModelLoopList} from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
 import '../../../utils/filter.js'
 export default {
@@ -1235,6 +1235,7 @@ export default {
           { required: true, message: '选择内容不得为空', trigger: 'blur' }
         ]
       },
+      idiid:[],
       addNewLightRules: {
         uid: [
           { required: true, message: '填写内容不得为空', trigger: 'blur' }
@@ -1301,6 +1302,7 @@ export default {
       // 存放拆分回路
       splitNewLoopList: [],
       thisLoopList1:[],
+      panduan:1,
       // 灯具批量
       MoreLampObj: {
         uid: null,
@@ -2279,12 +2281,17 @@ export default {
 
       console.log('cccccc',_array)
       console.log('cdcdcd',this.originalLightIds)
-      updateLightBeEleboxBeLoop(this.originalLightIds,_array, this.selectEleboxModelId2, this.selectModelLoopId3).then(response => {
+      if(this.panduan==1){
+        this.$message.error('序号重复请查看')
+      }else{
+       updateLightBeEleboxBeLoop(this.originalLightIds,_array, this.selectEleboxModelId2, this.selectModelLoopId3).then(response => {
         this.insertLanmpDialog = false
         // this.thisLoopList1 = []
       }).catch(error => {
         console.log(error)
       })
+      }
+      
     },
     deleteLightOfLoop (e) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -2375,8 +2382,36 @@ export default {
       var that=this
       getLoopLight(index).then(res =>{
         that.thisLoopList1=res.data
+        var a=[]
+        for(var i=0;i<res.data.length;i++){
+            a.push(res.data[i].loopPriority)
+        }
+        that.idiid=a
         console.log('回路',res.data)
       })
+    },
+    loopdatachange:function(row,index){
+
+     
+      console.log('asaaa',index)
+      var id=[]
+      for(var i=0; i<this.thisLoopList1.length; i++){
+          id.push(this.thisLoopList1[i].loopPriority)
+      }
+      id.splice(index,1)
+     
+      if(id.indexOf(row.loopPriority)<0){
+        id.splice(index,1,row.loopPriority)
+         getLoopLight1(row.id,row.loopPriority).then(res=>{
+      })
+        this.panduan=2
+      }else{
+        this.panduan=1
+        this.$message.error('数据重复')
+      }
+    // console.log('傻逼',this.idiid)
+     
+     
     }
 
   },

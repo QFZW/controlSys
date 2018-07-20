@@ -444,6 +444,18 @@ export function getLoopLight (id) {
     }
   })
 }
+
+
+export function getLoopLight1 (id,priority) {
+  return request({
+    url: '/api/roadlighting/updateLightPriority',
+    method: 'get',
+    params: {
+      id,
+      priority
+    }
+  })
+}
 /**
  * 更新灯具所属控制柜和所属回路
  * @export
@@ -457,6 +469,7 @@ export function updateLightBeEleboxBeLoop (originalLightIds,lightIdList, beElebo
     url: '/api/roadlighting/updateLightBeEleboxBeLoop',
     method: 'post',
     data: {
+      originalLightIds,
       lightIdList,
       beEleboxId,
       modelLoopId
