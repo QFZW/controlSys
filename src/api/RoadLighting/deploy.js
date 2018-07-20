@@ -122,6 +122,7 @@ export function listEleboxModel (eleboxId, pageNumber, pageSize) {
     method: 'get',
     params: {
       eleboxId,
+      nnlightctlEleboxId,
       pageNumber,
       pageSize
     }

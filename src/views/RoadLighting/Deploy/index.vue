@@ -703,7 +703,7 @@
           </div> -->
           <el-form :inline="true" class="demo-form-inline">
             <el-form-item required label="模块">
-              <el-select v-model="selectEleboxModelId" @change="changeMokuai($event)" placeholder="模块">
+              <el-select v-model="selectEleboxModelId2" @change="changeMokuai($event)" placeholder="模块">
                 <el-option
                   v-for="item in listEleboxModel22"
                   :key="item.id"
@@ -713,7 +713,7 @@
               </el-select>
             </el-form-item>
             <el-form-item required label="回路">
-              <el-select v-model="selectModelLoopId" placeholder="回路">
+              <el-select v-model="selectModelLoopId3" @change="changeHulu($event)" placeholder="回路">
                 <el-option
                   v-for="item in listModelLoop2"
                   :key="item.id"
@@ -726,7 +726,7 @@
           <el-table
             v-if="thisLoopList"
             ref="multipleTable"
-            :data="thisLoopList"
+            :data="thisLoopList1"
             tooltip-effect="dark"
             height="270"
             style="width: 100%"
@@ -744,9 +744,9 @@
               <el-select v-model="scope.row.loopPriority" placeholder="请选择">
                 <el-option
                   v-for="item in options"
-                  :key="options[item]"
-                  :label="options[item]"
-                  :value="options[item]">
+                  :key="item"
+                  :label="item"
+                  :value="item">
                 </el-option>
               </el-select>
             </template>
@@ -1073,6 +1073,8 @@ export default {
     return {
       filterText: '',
       listEleboxModel22:[],
+      selectEleboxModelId2:'',
+      selectModelLoopId3:'',
       options: [],
         value: '',
       data2: [{
@@ -1296,6 +1298,7 @@ export default {
       selectModelLoopId: null,
       // 存放拆分回路
       splitNewLoopList: [],
+      thisLoopList1:[],
       // 灯具批量
       MoreLampObj: {
         uid: null,
@@ -2203,28 +2206,37 @@ export default {
     goRightLoop () {
       // alert(this.thisLoopList)
 
-      if (this.selectEleboxModelId && this.selectModelLoopId) {
-        console.log(this.lightMultipleSelection)
-        for (var i = 0; i < this.lightMultipleSelection.length; i++) {
-          for (var j = 0; j < this.lightingList.length; j++) {
-            if (this.lightMultipleSelection[i].id === this.lightingList[j].id) {
-              this.lightingList.splice(j, 1)
-              // console.log(this.lightingList)
-            }
+      if (this.selectEleboxModelId2 && this.selectModelLoopId3) {
+        console.log('ddd',this.lightMultipleSelection)
+          // thisLoopList1
+
+          for(var i=0; i<this.lightMultipleSelection.length; i++){
+            this.thisLoopList1.push(this.lightMultipleSelection[i])
           }
-        }
-        this.thisLoopList = this.thisLoopList.concat(this.lightMultipleSelection)
-        console.log(this.thisLoopList)
-        this.thisLoopList.divNum=''
-        for(var i=0; i<this.thisLoopList.length;i++){
-          this.options.push(i)
-        }
-        this.$refs.lightTableOfLoof.clearSelection()
+            var a=[];
+          for(var i=0; i<this.thisLoopList1.length; i++){
+              a.push(i+1)
+          }
+        this.options=a
+
+        // for (var i = 0; i < this.lightMultipleSelection.length; i++) {
+        //   for (var j = 0; j < this.lightingList.length; j++) {
+        //     if (this.lightMultipleSelection[i].id === this.lightingList[j].id) {
+        //       this.lightingList.splice(j, 1)
+        //       // console.log(this.lightingList)
+        //     }
+        //   }
+        // }
+        // this.thisLoopList = this.thisLoopList.concat(this.lightMultipleSelection)
+        // console.log(this.thisLoopList)
+        // this.thisLoopList.divNum=''
+        
+        // this.$refs.lightTableOfLoof.clearSelection()
         // alert(this.lightingList)
         
       } else {
         this.$message({
-          message: '请选择模块、回路',
+          message: '请选择模块、回路1',
           type: 'warning'
         })
       }
@@ -2232,20 +2244,20 @@ export default {
     updateLightBeEleboxBeLoop () {
       // alert(this.thisLoopList.length)
       let _array = []
-      if (this.thisLoopList.length < 1) {
+      if (this.thisLoopList1.length < 1) {
         this.$message({
           message: '请勾选数据',
           type: 'warning'
         })
         return false
       }
-      this.thisLoopList.forEach(selectedItem => {
+      this.thisLoopList1.forEach(selectedItem => {
         // 取出所有待设置选项id
         _array.push(selectedItem.id)
       })
-      updateLightBeEleboxBeLoop(_array, this.eleboxIdBeifen, this.selectModelLoopId).then(response => {
+      updateLightBeEleboxBeLoop(_array, this.eleboxIdBeifen, this.selectModelLoopId3).then(response => {
         this.insertLanmpDialog = false
-        this.thisLoopList = []
+        this.thisLoopList1 = []
       }).catch(error => {
         console.log(error)
       })
@@ -2314,9 +2326,29 @@ export default {
       listModelLoopList(index).then(res =>{
         // console.log('id',res.data)
           that.listModelLoop2=res.data
-          that.selectModelLoopId=res.data[0].loopCode
+          that.selectModelLoopId3=res.data[0].loopCode
+           getLoopLight(res.data[0].id).then(response =>{
+            that.thisLoopList1=response.data
+            console.log('回路',response.data)
+            var a=new Array();
+            for(var i=0; i<response.data.length;i++){
+                // console.log('序号',response.data)
+                a.push(i+1)
+            }
+             console.log('序号',a)
+             that.options=a
+             console.log(that.options)
+          })
+      })
+    },
+    changeHulu:function(index){
+      var that=this
+      getLoopLight(index).then(res =>{
+        that.thisLoopList1=res.data
+        console.log('回路',res.data)
       })
     }
+
   },
   created () {
     this.getListGIS()
