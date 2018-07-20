@@ -2195,7 +2195,11 @@ export default {
             }
           }
         }
-
+          var a=[];
+          for(var i=0; i<this.thisLoopList1.length; i++){
+              a.push(i+1)
+          }
+        this.options=a
 
         // this.lightingList1 = this.lightingList1.concat(this.thisLoopListSelection)
         // this.$refs.lightTableOfLoof.clearSelection()
