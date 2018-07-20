@@ -2183,18 +2183,21 @@ export default {
       })
     },
     goLeftLoop () {
-      console.log(this.thisLoopListSelection)
+      console.log('222',this.thisLoopListSelection)
       // alert(this.thisLoopList)
       
-      if (this.selectEleboxModelId && this.selectModelLoopId) {
+      if (this.selectEleboxModelId2 && this.selectModelLoopId3) {
         for (var i = 0; i < this.thisLoopListSelection.length; i++) {
-          for (var j = 0; j < this.thisLoopList.length; j++) {
-            if (this.thisLoopListSelection[i].id === this.thisLoopList[j].id) {
-              this.thisLoopList.splice(j, 1)
+          this.nobeIDlist.push(this.thisLoopListSelection[i])
+          for (var j = 0; j < this.thisLoopList1.length; j++) {
+            if (this.thisLoopListSelection[i].id === this.thisLoopList1[j].id) {
+              this.thisLoopList1.splice(j, 1)
             }
           }
         }
-        this.lightingList = this.lightingList.concat(this.thisLoopListSelection)
+
+
+        // this.lightingList1 = this.lightingList1.concat(this.thisLoopListSelection)
         // this.$refs.lightTableOfLoof.clearSelection()
       } else {
         this.$message({
@@ -2218,7 +2221,18 @@ export default {
               a.push(i+1)
           }
         this.options=a
+        // if(this.lightMultipleSelection[i].id === this.nobeIDlist[j].id){
 
+         
+            for(var i=0; i<this.lightMultipleSelection.length; i++){
+              for(var j=0; j<this.nobeIDlist.length;j++){
+                if(this.lightMultipleSelection[i].id === this.nobeIDlist[j].id){
+                  this.nobeIDlist.splice(j, 1)
+                }
+              }
+            }
+            // this.nobeIDlist = this.nobeIDlist.concat(this.lightMultipleSelection)
+        // }
         // for (var i = 0; i < this.lightMultipleSelection.length; i++) {
         //   for (var j = 0; j < this.lightingList.length; j++) {
         //     if (this.lightMultipleSelection[i].id === this.lightingList[j].id) {
