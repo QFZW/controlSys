@@ -87,7 +87,7 @@ export function deleteElebox (eleboxIdList) {
  * @param {any} pageSize
  * @returns
  */
-export function listElebox (pageNumber, pageSize,eleboxId) {
+export function listElebox (pageNumber, pageSize, eleboxId) {
   return request({
     url: '/api/roadlighting/listelebox',
     method: 'get',
@@ -116,6 +116,7 @@ export function listElebox2 (eleboxId) {
  * @param {any} pageSize
  * @returns
  */
+let nnlightctlEleboxId;
 export function listEleboxModel (eleboxId, pageNumber, pageSize) {
   return request({
     url: '/api/roadlighting/listmodel',

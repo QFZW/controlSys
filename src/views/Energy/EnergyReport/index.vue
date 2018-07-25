@@ -11,6 +11,10 @@
     </div>
 </template>
 <script>
+
+// 依赖引入
+import echarts from 'echarts'
+
 export default {
   name: 'EnergyMonitor',
   data () {
