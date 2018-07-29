@@ -1,32 +1,199 @@
 <template>
     <div class="box">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
-        <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
-        <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
-        <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
-    </el-tabs>
+          <el-tabs v-model="activeName" @tab-click="handleClick">
+          <el-tab-pane label="月统计" name="first"></el-tab-pane>
+          <el-tab-pane label="季统计" name="second"></el-tab-pane>
+          <el-tab-pane label="年统计" name="third"></el-tab-pane>
+          <el-tab-pane label="全部统计" name="fourth"></el-tab-pane>
+          </el-tabs>
+          <div class="seach_lest">
+              <div class="objack_tab">
+                <div v-for="(item,index) in objackTab" :key="index" @click="objackTabChange(index)" v-bind:class="{ active_objack: item.classActive }">{{item.labe}}</div>
+              </div>
+              <div class="dateChange">
+                  <div>时间：</div>
+                  <el-date-picker
+                    v-model="dateChange"
+                    type="date"
+                    placeholder="选择日期">
+                  </el-date-picker>
+              </div>
+              <div class="rightList">
+                  <template>
+                    <el-select v-model="value" placeholder="请选择">
+                      <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                  </template>
+                  <div class="button">导出</div>
+                  <div class="button">打印</div>
+              </div>
+          </div>
+          <div style="clear:both"></div>
+         
+          <div class="viewsTab">
+              <div class="allobj" v-if="objTab">
+                    <allobj></allobj>
+              </div>
+              <div class="aboutObj" v-else="objTab">
+                   
+                 <div class="objName">XXX项目</div>
+                  <aboutbj></aboutbj>
+              </div>
+          </div>
+         
     </div>
  
 </template>
 <script>
+// import echarts from 'echarts'
+import Aboutbj from './aboutObj.vue'
+import Allobj from './allobj.vue'
   export default {
     data() {
       return {
-        activeName: 'second'
+        activeName: 'second',
+         tabPosition: 'top',
+         objackTab:[{
+                  labe:'全部项目统计',
+                  classActive:false
+                   },
+                   {
+                  labe:'分项目统计',
+                  classActive:true
+                   }],
+          dateChange:'',
+           options: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        value: '',
+        objTab:false
       };
     },
+    
     methods: {
       handleClick(tab, event) {
-        console.log(tab, event);
-      }
+        // console.log(tab, event);
+        // console.log(tab.index)
+
+        switch(tab.index){
+          case '0' :
+            alert('0')
+          break;
+          case '1':
+          alert('1')
+          break;
+          case '2' :
+          alert('2')
+          break ;
+          case '3' :
+          alert('3')
+          break;
+        }
+      },
+      handleClickOne(tab,event){
+        console.log(this.tabPosition)
+      },
+      objackTabChange(index){
+          this.objTab=!this.objTab
+          if(index==0){
+            this.objackTab[index].classActive=true
+            this.objackTab[1].classActive=false
+         
+          }else if(index==1){
+            this.objackTab[index].classActive=true
+            this.objackTab[0].classActive=false
+           
+          }
+      },
+      
+    },
+    components:{
+      Aboutbj,
+      Allobj
     }
   };
 </script>
 
 <style lang="scss" scoped>
     .box{
-        margin-left: 20px;
-        margin-top: 20px;
+       width: 98%;
+       margin: 0 auto;
+    }
+    .seach_lest{
+      margin-top:20px; 
+    }
+
+    .objack_tab{
+      display: flex;
+      float: left;
+      font-size: 14px;
+    }
+    .objack_tab >div{
+      padding: 10px 20px;
+      border: solid 1px #bbb;
+      background: #fff;
+    }
+    .objack_tab >div:nth-child(1){
+      border-right: none;
+      border-radius: 5px 0 0 5px;
+    }
+     .objack_tab >div:nth-child(2){
+      // border-right: none;
+      border-radius: 0px 5px 5px 0px;
+    }
+    .objack_tab .active_objack{
+      border: solid 1px #409EFF;
+      color: #409EFF;
+      background: #eee;
+    }
+    .dateChange{
+      display: flex;
+      float: left;
+      margin-left: 30px;
+      line-height: 40px;
+      font-size: 14px;
+    }
+    .rightList{
+      float: right;
+      display: flex;
+      // line-height: 40px;
+    }
+    .rightList .button{
+        background: #409EFF;
+        margin-right: 10px;
+        border-radius:5px; 
+        color: #fff;
+        font-size: 14px;
+        line-height: 40px;
+        padding: 0 20px;
+    }
+    .rightList div:nth-child(2){
+      margin-left: 20px;
+    }
+    .objName{
+      margin-top: 30px;
+      width: 100%;
+    }
+
+    .allobj{
+      margin-top: 20px;
     }
 </style>

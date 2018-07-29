@@ -22,7 +22,9 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '@/styles/index.scss' // global css
 
 import '@/permission' // permission control
+import echarts from 'echarts'
 
+Vue.prototype.$echarts = echarts 
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
