@@ -116,7 +116,7 @@ export function listElebox2 (eleboxId) {
  * @param {any} pageSize
  * @returns
  */
-let nnlightctlEleboxId;
+let nnlightctlEleboxId
 export function listEleboxModel (eleboxId, pageNumber, pageSize) {
   return request({
     url: '/api/roadlighting/listmodel',
@@ -244,7 +244,7 @@ export function listLightingData (notBe) {
     url: '/api/roadlighting/listLighting',
     method: 'get',
     params: {
-      notBe:1
+      notBe: 1
     }
   })
 }
@@ -446,8 +446,7 @@ export function getLoopLight (id) {
   })
 }
 
-
-export function getLoopLight1 (id,priority) {
+export function getLoopLight1 (id, priority) {
   return request({
     url: '/api/roadlighting/updateLightPriority',
     method: 'get',
@@ -465,7 +464,7 @@ export function getLoopLight1 (id,priority) {
  * modelLoopId 回路id
  * @returns 成功或者失败
  */
-export function updateLightBeEleboxBeLoop (originalLightIds,lightIdList, beEleboxId, modelLoopId) {
+export function updateLightBeEleboxBeLoop (originalLightIds, lightIdList, beEleboxId, modelLoopId) {
   return request({
     url: '/api/roadlighting/updateLightBeEleboxBeLoop',
     method: 'post',
