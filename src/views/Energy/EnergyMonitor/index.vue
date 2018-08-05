@@ -2,7 +2,7 @@
  * @Author: Ouber23
  * @Date: 2018-08-06 02:49:01
  * @LastEditors: Ouber23
- * @LastEditTime: 2018-08-06 02:53:55
+ * @LastEditTime: 2018-08-06 03:11:54
  * @Description: 
  */
 
@@ -45,14 +45,18 @@
           <div id="power"></div>
           <div id="nonPower"></div>
         </el-tab-pane>
-        <el-tab-pane label="电流" name="third">
+        <el-tab-pane label="电流" name="electricity">
           <div id="electricity"></div>
         </el-tab-pane>
         <el-tab-pane label="电压" name="voltage">
           <div id="voltage">sddsd</div>
         </el-tab-pane>
-        <el-tab-pane label="电能" name="fifth">电能</el-tab-pane>
-        <el-tab-pane label="功率因素" name="sixth">功率因素</el-tab-pane>
+        <el-tab-pane label="电能" name="electricEnergy">
+          <div id="electricEnergy"></div>
+        </el-tab-pane>
+        <el-tab-pane label="功率因素" name="powerFactor">
+          <div id="powerFactor"></div>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -167,6 +171,7 @@ export default {
           }
         ]
       },
+      // 功率配置
       powerOption: {
         title: {
           text: '有功功率：（kw）'
@@ -220,6 +225,7 @@ export default {
           }
         ]
       },
+      // 无功功率
       nonPowerOption: {
         title: {
           text: '无功功率：（kw）'
@@ -273,7 +279,116 @@ export default {
           }
         ]
       },
+      // 电流
       electricityOption: {
+        title: {
+          text: '无功功率：（kw）'
+        },
+        xAxis: [{
+          type: 'category',
+          name: '日期',
+          nameTextStyle: {
+            fontWeight: "normal",
+            verticalAlign: 'bottom',
+            padding: 50,
+            fontSize: 16
+          },
+          data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']
+        }],
+        yAxis: [
+          {
+            type: 'value',
+            name: '无功功率（kw）',
+            nameLocation: 'middle',
+            nameTextStyle: {
+              fontWeight: "normal",
+              verticalAlign: 'top',
+              padding: 20,
+              fontSize: 16
+            },
+            min: 0,
+            max: 1.5,
+            interval: 0.25
+          }
+        ],
+        series: [
+          {
+            name:'用电量',
+            type:'line',
+            smooth: true,
+            data: [0, 1, 0.25, 1.25, 1.5, 0.6, 0.5, 1.3, 1, 0.25, 1.25, 1.5, 0.6, 0.5, 1.3],
+            // markArea: {
+            //   data: [ [{
+            //     name: '早高峰',
+            //     xAxis: '07:30'
+            //   }, {
+            //     xAxis: '10:00'
+            //   }], [{
+            //     name: '晚高峰',
+            //     xAxis: '17:30'
+            //   }, {
+            //     xAxis: '21:15'
+            //   }] ]
+            // }
+          }
+        ]
+      },
+      // 电能
+      electricEnergyOption: {
+        title: {
+          text: '无功功率：（kw）'
+        },
+        xAxis: [{
+          type: 'category',
+          name: '日期',
+          nameTextStyle: {
+            fontWeight: "normal",
+            verticalAlign: 'bottom',
+            padding: 50,
+            fontSize: 16
+          },
+          data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']
+        }],
+        yAxis: [
+          {
+            type: 'value',
+            name: '无功功率（kw）',
+            nameLocation: 'middle',
+            nameTextStyle: {
+              fontWeight: "normal",
+              verticalAlign: 'top',
+              padding: 20,
+              fontSize: 16
+            },
+            min: 0,
+            max: 1.5,
+            interval: 0.25
+          }
+        ],
+        series: [
+          {
+            name:'用电量',
+            type:'line',
+            smooth: true,
+            data: [0, 1, 0.25, 1.25, 1.5, 0.6, 0.5, 1.3, 1, 0.25, 1.25, 1.5, 0.6, 0.5, 1.3],
+            // markArea: {
+            //   data: [ [{
+            //     name: '早高峰',
+            //     xAxis: '07:30'
+            //   }, {
+            //     xAxis: '10:00'
+            //   }], [{
+            //     name: '晚高峰',
+            //     xAxis: '17:30'
+            //   }, {
+            //     xAxis: '21:15'
+            //   }] ]
+            // }
+          }
+        ]
+      },
+      // 功率因素
+      powerFactorOption: {
         title: {
           text: '无功功率：（kw）'
         },
@@ -331,7 +446,7 @@ export default {
   },
   methods: {
     handleClick(tab, event) {
-      console.log(tab, event);
+      console.log(this.activeName);
     },
     changeData () {
       console.log(this.form.eleboxId, 'eleboxId')
@@ -347,12 +462,49 @@ export default {
               startDate: this.form.date1,
               endDate: this.form.date2
             }
-            // 有功功率
-            listEleboxPower(params).then(res => {
-              console.log(res, '请求功率数据')
+            switch(this.activeName){
+              case 'power':
+                // 有功功率
+                listEleboxPower(params).then(res => {
+                  console.log(res, '请求功率数据')
 
-              // 后续数据处理
-            })
+                  // 后续数据处理
+                })
+                break
+              case 'electricity':
+                // 电流
+                listEleboxPower(params).then(res => {
+                  console.log(res, '请求功率数据')
+
+                  // 后续数据处理
+                })
+                break
+              case 'voltage':
+                // 电压
+                listEleboxPower(params).then(res => {
+                  console.log(res, '请求功率数据')
+
+                  // 后续数据处理
+                })
+                break
+              case 'electricEnergy':
+                // 电压
+                listEleboxPower(params).then(res => {
+                  console.log(res, '请求功率数据')
+
+                  // 后续数据处理
+                })
+                break
+              case 'powerFactor':
+                // 电压
+                listEleboxPower(params).then(res => {
+                  console.log(res, '请求功率数据')
+
+                  // 后续数据处理
+                })
+                break
+            }
+            
           } else {
             console.log('error submit!!');
             return false;
@@ -364,21 +516,28 @@ export default {
   },
   mounted () {
     // 初始化电压
-    var myChart = echarts.init(document.getElementById('voltage'));
-    myChart.setOption(this.voltageOption);
+    var myChart = echarts.init(document.getElementById('voltage'))
+    myChart.setOption(this.voltageOption)
     
     // 有功功率
-    var drainVoltageChart = echarts.init(document.getElementById('power'));
-    drainVoltageChart.setOption(this.powerOption); 
+    var drainVoltageChart = echarts.init(document.getElementById('power'))
+    drainVoltageChart.setOption(this.powerOption)
 
     // 无功功率
-    var drainVoltageChart = echarts.init(document.getElementById('nonPower'));
-    drainVoltageChart.setOption(this.nonPowerOption); 
+    var drainVoltageChart = echarts.init(document.getElementById('nonPower'))
+    drainVoltageChart.setOption(this.nonPowerOption)
 
     // 电流
-    var drainVoltageChart = echarts.init(document.getElementById('electricity'));
-    drainVoltageChart.setOption(this.electricityOption); 
-   
+    var drainVoltageChart = echarts.init(document.getElementById('electricity'))
+    drainVoltageChart.setOption(this.electricityOption)
+    
+    // 电能
+    var drainVoltageChart = echarts.init(document.getElementById('electricEnergy'))
+    drainVoltageChart.setOption(this.electricEnergyOption)
+
+    // 功率因数
+    var drainVoltageChart = echarts.init(document.getElementById('powerFactor'))
+    drainVoltageChart.setOption(this.powerFactorOption)
   }
 }
 // 使用刚指定的配置项和数据显示图表。
@@ -400,7 +559,7 @@ export default {
   .search {
     padding: 25px;
   }
-  #voltage, #power, #electricity, #nonPower {
+  #voltage, #power, #electricity, #nonPower, #electricity, #electricEnergy, #powerFactor {
     height:500px;
     width: 1000px;
   }
