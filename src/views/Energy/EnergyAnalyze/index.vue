@@ -199,15 +199,15 @@ export default {
     // 组件创建成功拉取数据
     that.$nextTick(function () {
       getCommonEnergyStatistic().then(res => {
-        console.log(res, '能量分析数据')
+        // console.log(res, '能量分析数据')
         that.energyConsume = res.data
       })
-      for (var i=1; i < 13; i++){
-        listEnergyStatisticByDay(i).then(res=>{
-          console.log(res)
-          that.echartsOption.series[0]['data'][i] = 1
-        })
-      }
+      
+      listEnergyStatisticByDay(1).then(res=>{
+        console.log(res, '月份的数据')
+        // that.echartsOption.series[0]['data'][i] = 1
+      })
+      
     })
     
   },
