@@ -19,11 +19,19 @@
           <el-col :span="16">
             <el-form-item label="日期从" prop="date1">
               <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+                <el-date-picker type="date" placeholder="选择日期" v-model="form.date1"
+                  format="yyyy 年 MM 月 dd 日"
+                  value-format="yyyy-MM-dd"
+                  style="width: 100%;">
+                </el-date-picker>
               </el-col>
               <el-col class="line" :span="2">到</el-col>
               <el-col :span="11">
-                <el-date-picker type="date" placeholder="选择日期" v-model="form.date2" style="width: 100%;"></el-date-picker>
+                <el-date-picker type="date" placeholder="选择日期" v-model="form.date2"
+                  format="yyyy 年 MM 月 dd 日"
+                  value-format="yyyy-MM-dd"
+                  style="width: 100%;">
+                </el-date-picker>
               </el-col>
             </el-form-item>
           </el-col>
@@ -63,7 +71,7 @@
 </template>
 <script>
 import echarts from 'echarts';
-import { listEleboxPower } from '@/api/EnergyAnalyze/energyanalyze'
+import { listEleboxPower, listEleboxElectric, listEleboxVoltage, listEleboxEnergyStatistic } from '@/api/EnergyAnalyze/energyanalyze'
 // 基于准备好的dom，初始化echarts实例
 // let myChart = echarts.init(document.getElementById('voltage'));
 export default {
@@ -459,9 +467,12 @@ export default {
           if (valid) {
             let params = {
               eleboxId: this.form.eleboxId,
-              startDate: this.form.date1,
-              endDate: this.form.date2
+              startDate: new Date(this.form.date1),
+              endDate: new Date(this.form.date2)
             }
+            let d = new Date(this.form.date1)
+            console.log(d)
+            console.log(params, 'params')
             switch(this.activeName){
               case 'power':
                 // 有功功率
@@ -473,7 +484,7 @@ export default {
                 break
               case 'electricity':
                 // 电流
-                listEleboxPower(params).then(res => {
+                listEleboxElectric(params).then(res => {
                   console.log(res, '请求功率数据')
 
                   // 后续数据处理
@@ -481,15 +492,15 @@ export default {
                 break
               case 'voltage':
                 // 电压
-                listEleboxPower(params).then(res => {
+                listEleboxVoltage(params).then(res => {
                   console.log(res, '请求功率数据')
 
                   // 后续数据处理
                 })
                 break
               case 'electricEnergy':
-                // 电压
-                listEleboxPower(params).then(res => {
+                // 电能
+                listEleboxEnergyStatistic(params).then(res => {
                   console.log(res, '请求功率数据')
 
                   // 后续数据处理

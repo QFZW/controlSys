@@ -46,15 +46,11 @@ export function listEnergyStatisticByDay (month) {
  *
  * @returns
  */
-export function listEleboxPower (eleboxId, startDate, endDate) {
+export function listEleboxPower (params) {
   return request({
     url: '/api/energyStatistic/listEleboxPower',
     method: 'get',
-    params: {
-      eleboxId: eleboxId,
-      startDate: startDate,
-      endDate: endDate
-    }
+    params: params
   })
 }
 
@@ -65,15 +61,11 @@ export function listEleboxPower (eleboxId, startDate, endDate) {
  *
  * @returns
  */
-export function listEleboxElectric (eleboxId, startDate, endDate) {
+export function listEleboxElectric (params) {
   return request({
     url: '/api/energyStatistic/listEleboxElectric',
     method: 'get',
-    params: {
-      eleboxId: eleboxId,
-      startDate: startDate,
-      endDate: endDate
-    }
+    params: params
   })
 }
 
@@ -84,15 +76,11 @@ export function listEleboxElectric (eleboxId, startDate, endDate) {
  *
  * @returns
  */
-export function listEleboxVoltage (eleboxId, startDate, endDate) {
+export function listEleboxVoltage (params) {
   return request({
     url: '/api/energyStatistic/listEleboxVoltage',
     method: 'get',
-    params: {
-      eleboxId: eleboxId,
-      startDate: startDate,
-      endDate: endDate
-    }
+    params: params
   })
 }
 
@@ -104,7 +92,7 @@ export function listEleboxVoltage (eleboxId, startDate, endDate) {
  *
  * @returns
  */
-export function listEleboxEnergyStatistic (pageNumber, pageSize, startDate, endDate) {
+export function listEleboxEnergyStatistic (startDate, endDate, pageNumber, pageSize) {
   return request({
     url: '/api/energyStatistic/listEleboxEnergyStatistic',
     method: 'get',
