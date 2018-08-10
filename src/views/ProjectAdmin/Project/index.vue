@@ -67,6 +67,8 @@ export default {
             } else {
               countryList[countryName] = 1
             }
+            //console.log(project);
+            this.allTotal = this.allTotal + response.total
             this.kzTotal = this.kzTotal + project.eleboxs
             this.dTotal = this.dTotal + project.lights
           }

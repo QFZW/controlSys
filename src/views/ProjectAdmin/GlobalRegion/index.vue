@@ -297,6 +297,7 @@ export default {
         // 修改国家
         getOneCountry(this.listCountry[index].codeNumber).then(response => {
           // this.addObj = response.data[0]
+          this.addObj.id = response.data[0].id
           this.addObj.name = response.data[0].countryName
           this.addObj.code = response.data[0].codeNumber
           this.addObj.mem = response.data[0].mem
@@ -308,6 +309,7 @@ export default {
         // 修改省份
         getOneProvince(this.listProvince[index].codeNumber).then(response => {
           // this.addObj = response.data[0]
+          this.addObj.id = response.data[0].id
           this.addObj.name = response.data[0].provinceName
           this.addObj.code = response.data[0].codeNumber
           this.addObj.mem = response.data[0].mem
@@ -319,6 +321,7 @@ export default {
         // 修改城市
         getOneCity(this.listCity[index].codeNumber).then(response => {
           // this.addObj = response.data[0]
+          this.addObj.id = response.data[0].id
           this.addObj.name = response.data[0].cityName
           this.addObj.code = response.data[0].codeNumber
           this.addObj.mem = response.data[0].mem
@@ -359,6 +362,7 @@ export default {
       }
       if (this.dialogType === 0) {
         // 提交国家
+        _obj.id = this.addObj.id
         _obj.countryName = this.addObj.name
         _obj.codeNumber = this.addObj.code
         _obj.mem = this.addObj.mem
@@ -375,6 +379,7 @@ export default {
         })
       } else if (this.dialogType === 1) {
         // 提交省份
+        _obj.id = this.addObj.id
         _obj.provinceName = this.addObj.name
         _obj.codeNumber = this.addObj.code
         _obj.mem = this.addObj.mem
@@ -399,6 +404,7 @@ export default {
         })
       } else if (this.dialogType === 2) {
         // 提交城市
+        _obj.id = this.addObj.id
         _obj.cityName = this.addObj.name
         _obj.codeNumber = this.addObj.code
         _obj.longitude = this.addObj.longitude
