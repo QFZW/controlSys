@@ -38,6 +38,20 @@ export const constantRouterMap = [
       meta: { title: '灯具地理信息', icon: '' }
     }]
   },
+  // 事件报警系统
+  {
+    path: '/eventwarning',
+    component: Layout,
+    name: 'EventWarning',
+    redirect: '/eventwarning/warning',
+    meta: { title: '事件报警', icon: '&#xe6c1;' },
+    children: [{
+      path: 'warning',
+      component: () => import('@/views/EventWarning/warning/index'),
+      name: 'Warning',
+      meta: { title: '事件报警', icon: '' }
+    }]
+  },
   // 道路照明系统
   {
     path: '/roadlighting',

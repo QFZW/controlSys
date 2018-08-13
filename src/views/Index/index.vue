@@ -33,7 +33,7 @@
       <div class="clearfix">
         <div class="grid-content gird-9 clearfix">
           <div class="grid-content gird-3">
-            <div class="gird-wrap">
+            <div class="gird-wrap" @click="linkModule('/eventwarning')">
               <div class="trans-middle f-mid">
                 <p class="p1"><i class="iconfont">&#xe615;</i></p>
                 <p>事件报警</p>
