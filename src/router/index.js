@@ -43,13 +43,62 @@ export const constantRouterMap = [
     path: '/eventwarning',
     component: Layout,
     name: 'EventWarning',
-    redirect: '/eventwarning/warning',
-    meta: { title: '事件报警', icon: '&#xe6c1;' },
+    redirect: '/eventwarning/realtimewarning',
+    meta: { title: '事件报警', icon: '&#xe622;' },
     children: [{
-      path: 'warning',
-      component: () => import('@/views/EventWarning/warning/index'),
-      name: 'Warning',
-      meta: { title: '事件报警', icon: '' }
+      path: '/eventwarning/realtimewarning',
+      redirect: '/eventwarning/realtimewarning/elebox',
+      component: () => import('@/views/EventWarning/index'),
+      name: 'RealtimeWarning',
+      meta: { title: '实时报警', icon: '&#xe622;' },
+      children: [{
+        path: 'elebox',
+        component: () => import('@/views/EventWarning/RealTimeWarning/EleboxWarning/index'),
+        name: 'Elebox',
+        meta: { title: '控制柜', icon: '' }
+      },
+      {
+        path: 'normallight',
+        component: () => import('@/views/EventWarning/RealTimeWarning/NormalLight/index'),
+        name: 'Normallight',
+        meta: { title: '常规灯具', icon: '' }
+      },
+      {
+        path: 'guardagainst',
+        component: () => import('@/views/EventWarning/RealTimeWarning/Guardagainst/index'),
+        name: 'Guardagainst',
+        meta: { title: '防盗', icon: '' }
+      },
+      {
+        path: 'solarcell',
+        component: () => import('@/views/EventWarning/RealTimeWarning/Solarcell/index'),
+        name: 'Solarcell',
+        meta: { title: '太阳能', icon: '' }
+      },
+      {
+        path: 'singlelight',
+        component: () => import('@/views/EventWarning/RealTimeWarning/Singlelight/index'),
+        name: 'Singlelight',
+        meta: { title: '单灯控制器', icon: '' }
+      }]
+    },
+    {
+      path: 'historywarning',
+      component: () => import('@/views/EventWarning/RealTimeWarning/Singlelight/index'),
+      name: 'Historywarning',
+      meta: { title: '历史警报', icon: '' }
+    },
+    {
+      path: 'warningseting',
+      component: () => import('@/views/RoadLighting/Deploy/index'),
+      name: 'Warningseting',
+      meta: { title: '设置', icon: '' }
+    },
+    {
+      path: 'synwarning',
+      component: () => import('@/views/RoadLighting/Deploy/index'),
+      name: 'Synwarning',
+      meta: { title: '同步', icon: '' }
     }]
   },
   // 道路照明系统
