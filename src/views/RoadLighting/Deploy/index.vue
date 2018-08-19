@@ -2384,36 +2384,28 @@ export default {
         that.thisLoopList1=res.data
         var a=[]
         for(var i=0;i<res.data.length;i++){
-            a.push(res.data[i].loopPriority)
+          a.push(res.data[i].loopPriority)
         }
-        that.idiid=a
-        console.log('回路',res.data)
+        that.idiid = a
       })
     },
-    loopdatachange:function(row,index){
-
-     
-      console.log('asaaa',index)
-      var id=[]
-      for(var i=0; i<this.thisLoopList1.length; i++){
-          id.push(this.thisLoopList1[i].loopPriority)
+    loopdatachange: function(row, index) {
+      var id = []
+      for (var i = 0; i < this.thisLoopList1.length; i++) {
+        id.push(this.thisLoopList1[i].loopPriority)
       }
-      id.splice(index,1)
-     
-      if(id.indexOf(row.loopPriority)<0){
-        id.splice(index,1,row.loopPriority)
-         getLoopLight1(row.id,row.loopPriority).then(res=>{
-      })
-        this.panduan=2
-      }else{
-        this.panduan=1
+      id.splice(index, 1)
+      if (id.indexOf(row.loopPriority) < 0) {
+        id.splice(index, 1, row.loopPriority)
+        getLoopLight1(row.id, row.loopPriority).then(res => {
+        })
+        this.panduan = 2
+      } else {
+        this.panduan = 1
         this.$message.error('数据重复')
       }
     // console.log('傻逼',this.idiid)
-     
-     
     }
-
   },
   created () {
     this.getListGIS()

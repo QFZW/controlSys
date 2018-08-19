@@ -3,7 +3,7 @@
  * @Date: 2018-07-31 00:25:46
  * @LastEditors: Ouber23
  * @LastEditTime: 2018-07-31 00:27:14
- * @Description: 
+ * @Description:
  */
 import request from '@/utils/request'
 /**

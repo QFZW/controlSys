@@ -86,7 +86,7 @@ export default {
             name: '耗电量（kw/h）',
             nameLocation: 'middle',
             nameTextStyle: {
-              fontWeight: "bold",
+              fontWeight: 'bold',
               verticalAlign: 'top',
               padding: 10,
               fontSize: 16
@@ -109,7 +109,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: "{a} <br/>{b}: {c} ({d}%)"
+          formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
         legend: {
           orient: 'vertical',
@@ -118,8 +118,8 @@ export default {
         },
         series: [
           {
-            name:'访问来源',
-            type:'pie',
+            name: '访问来源',
+            type: 'pie',
             radius: ['50%', '70%'],
             avoidLabelOverlap: false,
             label: {
@@ -140,9 +140,9 @@ export default {
                 show: false
               }
             },
-            data:[
-              {value:335, name:'直接访问'},
-              {value:310, name:'邮件营销'}
+            data: [
+              {value: 335, name: '直接访问'},
+              {value: 310, name: '邮件营销'}
             ]
           }
         ]
@@ -153,7 +153,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: "{a} <br/>{b}: {c} ({d}%)"
+          formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
         legend: {
           orient: 'vertical',
@@ -162,8 +162,8 @@ export default {
         },
         series: [
           {
-            name:'访问来源',
-            type:'pie',
+            name: '访问来源',
+            type: 'pie',
             radius: ['50%', '70%'],
             avoidLabelOverlap: false,
             label: {
@@ -184,9 +184,9 @@ export default {
                 show: false
               }
             },
-            data:[
-              {value:335, name:'直接访问'},
-              {value:310, name:'邮件营销'}
+            data: [
+              {value: 335, name: '直接访问'},
+              {value: 310, name: '邮件营销'}
             ]
           }
         ]
@@ -202,14 +202,11 @@ export default {
         // console.log(res, '能量分析数据')
         that.energyConsume = res.data
       })
-      
-      listEnergyStatisticByDay(1).then(res=>{
+      listEnergyStatisticByDay(1).then(res => {
         console.log(res, '月份的数据')
         // that.echartsOption.series[0]['data'][i] = 1
       })
-      
     })
-    
   },
   mounted () {
     if (document.getElementById('mainEcharts')) {
@@ -220,7 +217,6 @@ export default {
       myChartBing1.setOption(this.monthTotal)
       // myChartBing2.setOption(this.dayTotal)
     }
-  
   }
 }
 </script>
