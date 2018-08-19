@@ -20,14 +20,27 @@
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
         </el-form-item>   
-        <el-form-item label="等级">
-          <el-select v-model="formInline.level" placeholder="等级">
+        <el-form-item label="类型">
+          <el-select v-model="formInline.type" placeholder="类型">
             <el-option label="区域一" value="shanghai"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="UID">
           <el-input v-model="formInline.uid" placeholder="uid"></el-input>
+        </el-form-item>
+        <el-form-item label="等级">
+          <el-select v-model="formInline.level" placeholder="等级">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="日期">
+          <el-date-picker
+            v-model="formInline.date"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -87,8 +100,16 @@
           label="消息">
         </el-table-column>
         <el-table-column
-          prop="times"
-          label="次数">
+          prop="data"
+          label="数据">
+        </el-table-column>
+        <el-table-column
+          prop="concentrator"
+          label="集中器">
+        </el-table-column>
+        <el-table-column
+          prop="terminal"
+          label="终端">
         </el-table-column>
       </el-table>
       <div class="pagelist-block">
@@ -109,7 +130,7 @@
 // import Vue from 'vue'
 // import { listElebox } from '@/api/GisService/lamp'
 // import { getLighting } from '@/api/RoadLighting/deploy'
-import '../../../../utils/filter.js'
+import '../../../utils/filter.js'
 export default {
   name: 'Elebox',
   data () {
@@ -118,18 +139,48 @@ export default {
         elebox: '',
         states: '',
         level: '',
+        type: '',
+        date: '',
         uid: ''
       },
       tableData: [{
         state: '良好',
         level: '三级警报',
-        elexbox: '控制柜一/上海市普陀区金沙江路 1518 弄',
+        elebox: '控制柜一/上海市普陀区金沙江路 1518 弄',
         source: '上海xxxx',
         name: 'XXX警报',
         type: '普通灯警报',
         waringtime: '2016-05-02',
         message: '事件报警',
-        times: '3'
+        data: '3',
+        concentrator: '集中器一',
+        terminal: '终端一'
+      },
+      {
+        state: '良好',
+        level: '三级警报',
+        elebox: '控制柜一/上海市普陀区金沙江路 1518 弄',
+        source: '上海xxxx',
+        name: 'XXX警报',
+        type: '普通灯警报',
+        waringtime: '2016-05-02',
+        message: '事件报警',
+        data: '3',
+        concentrator: '集中器一',
+        terminal: '终端一'
+      },
+      {
+        state: '良好',
+        level: '三级警报',
+        elebox: '控制柜一/上海市普陀区金沙江路 1518 弄',
+        source: '上海xxxx',
+        name: 'XXX警报',
+        type: '普通灯警报',
+        waringtime: '2016-05-02',
+        message: '事件报警',
+        data: '3',
+        concentrator: '集中器一',
+        terminal: '终端一'
       },
       {
         state: '良好',
@@ -140,29 +191,9 @@ export default {
         type: '普通灯警报',
         waringtime: '2016-05-02',
         message: '事件报警',
-        times: '3'
-      },
-      {
-        state: '良好',
-        level: '三级警报',
-        elexbox: '控制柜一/上海市普陀区金沙江路 1518 弄',
-        source: '上海xxxx',
-        name: 'XXX警报',
-        type: '普通灯警报',
-        waringtime: '2016-05-02',
-        message: '事件报警',
-        times: '3'
-      },
-      {
-        state: '良好',
-        level: '三级警报',
-        elexbox: '控制柜一/上海市普陀区金沙江路 1518 弄',
-        source: '上海xxxx',
-        name: 'XXX警报',
-        type: '普通灯警报',
-        waringtime: '2016-05-02',
-        message: '事件报警',
-        times: '3'
+        data: '3',
+        concentrator: '集中器一',
+        terminal: '终端一'
       }],
       currentPage3: 5,
     }

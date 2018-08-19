@@ -84,19 +84,19 @@ export const constantRouterMap = [
     },
     {
       path: 'historywarning',
-      component: () => import('@/views/EventWarning/RealTimeWarning/Singlelight/index'),
+      component: () => import('@/views/EventWarning/HistoryWarning/index'),
       name: 'Historywarning',
       meta: { title: '历史警报', icon: '' }
     },
     {
       path: 'warningseting',
-      component: () => import('@/views/RoadLighting/Deploy/index'),
+      component: () => import('@/views/EventWarning/WarningSetting/index'),
       name: 'Warningseting',
       meta: { title: '设置', icon: '' }
     },
     {
       path: 'synwarning',
-      component: () => import('@/views/RoadLighting/Deploy/index'),
+      component: () => import('@/views/EventWarning/SynWarning/index'),
       name: 'Synwarning',
       meta: { title: '同步', icon: '' }
     }]
