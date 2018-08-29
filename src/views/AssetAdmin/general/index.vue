@@ -7,20 +7,25 @@
           <el-tab-pane label="全部统计" name="fourth"></el-tab-pane>
           </el-tabs>
           <div class="seach_lest">
-              <div class="objack_tab">
-                <div v-for="(item,index) in objackTab" :key="index" @click="objackTabChange(index)" v-bind:class="{ active_objack: item.classActive }">{{item.labe}}</div>
-              </div>
               <div class="dateChange">
-                  <div>时间：</div>
+                  <div>开始时间：</div>
                   <el-date-picker
-                    v-model="dateChange"
+                    v-model="startDate"
+                    type="date"
+                    placeholder="选择日期">
+                  </el-date-picker>
+              </div>
+               <div class="dateChange">
+                  <div>结束时间：</div>
+                  <el-date-picker
+                    v-model="endDate"
                     type="date"
                     placeholder="选择日期">
                   </el-date-picker>
               </div>
               <div class="rightList">
                   <template>
-                    <el-select v-model="value" placeholder="请选择">
+                    <el-select v-model="value" placeholder="选择项目">
                       <el-option
                         v-for="item in options"
                         :key="item.value"
@@ -58,15 +63,10 @@ import Allobj from './allobj.vue'
       return {
         activeName: 'second',
          tabPosition: 'top',
-         objackTab:[{
-                  labe:'全部项目统计',
-                  classActive:false
-                   },
-                   {
-                  labe:'分项目统计',
-                  classActive:true
-                   }],
+        
           dateChange:'',
+          endDate:'',
+          startDate:'',
            options: [{
           value: '选项1',
           label: '黄金糕'
@@ -111,19 +111,6 @@ import Allobj from './allobj.vue'
       handleClickOne(tab,event){
         console.log(this.tabPosition)
       },
-      objackTabChange(index){
-          this.objTab=!this.objTab
-          if(index==0){
-            this.objackTab[index].classActive=true
-            this.objackTab[1].classActive=false
-         
-          }else if(index==1){
-            this.objackTab[index].classActive=true
-            this.objackTab[0].classActive=false
-           
-          }
-      },
-      
     },
     components:{
       Aboutbj,

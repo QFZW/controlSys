@@ -38,6 +38,69 @@ export const constantRouterMap = [
       meta: { title: '灯具地理信息', icon: '' }
     }]
   },
+  // 事件报警系统
+  {
+    path: '/eventwarning',
+    component: Layout,
+    name: 'EventWarning',
+    redirect: '/eventwarning/realtimewarning',
+    meta: { title: '事件报警', icon: '&#xe622;' },
+    children: [{
+      path: '/eventwarning/realtimewarning',
+      redirect: '/eventwarning/realtimewarning/elebox',
+      component: () => import('@/views/EventWarning/index'),
+      name: 'RealtimeWarning',
+      meta: { title: '实时报警', icon: '&#xe622;' },
+      children: [{
+        path: 'elebox',
+        component: () => import('@/views/EventWarning/RealTimeWarning/EleboxWarning/index'),
+        name: 'Elebox',
+        meta: { title: '控制柜', icon: '' }
+      },
+      {
+        path: 'normallight',
+        component: () => import('@/views/EventWarning/RealTimeWarning/NormalLight/index'),
+        name: 'Normallight',
+        meta: { title: '常规灯具', icon: '' }
+      },
+      {
+        path: 'guardagainst',
+        component: () => import('@/views/EventWarning/RealTimeWarning/Guardagainst/index'),
+        name: 'Guardagainst',
+        meta: { title: '防盗', icon: '' }
+      },
+      {
+        path: 'solarcell',
+        component: () => import('@/views/EventWarning/RealTimeWarning/Solarcell/index'),
+        name: 'Solarcell',
+        meta: { title: '太阳能', icon: '' }
+      },
+      {
+        path: 'singlelight',
+        component: () => import('@/views/EventWarning/RealTimeWarning/Singlelight/index'),
+        name: 'Singlelight',
+        meta: { title: '单灯控制器', icon: '' }
+      }]
+    },
+    {
+      path: 'historywarning',
+      component: () => import('@/views/EventWarning/HistoryWarning/index'),
+      name: 'Historywarning',
+      meta: { title: '历史警报', icon: '' }
+    },
+    {
+      path: 'warningseting',
+      component: () => import('@/views/EventWarning/WarningSetting/index'),
+      name: 'Warningseting',
+      meta: { title: '设置', icon: '' }
+    },
+    {
+      path: 'synwarning',
+      component: () => import('@/views/EventWarning/SynWarning/index'),
+      name: 'Synwarning',
+      meta: { title: '同步', icon: '' }
+    }]
+  },
   // 道路照明系统
   {
     path: '/roadlighting',
@@ -248,51 +311,98 @@ export const constantRouterMap = [
     }]
   },
   // 资产管理
-  {
-    path: '/assetadmin',
+{
+  path: '/assetadmin',
     component: Layout,
-    name: 'AssetAdmin',
-    redirect: '/AssetAdmin/index',
-    meta: { title: '资产管理', icon: '&#xe668;' },
-    children: [{
-      path: 'index',
-      component: () => import('@/views/AssetAdmin/index'),
-      name: 'indexIndex',
-      meta: { title: '资产管理首页', icon: '' }
-    },{
-      path: 'general',
-      component: () => import('@/views/AssetAdmin/general/index'),
-      name: 'generalIndex',
-      meta: { title: '维修概况', icon: '' }
-    },
-    {
-      path: 'manage',
+  name: 'AssetAdmin',
+  redirect: '/AssetAdmin/index',
+  meta: { title: '资产管理', icon: '&#xe668;' },
+  children: [{
+    path: 'index',
+    component: () => import('@/views/AssetAdmin/index'),
+    name: 'indexIndex',
+  meta: { title: '资产管理首页', icon: '' }
+},{
+  path: 'general',
+    component: () => import('@/views/AssetAdmin/general/index'),
+    name: 'generalIndex',
+    meta: { title: '维修概况', icon: '' }
+},
+  {
+    path: 'manage',
       component: () => import('@/views/AssetAdmin/manage/index'),
-      name: 'manageIndex',
-      meta: { title: '维修管理', icon: '' }
-    },
-    {
-      path: 'linkman',
+    name: 'manageIndex',
+    meta: { title: '维修管理', icon: '' }
+  },
+  {
+    path: 'linkman',
       component: () => import('@/views/AssetAdmin/linkman/index'),
-      name: 'linkmanIndex',
-      meta: { title: '联系人管理', icon: '' }
-    },{
-      path: 'inventory',
-      component: () => import('@/views/AssetAdmin/inventory/index'),
-      name: 'inventoryIndex',
-     
-      meta: { title: '库存管理', icon: '' },
-      // children:[
-      //   {
-      //     path: 'inventory/index',
-      //     component: () => import('@/views/AssetAdmin/inventory/index'),
-      //     name: 'inventoryIndex1',
-      //     meta: { title: '资产申请', icon: '' }
-          
-      //   }
-      // ]
-    }]
+    name: 'linkmanIndex',
+    meta: { title: '联系人管理', icon: '' }
+  },
+  {
+    path: '/inventory/user',
+      component: () => import('@/views/Ucenter/index'),
+    name: 'User',
+
+    meta: { title: '库存管理', icon: '' },
+    children:[
+      {
+        path: 'Apply',
+        component: () => import('@/views/AssetAdmin/inventory/index'),
+      name: 'inventoryIndex1',
+    meta: { title: '资产申请', icon: '' }
+
+  },{
+    path: 'management',
+      component: () => import('@/views/AssetAdmin/inventory/management.vue'),
+      name: 'inventoryIndex2',
+      meta: { title: '仓库管理', icon: '' }
+
+  },
+    {
+      path: 'liquidity',
+        component: () => import('@/views/AssetAdmin/inventory/liquidity/index'),
+      name: 'inventoryIndex3',
+      meta: { title: '变更记录', icon: '' }
+
+    }
+  ]
   }
+
+]
+},
+{     // 工单管理
+  path: '/workorder',
+    component: Layout,
+  name: 'work',
+  redirect: '/workorder/index',
+  meta: { title: '工单管理', icon: '&#xe61d;' },
+  children: [{
+    path: 'index',
+    component: () => import('@/views/workorder/process/index'),
+    name: 'process',
+  meta: { title: '工单概况', icon: '' }
+},
+  {
+    path: 'worklist',
+      component: () => import('@/views/workorder/worklist/index'),
+    name: 'worklist',
+    meta: { title: '我的工单', icon: '' }
+  },
+  {
+    path: 'historicalwork',
+      component: () => import('@/views/workorder/historicalwork/index'),
+    name: 'historicalwork',
+    meta: { title: '历史工单', icon: '' }
+  },
+  {
+    path: 'worksheet',
+      component: () => import('@/views/workorder/worksheet/index'),
+    name: 'worksheet',
+    meta: { title: '流程管理', icon: '' }
+  }]
+}
 ]
 export default new Router({
   // mode: 'history', // require service support

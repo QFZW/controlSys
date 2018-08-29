@@ -5,28 +5,28 @@
                 <el-button slot="append" icon="el-icon-search"></el-button>
                 </el-input>
             </div>
-            <div class="addData">
+           <div class="addData">
                 <div><el-button type="primary"  @click="dialogFormVisible = true" icon="el-icon-plus">增加</el-button></div>
                 <div><el-button plain icon="el-icon-delete">批量删除</el-button></div>
             </div>
             <el-dialog title="添加联系人" :visible.sync="dialogFormVisible">
-            <el-form :model="form" style="margin:0 auto" class="demo-ruleForm" >
-                <el-form-item label="单位" label-width="80px">
+            <el-form :model="form" style="margin:0 auto">
+                <el-form-item label="单位" :label-width="formLabelWidth">
                 <el-input v-model="form.name" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="联系人" label-width="80px">
+                <el-form-item label="联系人" :label-width="formLabelWidth">
                 <el-input v-model="form.name" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="联系电话" label-width="80px">
+                <el-form-item label="联系电话" :label-width="formLabelWidth">
                 <el-input v-model="form.name" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="邮编" label-width="80px">
+                <el-form-item label="邮编" :label-width="formLabelWidth">
                 <el-input v-model="form.name" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="地址" label-width="80px">
+                <el-form-item label="地址" :label-width="formLabelWidth">
                 <el-input v-model="form.name" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="备注" label-width="80px">
+                <el-form-item label="备注" :label-width="formLabelWidth">
                 <el-input v-model="form.name" auto-complete="off"></el-input>
                 </el-form-item>
             </el-form>
@@ -48,18 +48,17 @@
                         width="55">
                         </el-table-column>
                         <el-table-column
-                        prop="department"
-                        label="部门"
+                        label="单位"
                         width="120">
-                       
+                        <template slot-scope="scope">{{ scope.row.date }}</template>
                         </el-table-column>
                         <el-table-column
-                        prop="maskName"
+                        prop="name"
                         label="联系人"
                         width="120">
                         </el-table-column>
                         <el-table-column
-                        prop="phoneNumber"
+                        prop="address"
                         label="联系电话"
                         show-overflow-tooltip>
                         </el-table-column>
@@ -69,7 +68,7 @@
                         show-overflow-tooltip>
                         </el-table-column>
                          <el-table-column
-                        prop="place"
+                        prop="address"
                         label="地址"
                         show-overflow-tooltip>
                         </el-table-column>
@@ -79,7 +78,7 @@
                         show-overflow-tooltip>
                         </el-table-column>
                          <el-table-column
-                        prop="gmtCreated"
+                        prop="address"
                         label="编辑时间"
                         show-overflow-tooltip>
                         </el-table-column>
@@ -109,14 +108,13 @@
     </div>
 </template>
 <script>
-import {listMasker,a} from '@/api/AssetAdmin.js'
 export default {
     name:'linkman',
     data(){
         return {
             input5:'',
             currentPage:1,
-          dialogTableVisible: false,
+              dialogTableVisible: false,
         dialogFormVisible: false,
         form: {
           name: '',
@@ -129,17 +127,37 @@ export default {
           desc: ''
         },
         formLabelWidth: '120px',
-        tableData3: [
-],
+             tableData3: [{
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-08',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-06',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-07',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }],
         }
-    },created(){
-      var a=10
-      var b=10
-      listMasker().then(res=>{
-        this.tableData3=res.data
-      })
-    }
-    ,
+    },
     methods:{
          handleSelectionChange(val) {
             this.multipleSelection = val;
@@ -192,7 +210,7 @@ export default {
         width: 250px;
         justify-content: space-around;
     }
-   
+  
     .table{
         margin-top: 20px;
     }

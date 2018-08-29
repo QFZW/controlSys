@@ -1,110 +1,89 @@
 <template>
   <div class="system-container">
     <el-tabs v-model="activeName" @tab-click="tabHandleClick">
-      <el-tab-pane label="控制柜模式" name="cabinet">
-        <div class="system-top clearfix">
-          <div class="item-block f-l">
-            <span class="title">控制柜</span><el-input  placeholder="请输入"></el-input>
-          </div>
-          <div class="item-block f-l">
-            <span class="title">名称</span><el-input  placeholder="请输入"></el-input>
-          </div>
-          <div class="btn-block f-r">
-            <el-button type="primary">查询</el-button>
-          </div>
-        </div>
-        <div class="system-center">
-          <div class="operation-bar">
-            <el-button icon='el-icon-plus' @click="addCabinet()" type="primary">增加</el-button>
-            <el-upload
-              class="upload-demo"
-              :show-file-list = 'false'
-              action = "http://47.105.38.215:8080/nnlightctl/api/roadlighting/importElebox"
-              :on-success="uploadElBoxSuccess"
-              :on-error="uploadElBoxError"
-              name="batchEleboxFile">
-              <el-button icon='el-icon-upload2'>导入</el-button>
-            </el-upload>
-            <el-button icon='el-icon-download' @click="downloadEleBox">导出</el-button>
-            <el-dropdown trigger="click" placement='bottom-start' @command="handleElboxEdit">
-              <el-button icon='el-icon-edit'>批量设置</el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="1">设置区域</el-dropdown-item>
-                <el-dropdown-item command="3">设置地图图标</el-dropdown-item>
-                <!-- <el-dropdown-item command="4">设置启用/停用</el-dropdown-item> -->
-              </el-dropdown-menu>
-            </el-dropdown>
-            <el-button icon='el-icon-delete' @click="deleteEleboxRow(2)">批量删除</el-button>
-          </div>
-          <div class="data-list">
-            <el-table
-              ref="multipleTable"
-              :data="eleboxList"
-              tooltip-effect="dark"
-              style="width: 100%"
-              header-row-class-name="datalist-header"
-              @selection-change="handleSelectionChangeBox">
-              <el-table-column fixed type="selection" width="40"></el-table-column>
-              <el-table-column fixed prop="codeNumber" label="区域" width="100"></el-table-column>
-              <el-table-column label="安装日期" width="100">
-                <template slot-scope="scope">
-                  {{scope.row.useDate|timeFormat}}
-                </template>
-              </el-table-column>
-              <el-table-column prop="ratedVoltage" label="额定电压" width="120"></el-table-column>
-              <el-table-column prop="ratedElectricty" label="额定电流" width="120"></el-table-column>
-              <el-table-column prop="powerRating" label="额定功率" width="120"></el-table-column>
-              <el-table-column prop="mainSwitch" label="主控制开关" width="120"></el-table-column>
-              <el-table-column prop="spd" label="spd" width="120"></el-table-column>
-              <el-table-column prop="latitude" label="纬度"></el-table-column>
-              <el-table-column prop="longitude" label="经度"></el-table-column>
-              <el-table-column fixed="right" label="操作" width="240">
-                <!-- 240 -->
-                <template slot-scope="scope">
-                  <el-button
-                    @click.native.prevent="manageLamp(scope.row.id)"
-                    type="text"
-                    size="small">
-                    管理灯具
-                  </el-button>
-                  <el-button
-                    type="text"
-                    @click.native.prevent="loopSplitFun(scope.row.id)"
-                    size="small">
-                    回路拆分
-                  </el-button>
-                  <el-button
-                    @click.native.prevent="editCabinet(scope.$index)"
-                    type="text"
-                    size="small">
-                    编辑
-                  </el-button>
-                  <el-button
-                    class="danger-text-btn"
-                    @click.native.prevent="deleteEleboxRow(1, scope.$index)"
-                    type="text"
-                    size="small">
-                    删除
-                  </el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
-          <div class="pagelist-block">
-            <el-pagination
-              @size-change="handleSizeChangeBox"
-              background
-              @current-change="handleCurrentChangeBox"
-              :current-page="boxCurrentPage"
-              :page-sizes="[10, 20, 50, 100]"
-              :page-size="boxPageSize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="allEleboxTotal">
-            </el-pagination>
-          </div>
+      <el-tab-pane label="控制柜警报" name="cabinet">
+        <div id="ele-warning">
+          <el-row style="margin: 20px 0">
+            <el-col :span="6">
+              <div class="light-wrap">
+                <h4 class="light-wrap-title">意外亮灯</h4>
+                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap">
+                <h4 class="light-wrap-title">意外亮灯</h4>
+                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap">
+                <h4 class="light-wrap-title">意外亮灯</h4>
+                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap">
+                <h4 class="light-wrap-title">意外亮灯</h4>
+                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row style="margin: 20px 0">
+            <el-col :span="6">
+              <div class="light-wrap">
+                <h4 class="light-wrap-title">意外亮灯</h4>
+                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap">
+                <h4 class="light-wrap-title">意外亮灯</h4>
+                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap">
+                <h4 class="light-wrap-title">意外亮灯</h4>
+                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap">
+                <h4 class="light-wrap-title">意外亮灯</h4>
+                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row style="margin: 20px 0">
+            <el-col :span="6">
+              <div class="light-wrap">
+                <h4 class="light-wrap-title">意外亮灯</h4>
+                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap">
+                <h4 class="light-wrap-title">意外亮灯</h4>
+                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap">
+                <h4 class="light-wrap-title">意外亮灯</h4>
+                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap">
+                <h4 class="light-wrap-title">意外亮灯</h4>
+                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              </div>
+            </el-col>
+          </el-row>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="灯具模式" name="lighting">
+      <el-tab-pane label="常规灯具警报" name="lighting">
         <div class="system-top clearfix">
           <div class="item-block f-l">
             <span class="title">灯杆</span><el-input  placeholder="请输入"></el-input>
@@ -2443,6 +2422,16 @@ export default {
     width: 160px
   }
 }
+.light-wrap-title {
+  height: 30px;
+  line-height: 30px;
+  padding-left: 20px;
+  font-family: PingFangSC-Regular;
+  font-size: 14px;
+  color: #333333;
+  letter-spacing: 0;
+  font-weight: normal;
+}
 .upload-demo{
   display: inline-block;
 }
@@ -2479,6 +2468,19 @@ export default {
   text-align:center;
   .select-item{
     margin: 0 30px;
+  }
+}
+.light-wrap{
+  height: 290px;
+  width: 320px;
+  position: relative;
+  border: 1px #EBEBEB solid;
+  .iconfont{
+    position: absolute;
+    top: 60px;
+    left: 70px;
+    font-size: 180px;
+    color: #F8E71C;
   }
 }
 .mapicon-dialog{
@@ -2632,6 +2634,9 @@ export default {
       }
     }
   }
+}
+#ele-warning {
+  padding: 32px;
 }
 .uid-dgh-item{
   margin-bottom: 15px;

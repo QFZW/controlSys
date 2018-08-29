@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <div class="item">
+    <div class="item" @click="linkModule('general')">
       <img src="@/assets/asset/index1.png">
     </div>
-    <div class="item">
+    <div class="item" @click="linkModule('manage')">
       <img src="@/assets/asset/index2.png">
     </div>
-    <div class="item">
+    <div class="item" @click="linkModule('linkman')">
       <img src="@/assets/asset/index3.png">
     </div>
     <div class="item">
@@ -28,6 +28,7 @@ export default {
 <style lang="scss" scoped>
   .container{
     padding: 110px 100px;
+    display: flex;
     .item{
       width: 25%;
       padding: 0 10px;
