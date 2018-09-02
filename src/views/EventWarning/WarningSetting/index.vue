@@ -1045,6 +1045,7 @@ import qs from 'qs'
 
 import {getLoopLight1, listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox, listProject ,listLightingData ,listElebox2 ,listEleboxModel2 ,listModelLoopList} from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
+import { configAlarm } from '@/api/EventWarning/EventWarning'
 import '../../../utils/filter.js'
 export default {
   name: 'Deploy',
