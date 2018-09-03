@@ -130,6 +130,7 @@
 // import Vue from 'vue'
 // import { listElebox } from '@/api/GisService/lamp'
 // import { getLighting } from '@/api/RoadLighting/deploy'
+import { listAlarmHistory } from '@/api/EventWarning/EventWarning'
 import '../../../utils/filter.js'
 export default {
   name: 'Elebox',
@@ -201,6 +202,12 @@ export default {
   computed: {
   },
   methods: {
+    getHisAlarmData (pageNumber, pageSize) {
+      listAlarmHistory(pageNumber, pageSize).then((res)=>{
+        console.log(res, '历史数据')
+        // that.tableData =res.data //数据初始化
+      })
+    },
     onSubmit () {
       console.log('submit!');
     },
@@ -230,7 +237,8 @@ export default {
     }
   },
   created () {
-    // let that = this
+    let that = this
+    that.getHisAlarmData(1, 20)
   }
 }
 </script>

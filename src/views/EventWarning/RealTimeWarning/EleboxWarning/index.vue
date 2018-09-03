@@ -55,17 +55,17 @@
           width="80">
         </el-table-column>
         <el-table-column
-          prop="level"
+          prop="alarmLevel"
           label="等级"
           width="80">
         </el-table-column>
         <el-table-column
-          prop="elebox"
+          prop="elexbox"
           label="控制柜/区域"
           width="120">
         </el-table-column>
         <el-table-column
-          prop="source"
+          prop="alarmSource"
           label="来自"
           width="120">
         </el-table-column>
@@ -75,19 +75,19 @@
           width="80">
         </el-table-column>
         <el-table-column
-          prop="type"
+          prop="ctype"
           label="类型">
         </el-table-column>
         <el-table-column
-          prop="waringtime"
+          prop="alarmTime"
           label="报警/解除时间">
         </el-table-column>
         <el-table-column
-          prop="message"
+          prop="msg"
           label="消息">
         </el-table-column>
         <el-table-column
-          prop="times"
+          prop="alarmCount"
           label="次数">
         </el-table-column>
       </el-table>
@@ -108,7 +108,7 @@
 <script>
 // import Vue from 'vue'
 // import { listElebox } from '@/api/GisService/lamp'
-// import { getLighting } from '@/api/RoadLighting/deploy'
+import { getListAlarm } from '@/api/EventWarning/EventWarning'
 import '../../../../utils/filter.js'
 export default {
   name: 'Elebox',
@@ -122,47 +122,47 @@ export default {
       },
       tableData: [{
         state: '良好',
-        level: '三级警报',
+        alarmLevel: '三级警报',
         elexbox: '控制柜一/上海市普陀区金沙江路 1518 弄',
-        source: '上海xxxx',
+        alarmSource: '上海xxxx',
         name: 'XXX警报',
-        type: '普通灯警报',
-        waringtime: '2016-05-02',
-        message: '事件报警',
-        times: '3'
+        ctype: '普通灯警报',
+        alarmTime: '2016-05-02',
+        msg: '事件报警',
+        alarmCount: '3'
       },
       {
         state: '良好',
-        level: '三级警报',
+        alarmLevel: '三级警报',
         elexbox: '控制柜一/上海市普陀区金沙江路 1518 弄',
-        source: '上海xxxx',
+        alarmSource: '上海xxxx',
         name: 'XXX警报',
-        type: '普通灯警报',
-        waringtime: '2016-05-02',
-        message: '事件报警',
-        times: '3'
+        ctype: '普通灯警报',
+        alarmTime: '2016-05-02',
+        msg: '事件报警',
+        alarmCount: '3'
       },
       {
         state: '良好',
-        level: '三级警报',
+        alarmLevel: '三级警报',
         elexbox: '控制柜一/上海市普陀区金沙江路 1518 弄',
-        source: '上海xxxx',
+        alarmSource: '上海xxxx',
         name: 'XXX警报',
-        type: '普通灯警报',
-        waringtime: '2016-05-02',
-        message: '事件报警',
-        times: '3'
+        ctype: '普通灯警报',
+        alarmTime: '2016-05-02',
+        msg: '事件报警',
+        alarmCount: '3'
       },
       {
         state: '良好',
-        level: '三级警报',
+        alarmLevel: '三级警报',
         elexbox: '控制柜一/上海市普陀区金沙江路 1518 弄',
-        source: '上海xxxx',
+        alarmSource: '上海xxxx',
         name: 'XXX警报',
-        type: '普通灯警报',
-        waringtime: '2016-05-02',
-        message: '事件报警',
-        times: '3'
+        ctype: '普通灯警报',
+        alarmTime: '2016-05-02',
+        msg: '事件报警',
+        alarmCount: '3'
       }],
       currentPage3: 5,
     }
@@ -170,6 +170,13 @@ export default {
   computed: {
   },
   methods: {
+    getListAlarm(pageNumber, pageSize) {
+      getListAlarm(pageNumber, pageSize).then((res)=>{
+        console.log(res, '初始化shuju');
+        // 初始化表格
+        // that.tableData = res.data;
+      })
+    },
     onSubmit () {
       console.log('submit!');
     },
@@ -199,7 +206,8 @@ export default {
     }
   },
   created () {
-    // let that = this
+    let that = this
+    that.getListAlarm(1, 20)
   }
 }
 </script>
