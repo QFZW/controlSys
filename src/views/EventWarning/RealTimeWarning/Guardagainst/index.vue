@@ -104,7 +104,7 @@
         </el-table-column>
         <el-table-column
           label="详细信息">
-          <template scope="scope">
+          <template slot-scope="scope">
 					  <el-button size="small" @click="handleDetail(scope.$index, scope.row)">详细信息</el-button>
           </template>
         </el-table-column>
