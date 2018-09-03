@@ -1,3 +1,4 @@
+var webpack = require('webpack')
 'use strict'
 const path = require('path')
 const utils = require('./utils')
@@ -115,7 +116,13 @@ const webpackConfig = merge(baseWebpackConfig, {
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
+      jquery: "jquery",
+      "window.jQuery": "jquery"
+    })
   ]
 })
 
