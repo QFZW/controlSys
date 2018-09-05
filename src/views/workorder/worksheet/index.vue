@@ -13,10 +13,10 @@
 
         <div class="center">
             <div class="buttonlist">
-                 <el-button type="primary">新增</el-button>
+                 <el-button type="primary"  @click="allgooflow">新增</el-button>
                  <el-button>删除</el-button>
             </div>
-
+            <div v-show='tableshow'>
             <el-table
                 ref="multipleTable"
                 :data="tableData3"
@@ -63,9 +63,17 @@
                 </el-table-column>
             </el-table>
         </div>
+
+            <div v-show="!tableshow">
+               <gooflow></gooflow>
+            </div>
+
+        </div>
     </div>
 </template>
 <script>
+import Gooflow from './gooflow.vue'
+
 export default {
     name:'',
     data(){
@@ -73,6 +81,7 @@ export default {
             formInline:{
                 user:''
             },
+            tableshow:true,
              tableData3: [{
           date: '2016-05-03',
           name: '王小虎',
@@ -112,7 +121,13 @@ export default {
       },
        handleSelectionChange(val) {
         this.multipleSelection = val;
+      },
+      allgooflow(){
+            this.tableshow=!this.tableshow
       }
+    },
+    components:{
+        Gooflow
     }
 }
 </script>

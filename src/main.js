@@ -14,7 +14,10 @@ import App from './App'
 import router from './router'
 import store from './store'
 import service from './utils/request'
-
+import 'jquery'
+import './../static/js/child.js'
+import './../static/js/GooFunc.js'
+import './../static/js/GooFlow.js'
 // style
 import 'normalize.css/normalize.css'// A modern alternative to CSS resets
 import ElementUI from 'element-ui'
