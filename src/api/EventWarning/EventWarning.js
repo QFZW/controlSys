@@ -61,12 +61,19 @@ export function exportAlarm (alarmIds) {
  * @returns
  */
 export function clearAlarm (alarmIds) {
+    console.log(alarmIds)
+    let ids = {}
+    if(alarmIds) {
+      for (let i = 0; i<alarmIds.length; i++) {
+        let key = `alarmIds[${i}]`
+        ids[key] = alarmIds[i]
+      }
+    }
+    
     return request({
       url: '/api/alarm/clearAlarm',
       method: 'get',
-      params: {
-        alarmIds: alarmIds
-      }
+      params: ids
     })
 }
 
