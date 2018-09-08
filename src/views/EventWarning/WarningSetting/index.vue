@@ -2,88 +2,118 @@
   <div class="system-container">
     <el-tabs v-model="activeName" @tab-click="tabHandleClick">
       <el-tab-pane label="控制柜警报" name="cabinet">
+        <div id="open-alarm" class="open-alram-btn">
+          <el-button type="primary" @click="handleOpenAlara()">是否开启报警</el-button>
+        </div>
         <div id="ele-warning">
           <el-row style="margin: 20px 0">
             <el-col :span="6">
-              <div class="light-wrap">
+              <div class="light-wrap" @click="handleLightOpen()">
                 <h4 class="light-wrap-title">意外亮灯</h4>
-                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+                <i class="light-right icon-item"></i>
               </div>
             </el-col>
             <el-col :span="6">
-              <div class="light-wrap">
-                <h4 class="light-wrap-title">意外亮灯</h4>
-                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              <div class="light-wrap"  @click="handleLightOpen()">
+                <h4 class="light-wrap-title">意外灭灯</h4>
+                <i class="icon-item light-wrong" :style="{ opacity: 1 }" ></i>
               </div>
             </el-col>
             <el-col :span="6">
-              <div class="light-wrap">
-                <h4 class="light-wrap-title">意外亮灯</h4>
-                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">线路过流</h4>
+                <i class="icon-item lines" :style="{ opacity: 1 }" ></i>
               </div>
             </el-col>
             <el-col :span="6">
-              <div class="light-wrap">
-                <h4 class="light-wrap-title">意外亮灯</h4>
-                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
-              </div>
-            </el-col>
-          </el-row>
-          <el-row style="margin: 20px 0">
-            <el-col :span="6">
-              <div class="light-wrap">
-                <h4 class="light-wrap-title">意外亮灯</h4>
-                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
-              </div>
-            </el-col>
-            <el-col :span="6">
-              <div class="light-wrap">
-                <h4 class="light-wrap-title">意外亮灯</h4>
-                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
-              </div>
-            </el-col>
-            <el-col :span="6">
-              <div class="light-wrap">
-                <h4 class="light-wrap-title">意外亮灯</h4>
-                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
-              </div>
-            </el-col>
-            <el-col :span="6">
-              <div class="light-wrap">
-                <h4 class="light-wrap-title">意外亮灯</h4>
-                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">线路过压</h4>
+                <i class="icon-item xianluguoya" :style="{ opacity: 1 }" >&#xe62b;</i>
               </div>
             </el-col>
           </el-row>
           <el-row style="margin: 20px 0">
             <el-col :span="6">
-              <div class="light-wrap">
-                <h4 class="light-wrap-title">意外亮灯</h4>
-                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">线路欠压</h4>
+                <i class="icon-item xianluqianya" :style="{ opacity: 1 }" ></i>
               </div>
             </el-col>
             <el-col :span="6">
-              <div class="light-wrap">
-                <h4 class="light-wrap-title">意外亮灯</h4>
-                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">配电柜断电</h4>
+                <i class="icon-item peidianguiduandian" :style="{ opacity: 1 }" ></i>
               </div>
             </el-col>
             <el-col :span="6">
-              <div class="light-wrap">
-                <h4 class="light-wrap-title">意外亮灯</h4>
-                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">配电柜缺相</h4>
+                <i class="icon-item electricity_meter_unconnected" :style="{ opacity: 1 }" ></i>
               </div>
             </el-col>
             <el-col :span="6">
-              <div class="light-wrap">
-                <h4 class="light-wrap-title">意外亮灯</h4>
-                <i class="iconfont" :style="{ opacity: 1 }" >&#xe62b;</i>
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">配电柜漏电</h4>
+                <i class="icon-item electricity" :style="{ opacity: 1 }" ></i>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row style="margin: 20px 0">
+            <el-col :span="6">
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">功率因数越限</h4>
+                <i class="icon-item electricity_meter2" :style="{ opacity: 1 }" ></i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">柜门开启</h4>
+                <i class="icon-item open_door" :style="{ opacity: 1 }" ></i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">配电柜倾斜</h4>
+                <i class="icon-item elexbox_1" :style="{ opacity: 1 }" ></i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">配电柜进水</h4>
+                <i class="icon-item Group_4" :style="{ opacity: 1 }" ></i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">配电柜雷击</h4>
+                <i class="icon-item elexbox_simple" :style="{ opacity: 1 }" ></i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">手自控切换</h4>
+                <i class="icon-item current_sensor" :style="{ opacity: 1 }" ></i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">外部控制器</h4>
+                <i class="icon-item main_mada" :style="{ opacity: 1 }" ></i>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="light-wrap" @click="handleLightOpen()">
+                <h4 class="light-wrap-title">自定义报警</h4>
+                <i class="icon-item diy_icon" :style="{ opacity: 1 }" ></i>
               </div>
             </el-col>
           </el-row>
         </div>
       </el-tab-pane>
       <el-tab-pane label="常规灯具警报" name="lighting">
+        <div id="open-alarm2" class="open-alram-btn" :style="{paddingLeft: '20px'}">
+          <el-button type="primary" @click="handleOpenAlara()">是否开启报警</el-button>
+        </div>
         <div class="system-top clearfix">
           <div class="item-block f-l">
             <span class="title">灯杆</span><el-input  placeholder="请输入"></el-input>
@@ -176,6 +206,75 @@
         </div>
       </el-tab-pane>
     </el-tabs>
+    <!--是否开启警报-->
+    <el-dialog class="opendialog" title="是否开启警报" :visible.sync="openAlarmVisible">
+      <el-table
+        ref="multipleTable"
+        :data="openalarmdData"
+        tooltip-effect="dark"
+        style="width: 100%">    
+        <el-table-column
+          label="警报类型"
+          prop="alarmType"
+          width="300">
+        </el-table-column>
+        <el-table-column
+          label="是否开启"
+          prop="oepn"
+          width="100">
+            <template slot-scope="scope">
+              <el-checkbox v-model="scope.row.open" @change="handleOpenAlarmChange(scope)"></el-checkbox>
+            </template>
+        </el-table-column>
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="openAlarmVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleOpenAlarmOk">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!--意外亮灯-->
+    <el-dialog title="意外亮灯" :visible.sync="lightOpenVisible">
+      <el-row>
+        <el-col :span="6">
+          <span>警报等级</span>
+        </el-col>
+        <el-col :span="18">
+          <el-select v-model="value" placeholder="请选择">
+            <el-option
+              v-for="(item, index) in alarmLevelOptions"
+              :key="index"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="18" :offset="6">
+          <el-checkbox v-model="alermConfigData.isNoticeMap">在地图上显示警报信息</el-checkbox>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="18" :offset="6">    
+          <el-checkbox v-model="alermConfigData.isNoticeSms">发送短信警报信息</el-checkbox>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="18" :offset="6">
+          <el-checkbox v-model="alermConfigData.isWechat">发送微信警报信息</el-checkbox>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="18" :offset="6">
+          <el-checkbox v-model="alermConfigData.isEmail">发送邮件警报信息</el-checkbox>
+        </el-col>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="lightOpenVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleAlarmConfigSave">保 存</el-button>
+      </span>
+    </el-dialog>
     <!-- 新增控制柜 -->
     <el-dialog title="新增控制柜" width="590px"
       :visible.sync="cabinetDialog" :close-on-click-modal='false' :close-on-press-escape='false' center
@@ -1045,7 +1144,7 @@ import qs from 'qs'
 
 import {getLoopLight1, listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox, listProject ,listLightingData ,listElebox2 ,listEleboxModel2 ,listModelLoopList} from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
-import { configAlarm } from '@/api/EventWarning/EventWarning'
+import { configAlarm, getAlarm } from '@/api/EventWarning/EventWarning'
 import '../../../utils/filter.js'
 export default {
   name: 'Deploy',
@@ -1055,8 +1154,93 @@ export default {
       listEleboxModel22:[],
       selectEleboxModelId2:'',
       selectModelLoopId3:'',
+      openAlarmVisible: false,
+      lightOpenVisible: false, //意外亮灯显示控制
       options: [],
-        value: '',
+      alermConfigData: {
+        alarmLevel: true,
+        isNoticeMap: false,
+        isNoticeSms: true,
+        isWechat: true,
+        isEmail: false
+      },
+      alarmLevelOptions: [
+        {
+          value: '严重（等级一）',
+          label: '等级一'
+        },
+        {
+          value: '严重（等级一）',
+          label: '等级一'
+        },
+        {
+          value: '严重（等级一）',
+          label: '等级一'
+        }
+      ],
+      openalarmdData: [
+        {
+          alarmType: '意外亮灯',
+          open: true
+        },
+        {
+          alarmType: '意外灭灯',
+          open: false
+        },
+        {
+          alarmType: '线路过流',
+          open: true
+        },
+        {
+          alarmType: '线路过压',
+          open: false
+        },
+        {
+          alarmType: '线路欠压',
+          open: false
+        },
+        {
+          alarmType: '配电柜断电',
+          open: false
+        },
+        {
+          alarmType: '配电柜缺相',
+          open: false
+        },
+        {
+          alarmType: '配电柜漏电',
+          open: false
+        },
+        {
+          alarmType: '功率因数越线',
+          open: false
+        },
+        {
+          alarmType: '柜门开启',
+          open: false
+        },
+        {
+          alarmType: '配电柜进水',
+          open: false
+        },
+        {
+          alarmType: '配电柜雷击',
+          open: false
+        },
+        {
+          alarmType: '手自控切换',
+          open: false
+        },
+        {
+          alarmType: '外部控制器',
+          open: false
+        },
+        {
+          alarmType: '自定义警报',
+          open: false
+        }
+      ],
+      value: '',
       data2: [{
         id: 1,
         label: '杭州',
@@ -1353,6 +1537,38 @@ export default {
     filterNode (value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1
+    },
+    //是否开启警报值变改
+    handleOpenAlarmChange (scope) {
+      let curIndex = scope.$index
+      // this.openalarmdData[curIndex]
+      console.log(this.openalarmdData)
+      console.log(scope, scope.$index)
+    },
+    // 开启警报确定提交数据
+    handleOpenAlarmOk() {
+      this.openAlarmVisible = false
+      console.log(this.openalarmdData, '提交数据');
+    },
+    // 是否开启警报
+    handleOpenAlara(){
+      console.log("是否开始警报")
+      // 初始化数据todo
+
+      this.openAlarmVisible = true
+    },
+    // 意外亮灯
+    handleLightOpen(){
+      console.log("意外亮灯")
+      // 初始化数据todo
+      getAlarm().then(res=>{
+        console.log(res, '请求的初始化配置数据')
+      })
+      this.lightOpenVisible = true
+    },
+    // 配置保存数据
+    handleAlarmConfigSave () {
+      this.lightOpenVisible = false
     },
     tabHandleClick (tab, event) {
       console.log(tab, event)
@@ -2432,6 +2648,7 @@ export default {
   color: #333333;
   letter-spacing: 0;
   font-weight: normal;
+  text-align: left;
 }
 .upload-demo{
   display: inline-block;
@@ -2450,6 +2667,10 @@ export default {
         padding: 0 30px 0 55px;
     }
   }
+}
+.open-alram-btn {
+  padding-top: 20px;
+  padding-left: 30px;
 }
 .area-dialog-content{
   min-height: 200px;
@@ -2472,16 +2693,92 @@ export default {
   }
 }
 .light-wrap{
-  height: 290px;
-  width: 320px;
+  cursor: pointer;
+  height: 184px;
+  width: 210px;
   position: relative;
   border: 1px #EBEBEB solid;
+  text-align: center;
   .iconfont{
-    position: absolute;
-    top: 60px;
-    left: 70px;
-    font-size: 180px;
+    font-size: 160px;
     color: #F8E71C;
+  }
+  .open-alarm {
+    padding-top: 20px;
+    padding-left: 30px;
+  }
+  .icon-item {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    margin-top: 30px;
+  }
+  .diy_icon {
+    background: url("img/diy_icon.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .current_sensor {
+    background: url("img/current_sensor.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .main_mada {
+    background: url("img/main_mada.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .elexbox_simple {
+    background: url("img/elexbox_simple.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .Group_4 {
+    background: url("img/Group_4.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .elexbox_1 {
+    background: url("img/elexbox_1.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .electricity_meter2 {
+    background: url("img/electricity_meter2.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .light-right {
+    display: inline-block;
+    width: 50px;
+    height: 67px;
+    background: url("img/Shape_Copy.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .light-wrong {
+    background: url("img/Shape_Copy2.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .lines {
+    background: url("img/lines.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .peidianguiduandian {
+    background: url("img/electricity_meter_close.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .electricity_meter_unconnected {
+    background: url("img/electricity_meter_unconnected.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .electricity {
+    background: url("img/electricity.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .xianluguoya {
+    background: url("img/xiebo_dianbiao.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .xianluqianya {
+    background: url("img/Harmonic_electric_meter.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .open_door {
+    background: url("img/open_door.png") no-repeat;
+    background-size: 100% 100%;
   }
 }
 .mapicon-dialog{
