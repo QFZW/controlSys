@@ -25,7 +25,7 @@
         <el-col :span="5">
           <div class="grid-content grid-kwh grid3">
             <h5>昨天</h5>
-            <p>{{energyConsume[2].total}}kwh</p>
+            <p>{{energyConsume[1].total}}kwh</p>
           </div>
         </el-col>
         <el-col :span="9" class="grid-kwh"></el-col>
@@ -53,8 +53,8 @@ export default {
   data () {
     return {
       keyss: true,
-      energyConsume: null,
-      echartsOption: {
+      energyConsume: [{total: '暂无数据'}, {total: '暂无数据'}, {total: '暂无数据'}],
+      curMonthechartsOption: {
         title: {
           text: '月能耗'
         },
@@ -99,6 +99,7 @@ export default {
           {
             name: '用电量',
             type: 'bar',
+            barWidth: 30,
             data: [0.6, 0, 0.3, 0, 0.5, 0, 0.1, 0, 1, 0, 0.8, 0]
           }
         ]
@@ -199,12 +200,58 @@ export default {
     // 组件创建成功拉取数据
     that.$nextTick(function () {
       getCommonEnergyStatistic().then(res => {
-        // console.log(res, '能量分析数据')
-        that.energyConsume = res.data
+        console.log(res, '能量分析数据')
+        that.energyConsume = res.data ? res.data : [{total: '暂无数据'}, {total: '暂无数据'}, {total: '暂无数据'}]
       })
-      listEnergyStatisticByDay(1).then(res => {
+      let date = new Date();
+      let curMonth = date.getMonth() + 1;
+      console.log(curMonth, '当前月份')
+      listEnergyStatisticByDay(9).then(res => {
         console.log(res, '月份的数据')
         // that.echartsOption.series[0]['data'][i] = 1
+        let curMonthxData = [];
+        let curMonthxTotal = [];
+        if( res.data ) {
+          // 数据二次处理：
+          let curMtolDay = date.getDate() - 1;
+          let comArr = []
+          for( var d = 1; d < curMtolDay; d++) {
+            let curM = date.getMonth() + 1 > 10 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`
+            let dateString = d < 10 ? `${date.getFullYear()}-${curM}-0${d}` : `${date.getFullYear()}-${date.getMonth()}-${d}`
+            let filterArr = res.data.filter((item, index) => { // 无数据
+              return item.date === dateString
+            });
+            if(filterArr.length == 0) {
+              let dayData1 = {
+                date: dateString,
+                total: 0
+              }
+              // console.log('无数据')
+              comArr.push(dayData1)
+            } else {
+              let dayData = res.data.filter((item, index) => { // 无数据
+              return item.date === dateString
+            })
+              comArr.push(dayData[0])
+            }
+          }
+          // console.log(comArr, '处理过之后的数组')
+          // console.log(curMtolDay, '月初到当前天数')
+          curMonthxData = comArr.map((item, index) => {
+            let reg = /^(\d{4})-([\s\S]+)$/g;
+            reg.test(item.date)
+            console.log(RegExp.$2)
+            return RegExp.$2
+          })
+          curMonthxTotal = comArr.map((item, index) => {
+            return item.total/1000
+          })
+          that.curMonthechartsOption.xAxis[0].data = curMonthxData;
+          that.curMonthechartsOption.series[0].data = curMonthxTotal;
+          var myChart = echarts.init(document.getElementById('mainEcharts'))
+          myChart.setOption(this.curMonthechartsOption)
+        }
+        // console.log(curMonthxData)
       })
     })
   },
@@ -213,7 +260,7 @@ export default {
       var myChart = echarts.init(document.getElementById('mainEcharts'))
       let myChartBing1 = echarts.init(document.getElementById('mainEchartsBing1'))
       // let myChartBing2 = echarts.init(document.getElementById('mainEchartsBing2'))
-      myChart.setOption(this.echartsOption)
+      myChart.setOption(this.curMonthechartsOption)
       myChartBing1.setOption(this.monthTotal)
       // myChartBing2.setOption(this.dayTotal)
     }

@@ -160,3 +160,13 @@ export function configAlarm (configAlarm) {
       params: configAlarm
     })
 }
+/**
+ * 9. 是否开启警报设置 
+ */
+export function configIsUseAlarm (configAlarm) {
+  return request({
+    url: '/api/alarm/configIsUseAlarm',
+    method: 'get',
+    params: configAlarm
+  })
+}
