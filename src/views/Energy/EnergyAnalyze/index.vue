@@ -13,7 +13,7 @@
         <el-col :span="5">
           <div class="grid-content grid-kwh grid1">
             <h5>今年</h5>
-            <p>{{energyConsume[0].total}}kwh</p>
+            <p>{{energyConsume[2].total}}kwh</p>
           </div>
         </el-col>
         <el-col :span="5">
@@ -25,7 +25,7 @@
         <el-col :span="5">
           <div class="grid-content grid-kwh grid3">
             <h5>昨天</h5>
-            <p>{{energyConsume[1].total}}kwh</p>
+            <p>{{energyConsume[0].total}}kwh</p>
           </div>
         </el-col>
         <el-col :span="9" class="grid-kwh"></el-col>
@@ -33,9 +33,9 @@
       <el-row>
         <el-col :span="15"><div class="grid-content bg-purple" id="mainEcharts" :style="{width:'663px',height:'572px'}"></div></el-col>
         <el-col :span="9">
-          <div class="grid-content bg-purple-light" id="mainEchartsBing1" :style="{width:'356px',height:'278px'}">
-          <div class="grid-content bg-purple-light" id="mainEchartsBing2" :style="{width:'356px',height:'278px'}"></div>
-        </div></el-col>
+          <div class="grid-content bg-purple-light" id="mainEchartsBing1" :style="{width:'356px',height:'278px'}"></div>
+          <div class="grid-content bg-purple-light" id="mainEchartsDayMonth" :style="{width:'356px',height:'278px'}"></div>
+        </el-col>
       </el-row>
     </div>
   </div>
@@ -45,8 +45,6 @@
 import echarts from 'echarts'
 import { getCommonEnergyStatistic, listEnergyStatisticByDay } from '@/api/EnergyAnalyze/energyanalyze'
 // 基于准备好的dom，初始化echarts实例
-
-console.log(echarts)
 
 export default {
   name: 'EnergyAnalyze',
@@ -148,6 +146,106 @@ export default {
           }
         ]
       },
+      monthYearRateOptions: {
+        title : {
+          text: '月能耗与本年能耗',
+          subtext: '月/年比例',
+          x:'center'
+        },
+        tooltip : {
+          trigger: 'item',
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+          orient : 'vertical',
+          x : 'left',
+          data:['本月能耗','本年能耗']
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {
+                    show: true, 
+                    type: ['pie', 'funnel'],
+                    option: {
+                        funnel: {
+                            x: '25%',
+                            width: '50%',
+                            funnelAlign: 'left',
+                            max: 1548
+                        }
+                    }
+                },
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        series : [
+            {
+                name:'能耗比例',
+                type:'pie',
+                radius : '55%',
+                center: ['50%', '60%'],
+                data:[
+                    {value: 440, name: '本月能耗'},
+                    {value: 3300, name: '本年能耗'}
+                ]
+            }
+        ]
+      },
+      dayMonthRateOptions: {
+        title : {
+          text: '本天能耗与本月能耗',
+          subtext: '本天/本月比例',
+          x:'center'
+        },
+        tooltip : {
+          trigger: 'item',
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+          orient : 'vertical',
+          x : 'left',
+          data:['本天能耗','本月能耗']
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {
+                    show: true, 
+                    type: ['pie', 'funnel'],
+                    option: {
+                        funnel: {
+                            x: '25%',
+                            width: '50%',
+                            funnelAlign: 'left',
+                            max: 1548
+                        }
+                    }
+                },
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        series : [
+            {
+                name:'能耗比例',
+                type:'pie',
+                radius : '55%',
+                center: ['50%', '60%'],
+                data:[
+                    {value: 440, name: '本天能耗'},
+                    {value: 3300, name: '本月能耗'}
+                ]
+            }
+        ]
+      },
       dayTotal: {
         title: {
           text: '月消耗'
@@ -202,22 +300,52 @@ export default {
       getCommonEnergyStatistic().then(res => {
         console.log(res, '能量分析数据')
         that.energyConsume = res.data ? res.data : [{total: '暂无数据'}, {total: '暂无数据'}, {total: '暂无数据'}]
+        console.log(that.energyConsume, '请求的数据')
+        // 处理饼状图
+        let temBingData = [
+          {
+            name: '本月能耗',
+            value: res.data[1].total
+          },
+          {
+            name: '本年能耗',
+            value: res.data[2].total
+          }
+        ];
+        let temBingDayMonthData = [
+          {
+            name: '本天能耗',
+            value: res.data[0].total
+          },
+          {
+            name: '本月能耗',
+            value: res.data[1].total
+          }
+        ];
+        // 初始化异步数据
+        that.monthYearRateOptions.series[0].data = temBingData
+        that.dayMonthRateOptions.series[0].data = temBingDayMonthData
+        // 重新渲染饼状图
+        let myChartBing1 = echarts.init(document.getElementById('mainEchartsBing1'))
+        myChartBing1.setOption(this.monthYearRateOptions)
       })
       let date = new Date();
       let curMonth = date.getMonth() + 1;
-      console.log(curMonth, '当前月份')
+      // console.log(curMonth, '当前月份')
       listEnergyStatisticByDay(9).then(res => {
-        console.log(res, '月份的数据')
+        // console.log(res, '月份的数据')
         // that.echartsOption.series[0]['data'][i] = 1
         let curMonthxData = [];
         let curMonthxTotal = [];
         if( res.data ) {
           // 数据二次处理：
-          let curMtolDay = date.getDate() - 1;
+          let curMtolDay = date.getDate();
+          // console.log(curMtolDay)
           let comArr = []
-          for( var d = 1; d < curMtolDay; d++) {
-            let curM = date.getMonth() + 1 > 10 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`
-            let dateString = d < 10 ? `${date.getFullYear()}-${curM}-0${d}` : `${date.getFullYear()}-${date.getMonth()}-${d}`
+          // console.log(date.getMonth(), '当前月份')
+          let curM = (date.getMonth() + 1) >= 10 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`
+          for( var d = 1; d <= curMtolDay; d++) { 
+            let dateString = d < 10 ? `${date.getFullYear()}-${curM}-0${d}` : `${date.getFullYear()}-${curM}-${d}`
             let filterArr = res.data.filter((item, index) => { // 无数据
               return item.date === dateString
             });
@@ -240,7 +368,7 @@ export default {
           curMonthxData = comArr.map((item, index) => {
             let reg = /^(\d{4})-([\s\S]+)$/g;
             reg.test(item.date)
-            console.log(RegExp.$2)
+            // console.log(RegExp.$2)
             return RegExp.$2
           })
           curMonthxTotal = comArr.map((item, index) => {
@@ -259,10 +387,10 @@ export default {
     if (document.getElementById('mainEcharts')) {
       var myChart = echarts.init(document.getElementById('mainEcharts'))
       let myChartBing1 = echarts.init(document.getElementById('mainEchartsBing1'))
-      // let myChartBing2 = echarts.init(document.getElementById('mainEchartsBing2'))
+      var myChartDayMonth = echarts.init(document.getElementById('mainEchartsDayMonth'))
       myChart.setOption(this.curMonthechartsOption)
-      myChartBing1.setOption(this.monthTotal)
-      // myChartBing2.setOption(this.dayTotal)
+      myChartBing1.setOption(this.monthYearRateOptions)
+      myChartDayMonth.setOption(this.dayMonthRateOptions)
     }
   }
 }
