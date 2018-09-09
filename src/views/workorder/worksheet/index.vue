@@ -123,7 +123,7 @@ export default {
         this.multipleSelection = val;
       },
       allgooflow(){
-            this.tableshow=!this.tableshow
+            // this.tableshow=!this.tableshow
       }
     },
     components:{
