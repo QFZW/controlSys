@@ -22,7 +22,7 @@
           </div>
         </div>
         <div class="grid-content gird-2">
-          <div class="gird-wrap">
+          <div class="gird-wrap" @click="linkModule('/assetadmin')">
             <div class="trans-middle">
               <p class="p1"><i class="iconfont">&#xe613;</i></p>
               <p>资产管理系统</p>
@@ -41,7 +41,7 @@
             </div>
           </div>
           <div class="grid-content gird-4">
-            <div class="gird-wrap">
+            <div class="gird-wrap" @click="linkModule('/workorder')">
               <div class="trans-middle f-mid">
                 <p class="p1"><i class="iconfont">&#xe664;</i></p>
                 <p>工单管理</p>
