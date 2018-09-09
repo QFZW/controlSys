@@ -6,12 +6,9 @@
  */
 <template>
   <div id="EleboxWarning">
-    <div id="searchForm">
-      
-    </div>
     <div id="dataTable">
       <div class="operator">
-
+        <el-checkbox v-model="isSynData">仅同步未完成数据</el-checkbox>
       </div>
       <el-table
         :data="tableData"
@@ -27,39 +24,51 @@
           width="80">
         </el-table-column>
         <el-table-column
-          prop="level"
+          prop="alarmLevel"
           label="等级"
           width="80">
         </el-table-column>
         <el-table-column
-          prop="elebox"
+          prop="codeNumber"
           label="控制柜/区域"
           width="120">
         </el-table-column>
         <el-table-column
-          prop="source"
+          prop="alarmSource"
           label="来自"
           width="120">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="名称"
-          width="80">
+          prop="gmtCreated"
+          :formatter="dateFormat"
+          label="创建时间"
+          width="150">
         </el-table-column>
         <el-table-column
-          prop="type"
+          prop="gmtUpdated"
+          :formatter="dateFormat"
+          label="更新时间"
+          width="150">
+        </el-table-column>
+        <el-table-column
+          prop="ctype"
           label="类型">
         </el-table-column>
         <el-table-column
-          prop="waringtime"
+          prop="nnlightctlAlarmConfigId"
+          label="警報配置ID">
+        </el-table-column>
+        <el-table-column
+          prop="alarmTime"
+          :formatter="dateFormat"
           label="报警/解除时间">
         </el-table-column>
         <el-table-column
-          prop="message"
+          prop="msg"
           label="消息">
         </el-table-column>
         <el-table-column
-          prop="times"
+          prop="alarmCount"
           label="次数">
         </el-table-column>
       </el-table>
@@ -82,10 +91,13 @@
 // import { listElebox } from '@/api/GisService/lamp'
 // import { getLighting } from '@/api/RoadLighting/deploy'
 import '../../../utils/filter.js'
+import { getListAlarm } from '@/api/EventWarning/EventWarning'
+import moment from 'moment';
 export default {
   name: 'Elebox',
   data () {
     return {
+      isSynData: true, // 是否同步数据
       formInline: {
         elebox: '',
         states: '',
@@ -94,47 +106,59 @@ export default {
       },
       tableData: [{
         state: '良好',
-        level: '三级警报',
-        elexbox: '控制柜一/上海市普陀区金沙江路 1518 弄',
-        source: '上海xxxx',
+        alarmLevel: '三级警报',
+        codeNumber: '控制柜一/上海市普陀区金沙江路 1518 弄',
+        alarmSource: '上海xxxx',
         name: 'XXX警报',
-        type: '普通灯警报',
-        waringtime: '2016-05-02',
-        message: '事件报警',
-        times: '3'
+        ctype: '普通灯警报',
+        gmtCreated: 'e222323',
+        gmtUpdated: '201-121',
+        nnlightctlAlarmConfigId: '11',
+        alarmTime: '2016-05-02',
+        msg: '事件报警',
+        alarmCount: '3'
       },
       {
         state: '良好',
-        level: '三级警报',
-        elexbox: '控制柜一/上海市普陀区金沙江路 1518 弄',
-        source: '上海xxxx',
+        alarmLevel: '三级警报',
+        codeNumber: '控制柜一/上海市普陀区金沙江路 1518 弄',
+        alarmSource: '上海xxxx',
         name: 'XXX警报',
-        type: '普通灯警报',
-        waringtime: '2016-05-02',
-        message: '事件报警',
-        times: '3'
+        ctype: '普通灯警报',
+        gmtCreated: 'e222323',
+        gmtUpdated: '201-121',
+        nnlightctlAlarmConfigId: '11',
+        alarmTime: '2016-05-02',
+        msg: '事件报警',
+        alarmCount: '3'
       },
       {
         state: '良好',
-        level: '三级警报',
-        elexbox: '控制柜一/上海市普陀区金沙江路 1518 弄',
-        source: '上海xxxx',
+        alarmLevel: '三级警报',
+        codeNumber: '控制柜一/上海市普陀区金沙江路 1518 弄',
+        alarmSource: '上海xxxx',
         name: 'XXX警报',
-        type: '普通灯警报',
-        waringtime: '2016-05-02',
-        message: '事件报警',
-        times: '3'
+        ctype: '普通灯警报',
+        gmtCreated: 'e222323',
+        gmtUpdated: '201-121',
+        nnlightctlAlarmConfigId: '11',
+        alarmTime: '2016-05-02',
+        msg: '事件报警',
+        alarmCount: '3'
       },
       {
         state: '良好',
-        level: '三级警报',
-        elexbox: '控制柜一/上海市普陀区金沙江路 1518 弄',
-        source: '上海xxxx',
+        alarmLevel: '三级警报',
+        codeNumber: '控制柜一/上海市普陀区金沙江路 1518 弄',
+        alarmSource: '上海xxxx',
         name: 'XXX警报',
-        type: '普通灯警报',
-        waringtime: '2016-05-02',
-        message: '事件报警',
-        times: '3'
+        ctype: '普通灯警报',
+        gmtCreated: 'e222323',
+        gmtUpdated: '201-121',
+        nnlightctlAlarmConfigId: '11',
+        alarmTime: '2016-05-02',
+        msg: '事件报警',
+        alarmCount: '3'
       }],
       currentPage3: 5,
     }
@@ -142,6 +166,23 @@ export default {
   computed: {
   },
   methods: {
+    // 初始化获取数据
+    getListAlarm(pageNumber, pageSize) {
+      let that = this;
+      getListAlarm(pageNumber, pageSize).then((res)=>{
+        console.log(res, '初始化shuju');
+        // 初始化表格
+        that.tableData = res.data;
+      })
+    },
+    //时间格式化
+    dateFormat:function(row, column) {
+      var date = row[column.property];
+      if (date == undefined) {
+        return "";
+      }
+        return moment(date).format("YYYY-MM-DD HH:mm:ss");
+    },
     onSubmit () {
       console.log('submit!');
     },
@@ -171,7 +212,8 @@ export default {
     }
   },
   created () {
-    // let that = this
+    let that = this
+    that.getListAlarm(1, 20)
   }
 }
 </script>
@@ -185,5 +227,10 @@ export default {
     padding-left: 32px;
     padding-top: 10px;
     padding-right: 32px;
+  }
+  .operator {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-left: 30px;
   }
 </style>
