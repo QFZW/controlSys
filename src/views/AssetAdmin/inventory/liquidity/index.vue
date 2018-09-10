@@ -1,23 +1,10 @@
 <template>
     <div class="box">
-            <div class="topNav">
-                 <el-tabs v-model="activeName" @tab-click="handleClick">
-                    <el-tab-pane label="供应商" name="first"></el-tab-pane>
-                    <el-tab-pane label="资产分类" name="second"></el-tab-pane>
-                    <el-tab-pane label="入库原因" name="third"></el-tab-pane>
-                    <el-tab-pane label="出库原因" name="fourth"></el-tab-pane>
-                </el-tabs>
-            </div>
             <div class="seache">
                 
                 <div><div>111</div><div><el-input v-model="input" placeholder="请输入内容"></el-input></div></div>
                 <div><el-button type="primary">查询</el-button></div>
             </div>
-            <div class="button_list">
-                <div><el-button type="primary" icon="el-icon-plus" @click="formlistdatahide=true">增加</el-button></div>
-                <div><el-button plain icon="el-icon-delete">批量删除</el-button></div>
-            </div>
-
             <div class="table">
                  <el-table
                     ref="multipleTable"
@@ -25,10 +12,7 @@
                     tooltip-effect="dark"
                     style="width: 100%"
                     @selection-change="handleSelectionChange">
-                    <el-table-column
-                    type="selection"
-                    width="55">
-                    </el-table-column>
+                   
                     <el-table-column
                     prop="name"
                     label="区域"

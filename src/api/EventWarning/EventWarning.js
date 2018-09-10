@@ -61,12 +61,19 @@ export function exportAlarm (alarmIds) {
  * @returns
  */
 export function clearAlarm (alarmIds) {
+    console.log(alarmIds)
+    let ids = {}
+    if(alarmIds) {
+      for (let i = 0; i<alarmIds.length; i++) {
+        let key = `alarmIds[${i}]`
+        ids[key] = alarmIds[i]
+      }
+    }
+    
     return request({
       url: '/api/alarm/clearAlarm',
       method: 'get',
-      params: {
-        alarmIds: alarmIds
-      }
+      params: ids
     })
 }
 
@@ -152,4 +159,14 @@ export function configAlarm (configAlarm) {
       method: 'get',
       params: configAlarm
     })
+}
+/**
+ * 9. 是否开启警报设置 
+ */
+export function configIsUseAlarm (configAlarm) {
+  return request({
+    url: '/api/alarm/configIsUseAlarm',
+    method: 'get',
+    params: configAlarm
+  })
 }
