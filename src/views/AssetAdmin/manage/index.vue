@@ -150,7 +150,7 @@
     </div>
 </template>
 <script>
-import {listRepairRecord,addOrUpdateRepairRecord,commitRepairRecord} from '@/api/AssetAdmin.js'
+import {listRepairRecord,addOrUpdateRepairRecord,commitRepairRecord,changeTime} from '@/api/AssetAdmin.js'
 export default {
     name:'',
     data(){
@@ -204,6 +204,11 @@ export default {
     },
     created(){
         listRepairRecord(this.activeName).then(res=>{
+              for(var i=0;i<res.data.length;i++){
+                res.data[i].faultDate=changeTime(res.data[i].faultDate)
+                res.data[i].createDate=changeTime(res.data[i].createDate)
+               
+            }
              this.tableData3=res.data   
         })
     },
@@ -212,6 +217,11 @@ export default {
         console.log(tab.name);
         this.activeName=tab.name
          listRepairRecord(tab.name).then(res=>{
+               for(var i=0;i<res.data.length;i++){
+                res.data[i].faultDate=changeTime(res.data[i].faultDate)
+                res.data[i].createDate=changeTime(res.data[i].createDate)
+               
+            }
              this.tableData3=res.data   
         })
       },
@@ -229,6 +239,11 @@ export default {
                     message:'删除成功'
                 })
            listRepairRecord(this.activeName).then(res=>{
+                 for(var i=0;i<res.data.length;i++){
+                res.data[i].faultDate=changeTime(res.data[i].faultDate)
+                res.data[i].createDate=changeTime(res.data[i].createDate)
+               
+            }
              this.tableData3=res.data   
         })
         })
@@ -248,6 +263,11 @@ export default {
                     message:'删除成功'
                 })
            listRepairRecord(this.activeName).then(res=>{
+                 for(var i=0;i<res.data.length;i++){
+                res.data[i].faultDate=changeTime(res.data[i].faultDate)
+                res.data[i].createDate=changeTime(res.data[i].createDate)
+               
+            }
              this.tableData3=res.data   
         })
         })
@@ -273,6 +293,12 @@ export default {
                 this.dialogFormVisible = false
                 // that.tableData3.push(that.form)
                listRepairRecord(this.activeName).then(res=>{
+
+                    for(var i=0;i<res.data.length;i++){
+                res.data[i].faultDate=changeTime(res.data[i].faultDate)
+                res.data[i].createDate=changeTime(res.data[i].createDate)
+               
+            }
                     this.tableData3=res.data   
                 })
             })
