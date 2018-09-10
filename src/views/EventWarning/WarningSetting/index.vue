@@ -1220,6 +1220,10 @@ export default {
           open: false
         },
         {
+          alarmType: '配电柜倾斜',
+          open: false
+        },
+        {
           alarmType: '配电柜进水',
           open: false
         },
