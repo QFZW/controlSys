@@ -62,7 +62,7 @@
     </div>
 </template>
 <script>
-
+import {listWorkOrderHistory} from '@/api/AssetAdmin.js'
 export default {
     name:'',
     data(){
@@ -110,6 +110,11 @@ export default {
        handleSelectionChange(val) {
         this.multipleSelection = val;
       }
+    },
+    created(){
+        listWorkOrderHistory().then(res=>{
+            console.log(res.data)
+        })
     }
 }
 </script>
