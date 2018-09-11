@@ -1,3 +1,3 @@
 <template>
-    <div>能耗分析</div>
+    <div>能耗分析1</div>
 </template>
