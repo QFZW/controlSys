@@ -20,49 +20,42 @@
                 style="width: 100%"
                 @selection-change="handleSelectionChange">
                 <el-table-column
-                type="selection"
-                width="55">
-                </el-table-column>
-                <el-table-column
-                prop="name"
-                label="名称"
+                prop="gmtCreated"
+                label="创建时间"
                >
                 </el-table-column>
                 <el-table-column
-                prop="name"
-                label="节点数"
+                prop="gmtUpdated"
+                label="修改时间"
                >
                 </el-table-column>
                 <el-table-column
-                prop="name"
-                label="状态"
+                prop="id"
+                label="ID"
                >
                 </el-table-column>
                 <el-table-column
-                prop="address"
+                prop="mem"
                 label="备注"
                 >
                 </el-table-column>
                  <el-table-column
-                prop="address"
-                label="创建时间"
+                prop="nnlightctlWorkOrderId"
+                label="工单信息ID"
                 >
                 </el-table-column>
                  <el-table-column
-                label="操作"
+                prop="recordDate"
+                label="记录时间"
                 >
-                <template slot-scope="scope">
-                    <el-button type="text" size="small" >预览</el-button>
-                    <el-button type="text" size="small" >编辑</el-button>
-                    <el-button type="text" size="small">删除</el-button>
-                </template>
                 </el-table-column>
+                
             </el-table>
         </div>
     </div>
 </template>
 <script>
-import {listWorkOrderHistory} from '@/api/AssetAdmin.js'
+import {listWorkOrderHistory,changeTime} from '@/api/AssetAdmin.js'
 export default {
     name:'',
     data(){
@@ -70,35 +63,9 @@ export default {
             formInline:{
                 user:''
             },
-             tableData3: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
+             tableData3: [
+               
+             ],
         multipleSelection: []
       }
         
@@ -112,9 +79,15 @@ export default {
       }
     },
     created(){
-        listWorkOrderHistory().then(res=>{
-            console.log(res.data)
-        })
+      
+         listWorkOrderHistory().then(res=>{
+            for(var i=0;i<res.data.length;i++){
+                res.data[i].gmtCreated=changeTime(res.data[i].gmtCreated)
+                res.data[i].gmtUpdated=changeTime(res.data[i].gmtUpdated)
+                res.data[i].recordDate=changeTime(res.data[i].recordDate)
+              }
+            this.tableData3=res.data
+            })
     }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="list">
+        <!-- <div class="list">
            <el-form :inline="true" :model="formInline" class="demo-form-inline">
             <el-form-item label="分类">
                 <el-select v-model="formInline.region" placeholder="请选择">
@@ -27,7 +27,7 @@
                 <el-button type="primary" @click="onSubmit">查询</el-button>
             </el-form-item>
             </el-form>
-        </div>
+        </div> -->
         <el-table
                 :data="tableData"
                 border

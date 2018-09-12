@@ -100,7 +100,7 @@ export function listDeviceRepaireStatistic (startDate,endDate) {
 
   //   删除
 
-  export function commitRepairRecord(repairRecordIds){
+  export function deleteRepairRecord(repairRecordIds){
     return request({
       url:'/api/propertyManager/deleteRepairRecord',
       method:'post',
@@ -110,6 +110,17 @@ export function listDeviceRepaireStatistic (startDate,endDate) {
     })
   }
 
+  //  提交
+
+  export function commitRepairRecord(repairRecordIds){
+    return request({
+      url:'/api/propertyManager/commitRepairRecord',
+      method:'post',
+      data:{
+        repairRecordIds 
+      }
+    })
+  }
 
   // 仓库 管理
 

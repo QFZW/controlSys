@@ -14,8 +14,15 @@
                 <el-form-item label="联系人" label-width="80px" prop="maskName">
                 <el-input v-model="form.maskName" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="性别" label-width="80px" prop="sex">
-                <el-input v-model="form.sex" auto-complete="off"></el-input>
+                <el-form-item label="性别" label-width="80px" >
+                 <el-select v-model="Contact.sex" placeholder="请选择">
+                        <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="年龄" label-width="80px" prop="age">
                 <el-input v-model="form.age" auto-complete="off"></el-input>
@@ -52,8 +59,16 @@
                 <el-form-item label="联系人" label-width="80px" prop="maskName">
                 <el-input v-model="Contact.maskName" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="性别" label-width="80px" prop="sex">
-                <el-input v-model="Contact.sex" auto-complete="off"></el-input>
+                <el-form-item label="性别" label-width="80px" >
+                     <el-select v-model="Contact.sex" placeholder="请选择">
+                        <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                   
                 </el-form-item>
                 <el-form-item label="年龄" label-width="80px" prop="age">
                 <el-input v-model="Contact.age" auto-complete="off"></el-input>
@@ -141,7 +156,7 @@
                         label="部门"
                         show-overflow-tooltip>
                         </el-table-column>
-                       <el-table-column label="操作">
+                       <el-table-column label="操作" width="200">
                         <template slot-scope="scope">
                             <el-button
                             size="mini"
@@ -201,14 +216,19 @@ export default {
         },
         formLabelWidth: '120px',
         tableData3: [],
+        options: [{
+          value: '1',
+          label: '男'
+        }, {
+          value: '0',
+          label: '女'
+        }, ],
          rules: {
           maskName: [
             { required: true, message: '请输入名称', trigger: 'blur' },
             { min: 2, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
           ],
-           sex: [
-            { required: true, message: '请输入性别', trigger: 'blur' },
-          ],
+           
            age: [
             { required: true, message: '年龄不能为空'}
            
@@ -224,6 +244,13 @@ export default {
       var a=10
       var b=10
       listMasker().then(res=>{
+          for(var i=0;i<res.data.length;i++){
+              if( res.data[i].sex===0){
+                   res.data[i].sex='女'
+              }else{
+                   res.data[i].sex='男'
+              }
+          }
         this.tableData3=res.data
       })
     }
@@ -252,6 +279,13 @@ export default {
         // console.log(index, row.id,row);
         var that=this
             getMasker(row.id).then(res=>{
+                for(var i=0;i<res.data.length;i++){
+                    if( res.data[i].sex===0){
+                        res.data[i].sex='女'
+                    }else{
+                        res.data[i].sex='男'
+                    }
+                }
                 that.Contact=res.data[0]
             })
 
@@ -281,18 +315,27 @@ export default {
       },
       linkmanAdd(formName){
         //   console.log(this.form)
+        console.log(this.Contact.sex)
         var that=this
           this.$refs[formName].validate((valid) => {
           if (valid) {
             
-            addOrUpdateMasker(that.form.maskName,that.form.sex,Number(that.form.age),Number(that.form.phoneNumber),that.form.email,that.form.place,that.form.nnlightctlMaskerId,that.form.codeNumber,that.form.department).then(res=>{
+            addOrUpdateMasker(that.form.maskName,Number(that.form.sex),Number(that.form.age),Number(that.form.phoneNumber),that.form.email,that.form.place,that.form.nnlightctlMaskerId,that.form.codeNumber,that.form.department).then(res=>{
                 that.$message({
                     type:'success',
                     message:'添加成功'
                 })
+
                 this.dialogFormVisible = false
                 // that.tableData3.push(that.form)
                 listMasker().then(res=>{
+                     for(var i=0;i<res.data.length;i++){
+                        if( res.data[i].sex===0){
+                            res.data[i].sex='女'
+                        }else{
+                            res.data[i].sex='男'
+                        }
+                    }
                     this.tableData3=res.data
                 })
             })
@@ -316,6 +359,13 @@ export default {
                 this.dialogFormVisible2 = false
                 // that.tableData3.push(that.form)
                 listMasker().then(res=>{
+                    for(var i=0;i<res.data.length;i++){
+                    if( res.data[i].sex===0){
+                        res.data[i].sex='女'
+                    }else{
+                        res.data[i].sex='男'
+                    }
+                }
                     this.tableData3=res.data
                 })
             })
