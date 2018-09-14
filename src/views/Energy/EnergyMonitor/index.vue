@@ -485,7 +485,7 @@ export default {
               case 'electricity':
                 // 电流
                 listEleboxElectric(params).then(res => {
-                  console.log(res, '请求功率数据')
+                  console.log(res, '请求电流数据')
 
                   // 后续数据处理
                 })

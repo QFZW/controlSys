@@ -5,10 +5,52 @@
       <a class="menu-link">
         <i class="iconfont">&#xe655;</i>
       </a>
-      <div class="user-info f-r">
-        <img src="@/assets/index/header.png">
-        <span>Admin</span>
+      <div class="user-area f-r">
+        <div v-if="isLogin == true" class="user-info dis-inline">
+          <img src="@/assets/index/header.png">
+          <span>{{username}}</span>
+          <span> | </span>
+          <span class="logout" @click="handleLoginOut()">退出</span>
+        </div>
+        <div v-else class="login-register dis-inline">
+          <span @click="handleRegister()" class="logout">注册</span>
+          <span> | </span>
+          <span class="logout" @click="handleLogin()">{{loginOperation}}</span>
+        </div>
       </div>
+      <!-- 登录对话窗 -->
+      <el-dialog title="用户登录" :visible.sync="loginFormVisible">
+        <el-form :model="form" status-icon :rules="myRules" ref="loginForm">
+          <el-form-item label="用户名" :label-width="formLabelWidth" prop="username" class="inp-width">
+            <el-input v-model="form.username" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="密 码" :label-width="formLabelWidth" prop="password" class="inp-width">
+            <el-input type="password" v-model="form.password" autocomplete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="loginFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handleloginSend()">登 录</el-button>
+        </div>
+      </el-dialog>
+      <!-- 注册对话窗 -->
+      <el-dialog title="新用户注册" status-icon :visible.sync="registerFormVisible">
+        <el-form :model="registerFormData" :rules="myRegisterRules" ref="registerForm">
+          <el-form-item label="用户名" :label-width="formLabelWidth" prop="username" class="inp-width">
+            <el-input v-model="registerFormData.username" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="密 码" :label-width="formLabelWidth" prop="password" class="inp-width">
+            <el-input type="password" v-model="registerFormData.password" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="确认密码" :label-width="formLabelWidth" prop="confirmpassword" class="inp-width">
+            <el-input type="password" v-model="registerFormData.confirmpassword" autocomplete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="registerFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handleRegister()">注 册</el-button>
+        </div>
+      </el-dialog>
     </div>
     <!-- main-wrap -->
     <div class="index-module">
@@ -86,12 +128,150 @@
   </div>
 </template>
 <script>
+import { login, register } from '@/api/login'
 export default {
   name: 'index',
+  data: function () {
+    var checkUsername = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('用户名不能为空'));
+      }
+      setTimeout(() => {
+        if (value.length > 20 || value.length < 3) {
+          callback(new Error('用户长度在3-20字符'));
+        } else {
+          callback();
+        }
+      }, 1000);
+    };
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      } else {
+        if (this.registerFormData.confirmpassword !== '') {
+          this.$refs.registerForm.validateField('confirmpassword');
+        }
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.registerFormData.password) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
+    return {
+      isLogin: true,
+      loginOperation: "登录",
+      loginFormVisible: false,
+      registerFormVisible: false,
+      username: '',
+      form: {
+        username: '',
+        password: ''
+      },
+      registerFormData: {
+        username: '',
+        password: '',
+        confirmpassword: ''
+      },
+      myRules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 4, max: 12, message: '长度在 4 到 12 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 4, max: 20, message: '长度在 4 到 20 个字符', trigger: 'blur' }
+        ]
+      },
+      myRegisterRules: {  
+        username: [
+            { validator: checkUsername, trigger: 'blur' }
+        ],
+        password: [
+          { validator: validatePass, trigger: 'blur' }
+        ],
+        confirmpassword: [
+          { validator: validatePass2, trigger: 'blur' }
+        ]
+      },
+      formLabelWidth: '120px'
+    }
+  },
   methods: {
     linkModule: function (url) {
       console.log(url)
       if (url) this.$router.push(url)
+    },
+    handleloginSend () {
+      console.log("登录发送请求")
+      this.$refs["loginForm"].validate((valid)=>{
+        if(valid){
+          login(this.form.username, this.form.password).then((res)=>{
+            console.log(res, '登录返回信息')
+            if(res.code){ // 成功
+              // 重新写入session,并且记录时间
+              window.localStorage.setItem("username", this.form.username);
+              widnow.localStorage.setItem("password", this.form.password);
+              const loginDate = new Date();
+              window.localStorage.setItem("loginDate", loginDate);
+
+           } else { // 登录失败
+              this.$message({
+                showClose: true,
+                message: res
+              });
+              // console.log(err);
+           }
+          })
+        } else {
+          return false;
+        }
+      })
+    },
+    // 退出 
+    handleLoginOut () {
+      this.isLogin = false
+      console.log(this.isLogin)
+      console.log("登出")
+      // 清除token
+      window.localStorage.removeItem("username");
+      widnow.localStorage.removeItem("password");
+      window.localStorage.removeItem("loginDate");
+    },
+    // 注册
+    handleRegister () {
+      console.log("注册")
+      this.registerFormVisible = true
+      register(this.registerFormData.username, this.registerFormData.password).then(res=>{
+        if(res.data){ // 注册成功
+          this.$message({
+            showClose: true,
+            message: "恭喜您注册成功!"
+          });
+        }else { // 注册失败
+          this.$message({
+            showClose: true,
+            message: res
+          });
+        }
+      })
+    },
+    // 登录
+    handleLogin () {
+      console.log("登录")
+      this.loginFormVisible = true
+    }
+  },
+  created () {
+    // 检查是否有登录信息
+    if(window.localStorage.getItem("username") && window.localStorage.getItem("password")) {
+      this.isLogin = true
+      this.username = window.localStorage.getItem("password")
     }
   }
 }
@@ -107,7 +287,12 @@ export default {
   position: relative;
   overflow: hidden;
 }
-
+.dis-inline {
+  display: inline-block;
+}
+.inp-width {
+  width: 300px;
+}
 .index-header{
   position: absolute;
   top: 0;
@@ -120,8 +305,10 @@ export default {
       font-size:24px;
     }
   }
-  .user-info{
+  .user-info, .login-register{
     cursor: pointer;
+    height: 50px;
+    line-height: 50px;
     img{
       width: 50px;
       height: 50px;
@@ -132,6 +319,11 @@ export default {
     span{
       font-size:14px;
       color: #fff;
+    }
+    span.logout:hover {
+      color:blue;
+      text-decoration: underline;
+      cursor: pointer;
     }
   }
 }
