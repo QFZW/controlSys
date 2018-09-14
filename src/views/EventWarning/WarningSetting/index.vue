@@ -215,7 +215,7 @@
         style="width: 100%">    
         <el-table-column
           label="警报类型"
-          prop="alarmType"
+          prop="ctype"
           width="300">
         </el-table-column>
         <el-table-column
@@ -223,7 +223,7 @@
           prop="oepn"
           width="100">
             <template slot-scope="scope">
-              <el-checkbox v-model="scope.row.open" @change="handleOpenAlarmChange(scope)"></el-checkbox>
+              <el-checkbox v-model="scope.row.isUse" @change="handleisUseAlarmChange(scope)"></el-checkbox>
             </template>
         </el-table-column>
       </el-table>
@@ -234,7 +234,7 @@
     </el-dialog>
 
     <!--意外亮灯-->
-    <el-dialog title="意外亮灯" :visible.sync="lightOpenVisible">
+    <el-dialog title="意外亮灯" :visible.sync="lightisUseVisible">
       <el-row>
         <el-col :span="6">
           <span>警报等级</span>
@@ -1144,7 +1144,7 @@ import qs from 'qs'
 
 import {getLoopLight1, listGIS, listElebox, deleteElebox, addEleBox, updateEleBox, listEleboxModel, listModelLoop, modelLoopSplite, listLighting, getLighting, addLighting, deleteLighting, addOrUpdateLighting, updateLightBeElebox, listArea, getLoopLight, updateLightBeEleboxBeLoop, unbindLightBeElebox, listProject ,listLightingData ,listElebox2 ,listEleboxModel2 ,listModelLoopList} from '@/api/RoadLighting/deploy'
 import { listLightModel } from '@/api/RoadLighting/EquipmentType'
-import { configAlarm, getAlarm } from '@/api/EventWarning/EventWarning'
+import { configAlarm, getAlarm, configIsUseAlarm } from '@/api/EventWarning/EventWarning'
 import '../../../utils/filter.js'
 export default {
   name: 'Deploy',
@@ -1154,6 +1154,7 @@ export default {
       listEleboxModel22:[],
       selectEleboxModelId2:'',
       selectModelLoopId3:'',
+      lightisUseVisible: false,
       openAlarmVisible: false,
       lightOpenVisible: false, //意外亮灯显示控制
       options: [],
@@ -1180,68 +1181,84 @@ export default {
       ],
       openalarmdData: [
         {
-          alarmType: '意外亮灯',
-          open: true
+          ctype: '意外亮灯',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '意外灭灯',
-          open: false
+          ctype: '意外灭灯',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '线路过流',
-          open: true
+          ctype: '线路过流',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '线路过压',
-          open: false
+          ctype: '线路过压',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '线路欠压',
-          open: false
+          ctype: '线路欠压',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '配电柜断电',
-          open: false
+          ctype: '配电柜断电',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '配电柜缺相',
-          open: false
+          ctype: '配电柜缺相',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '配电柜漏电',
-          open: false
+          ctype: '配电柜漏电',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '功率因数越线',
-          open: false
+          ctype: '功率因数越线',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '柜门开启',
-          open: false
+          ctype: '柜门开启',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '配电柜倾斜',
-          open: false
+          ctype: '配电柜倾斜',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '配电柜进水',
-          open: false
+          ctype: '配电柜进水',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '配电柜雷击',
-          open: false
+          ctype: '配电柜雷击',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '手自控切换',
-          open: false
+          ctype: '手自控切换',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '外部控制器',
-          open: false
+          ctype: '外部控制器',
+          alarmSource: '2222',
+          isUse: true
         },
         {
-          alarmType: '自定义警报',
-          open: false
+          ctype: '自定义警报',
+          alarmSource: '2222',
+          isUse: true
         }
       ],
       value: '',
@@ -1553,6 +1570,22 @@ export default {
     handleOpenAlarmOk() {
       this.openAlarmVisible = false
       console.log(this.openalarmdData, '提交数据');
+      let temData = this.openalarmdData.map((item, index)=>{
+        const obj = {
+          ctype: item.ctype,
+          alarmSource: item.alarmSource,
+          isUse: Number(item.isUse)
+        }
+      })
+      configIsUseAlarm(temData).then(res=>{
+        if(res.data) {
+          this.$message({
+            showClose: true,
+            message: res
+          })
+        }
+      })
+      console.log(temData, '處理之後數據')
     },
     // 是否开启警报
     handleOpenAlara(){
