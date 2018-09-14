@@ -14,43 +14,43 @@
                     @selection-change="handleSelectionChange">
                    
                     <el-table-column
-                    prop="name"
-                    label="区域"
+                    prop="gmtCreated"
+                    label="创建日期"
                     >
                     </el-table-column>
                     <el-table-column
-                    prop="address"
-                    label="一级分类">
+                    prop="gmtUpdated"
+                    label="修改日期">
                     </el-table-column>
                     <el-table-column
-                    prop="address"
-                    label="二级分类">
+                    prop="id"
+                    label="ID">
                     </el-table-column>
                     <el-table-column
-                    prop="address"
-                    label="资产名称">
+                    prop="nnlightctlPropertyId"
+                    label="资产ID">
                     </el-table-column>
                     <el-table-column
-                    prop="address"
-                    label="资产类目编号">
+                    prop="nnlightctlUserIdApply"
+                    label="转移申请">
                     </el-table-column>
                     <el-table-column
-                    prop="address"
-                    label="资产数量">
+                    prop="nnlightctlUserIdReceive"
+                    label="目标转移接收人">
                     </el-table-column>
                     <el-table-column
-                    prop="address"
-                    label="故障时间">
+                    prop="sourceRepertyId"
+                    label="云仓库ID">
                     </el-table-column>
                     <el-table-column
-                    prop="address"
-                    label="创建时间">
+                    prop="targetRepertyId"
+                    label="目标仓库">
                     </el-table-column>
                     <el-table-column
-                    prop="address"
-                    label="创建人">
+                    prop="translateDate"
+                    label="转移日期">
                     </el-table-column>
-                    <el-table-column label="操作">
+                    <!-- <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button
                         size="mini"
@@ -60,12 +60,12 @@
                         type="danger"
                         @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
-                    </el-table-column>
+                    </el-table-column> -->
                 </el-table>
             </div>
              <div class="block">
               
-                <el-pagination
+                <!-- <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page="currentPage4"
@@ -73,66 +73,14 @@
                 :page-size="100"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="400">
-                </el-pagination>
+                </el-pagination> -->
             </div>
-
-
-            <el-dialog title="新增" :visible.sync="formlistdatahide">
-            <el-form ref="form" :model="formlistdata" label-width="80px">
-                <el-form-item label="区域">
-                    <el-input v-model=" formlistdata.id"></el-input>
-                </el-form-item>
-            </el-form>
-             <el-form ref="form" :model="formlistdata" label-width="80px">
-                <el-form-item label="一级分类">
-                    <el-input v-model=" formlistdata.id"></el-input>
-                </el-form-item>
-            </el-form>
-             <el-form ref="form" :model="formlistdata" label-width="80px">
-                <el-form-item label="二级分类">
-                    <el-input v-model=" formlistdata.id"></el-input>
-                </el-form-item>
-            </el-form>
-             <el-form ref="form" :model="formlistdata" label-width="80px">
-                <el-form-item label="资产名称">
-                    <el-input v-model=" formlistdata.id"></el-input>
-                </el-form-item>
-            </el-form>
-             <el-form ref="form" :model="formlistdata" label-width="80px">
-                <el-form-item label="资产类目编号">
-                    <el-input v-model=" formlistdata.id"></el-input>
-                </el-form-item>
-            </el-form>
-             <el-form ref="form" :model="formlistdata" label-width="80px">
-                <el-form-item label="资产数量">
-                    <el-input v-model=" formlistdata.id"></el-input>
-                </el-form-item>
-            </el-form>
-            <el-form ref="form" :model="formlistdata" label-width="80px">
-                <el-form-item label="故障时间">
-                    <el-input v-model=" formlistdata.id"></el-input>
-                </el-form-item>
-            </el-form>
-            <el-form ref="form" :model="formlistdata" label-width="80px">
-                <el-form-item label="创建时间">
-                    <el-input v-model=" formlistdata.id"></el-input>
-                </el-form-item>
-            </el-form>
-             <el-form ref="form" :model="formlistdata" label-width="80px">
-                <el-form-item label="创建人">
-                    <el-input v-model=" formlistdata.id"></el-input>
-                </el-form-item>
-            </el-form>
-             <div slot="footer" class="dialog-footer">
-                <el-button @click="formlistdatahide = false">取 消</el-button>
-                <el-button type="primary" @click="formlistdatahide = false">确 定</el-button>
-            </div>
-        </el-dialog>
     </div>
 
 </template>
 
 <script>
+import {listPropertyTransRecord,changeTime} from '@/api/AssetAdmin.js'
 export default {
     name:'',
     data(){
@@ -140,35 +88,17 @@ export default {
               activeName: 'second',
               currentPage4:4,
                input: '',
-               tableData3: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
+               tableData3: [
+                   {gmtCreated:'',
+                    gmtUpdated:'',
+                    id:'1',
+                    nnlightctlPropertyId:'',
+                    nnlightctlUserIdApply:'',
+                    nnlightctlUserIdReceive:'',
+                    sourceRepertyId:'',
+                    targetRepertyId:'',
+                    translateDate:''
+                    }],
         multipleSelection: [],
         formlistdatahide:false,
         formlistdata:{
@@ -176,6 +106,16 @@ export default {
         }
         }
 
+    },created(){
+
+        listPropertyTransRecord().then(res=>{
+            for(var i=0;i<res.data.length;i++){
+                res.data[i].gmtCreated=changeTime(res.data[i].gmtCreated)
+                res.data[i].gmtUpdated=changeTime(res.data[i].gmtUpdated)
+                res.data[i].translateDate=changeTime(res.data[i].translateDate)
+            }
+            this.tableData3=res.data
+        })
     },
      methods: {
       handleClick(tab, event) {
@@ -237,3 +177,4 @@ export default {
         margin-top: 20px;
     }
 </style>
+

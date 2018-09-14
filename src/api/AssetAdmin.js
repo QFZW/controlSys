@@ -100,7 +100,7 @@ export function listDeviceRepaireStatistic (startDate,endDate) {
 
   //   删除
 
-  export function commitRepairRecord(repairRecordIds){
+  export function deleteRepairRecord(repairRecordIds){
     return request({
       url:'/api/propertyManager/deleteRepairRecord',
       method:'post',
@@ -110,6 +110,17 @@ export function listDeviceRepaireStatistic (startDate,endDate) {
     })
   }
 
+  //  提交
+
+  export function commitRepairRecord(repairRecordIds){
+    return request({
+      url:'/api/propertyManager/commitRepairRecord',
+      method:'post',
+      data:{
+        repairRecordIds 
+      }
+    })
+  }
 
   // 仓库 管理
 
@@ -174,3 +185,131 @@ export function listDeviceRepaireStatistic (startDate,endDate) {
       }
     })
   }
+
+  //   变更记录
+
+
+  export function listPropertyTransRecord(){
+    return request({
+      url:'/api/propertyManager/listPropertyTransRecord',
+      method:'post',
+      data:{
+
+      }
+    })
+  }
+
+
+
+  // 时间处理
+
+
+
+  export function changeTime(time){
+    var newTime =new Date(time);
+    var iH = newTime.getFullYear();
+    var iM = newTime.getMonth()+1;
+    var iS = newTime.getDate();
+    return iH+'-'+iM+'-'+iS;
+}
+
+
+//  统计入库申请
+
+export function countApplyInRepertory(){
+  return request({
+    url:'/api/propertyManager/countApplyInRepertory',
+    method:'post',
+    data:{
+
+    }
+  })
+}
+
+
+export function countApplyOutRepertory(){
+  return request({
+    url:'/api/propertyManager/countApplyOutRepertory',
+    method:'post',
+    data:{
+
+    }
+  })
+}
+
+
+//   出入库 数据
+
+export function listApplyInRepertory(){
+  return request({
+    url:'/api/propertyManager/listApplyInRepertory',
+    method:'post',
+    data:{
+
+    }
+  })
+}
+
+
+export function listApplyOutRepertory(){
+  return request({
+    url:'/api/propertyManager/listApplyOutRepertory',
+    method:'post',
+    data:{
+      
+    }
+  })
+}
+
+
+
+
+//   历史工单  
+export function listWorkOrderHistory(){
+  return request({
+    url:'/api/workOrder/listWorkOrderHistory',
+    method:'post',
+    data:{
+
+    }
+  })
+}
+
+
+
+//   我的工单 
+
+
+export function countWorkOrderState(){
+  return request({
+    url:'/api/workOrder/countWorkOrderState',
+    method:'post',
+    data:{
+
+    }
+  })
+}
+
+
+//  工单获取
+export function listWorkOrder(state){
+  return request({
+    url:'/api/workOrder/listWorkOrder',
+    method:'post',
+    data:{
+      state
+    }
+  })
+}
+
+//   新增工单 
+
+export function addWordOrder(id,serialNumber,classify,nnlightctlWorkflowerId,priority,nnlightctlRegionId,address,nnlightctlMaskerId,content,attachFilePath){
+  return request({
+    url:'/api/workOrder/addWordOrder',
+    method:'post',
+    data:{
+      id,serialNumber,classify,nnlightctlWorkflowerId,priority,nnlightctlRegionId,address,nnlightctlMaskerId,content,attachFilePath
+    }
+  })
+}

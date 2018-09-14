@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="list">
+        <!-- <div class="list">
            <el-form :inline="true" :model="formInline" class="demo-form-inline">
             <el-form-item label="分类">
                 <el-select v-model="formInline.region" placeholder="请选择">
@@ -27,56 +27,31 @@
                 <el-button type="primary" @click="onSubmit">查询</el-button>
             </el-form-item>
             </el-form>
-        </div>
+        </div> -->
         <el-table
                 :data="tableData"
                 border
                 style="width: 100%">
-                <el-table-column
+               <el-table-column
                  
-                prop="date"
-                label="编号1"
-                >
-                </el-table-column>
-                <el-table-column
-                prop="name"
-                label="分类"
-                >
-                </el-table-column>
-                <el-table-column
-                prop="province"
-                label="工作流"
-                >
-                </el-table-column>
-                <el-table-column
-                prop="city"
-                label="状态"
-               >
-                </el-table-column>
-                <el-table-column
-                prop="address"
-                label="优先级"
-                >
-                </el-table-column>
-                <el-table-column
-                prop="zip"
-                label="上一节点"
-                >
-                </el-table-column>
-                <el-table-column
-                prop="zip"
-                label="当前部门"
-                >
-                </el-table-column>
-                <el-table-column
-                prop="zip"
+                prop="gmtCreated"
                 label="创建时间"
                 >
                 </el-table-column>
                 <el-table-column
-                prop="zip"
-                label="创建人"
+                prop="gmtUpdated"
+                label="修改时间"
                 >
+                </el-table-column>
+                <el-table-column
+                prop="nnlightctlWorkflowerId"
+                label="工单流ID"
+                >
+                </el-table-column>
+                <el-table-column
+                prop="serialNumber"
+                label="编号"
+               >
                 </el-table-column>
                 <el-table-column
                 label="操作"
@@ -173,39 +148,12 @@
     </div>
 </template>
 <script>
+import {listWorkOrder,changeTime} from '@/api/AssetAdmin.js'
 export default {
     name:'allwork',
     data(){
         return{
-             tableData: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }],
+             tableData: [],
           dialogTableVisible : false,
          formInline: {
           user: '',
@@ -229,7 +177,7 @@ export default {
         console.log(`当前页: ${val}`);
       },
        handleClick(row) {
-        console.log(row);
+        console.log(row.id);
         this.dialogTableVisible = true
       },
       onSubmit(){
@@ -239,6 +187,15 @@ export default {
           console.log(row)
           this.formlistdatahide=true
       }
+    },
+     created(){
+        listWorkOrder().then(res=>{
+            for(var i=0;i<res.data.length;i++){
+                  res.data[i].gmtCreated=changeTime(res.data[i].gmtCreated)
+                   res.data[i].gmtUpdated=changeTime(res.data[i].gmtUpdated)
+              }
+            this.tableData=res.data
+        })
     }
 }
 </script>

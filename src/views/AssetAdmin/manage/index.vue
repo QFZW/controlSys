@@ -31,7 +31,7 @@
                 <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">增加</el-button>
                 <el-button type="primary" plain icon="el-icon-delete" @click="alldelte">批量删除</el-button>
                 <el-button type="primary" plain icon="el-icon-setting">设置</el-button>
-                <el-button type="primary" plain icon="el-icon-check">提交</el-button>
+                <el-button type="primary" plain icon="el-icon-check" @click="updatacommitRepairRecord">提交</el-button>
             </div>
             <template>
                     <el-table
@@ -150,12 +150,12 @@
     </div>
 </template>
 <script>
-import {listRepairRecord,addOrUpdateRepairRecord,commitRepairRecord} from '@/api/AssetAdmin.js'
+import {listRepairRecord,addOrUpdateRepairRecord,deleteRepairRecord,changeTime,commitRepairRecord} from '@/api/AssetAdmin.js'
 export default {
     name:'',
     data(){
         return{
-             activeName: '0',
+             activeName: 0,
               options: [{
           value: '选项1',
           label: '黄金糕'
@@ -173,7 +173,7 @@ export default {
           label: '北京烤鸭'
         }],
         isCommit:[{
-            value:'0',
+            value:0,
             label:'未提交'
         },{
             value:'1',
@@ -197,13 +197,22 @@ export default {
         rules: {
           propertyName: [
             { required: true, message: '请输入名称', trigger: 'blur' },
-            { min: 2, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+            { min: 2, max: 20, message: '长度在 3 到 5 个字符', trigger: 'blur' }
           ],
          }
     }
     },
     created(){
         listRepairRecord(this.activeName).then(res=>{
+              for(var i=0;i<res.data.length;i++){
+                res.data[i].faultDate=changeTime(res.data[i].faultDate)
+                res.data[i].createDate=changeTime(res.data[i].createDate)
+               if(res.data[i].isCommit===0){
+                            res.data[i].isCommit='未提交'
+                        }else{
+                            res.data[i].isCommit='已提交'
+                        }
+            }
              this.tableData3=res.data   
         })
     },
@@ -211,8 +220,18 @@ export default {
       handleClick(tab, event) {
         console.log(tab.name);
         this.activeName=tab.name
+        var that=this
          listRepairRecord(tab.name).then(res=>{
-             this.tableData3=res.data   
+               for(var i=0;i<res.data.length;i++){
+                res.data[i].faultDate=changeTime(res.data[i].faultDate)
+                res.data[i].createDate=changeTime(res.data[i].createDate)
+               if(res.data[i].isCommit===0){
+                            res.data[i].isCommit='未提交'
+                        }else{
+                            res.data[i].isCommit='已提交'
+                        }
+            }
+                this.tableData3=res.data
         })
       },
       handleEdit(index,row){
@@ -223,12 +242,21 @@ export default {
         a.push(row.id)
         console.log(a)
         var that=this
-        commitRepairRecord(a).then(res=>{
+        deleteRepairRecord(a).then(res=>{
              that.$message({
                     type:'success',
                     message:'删除成功'
                 })
            listRepairRecord(this.activeName).then(res=>{
+                 for(var i=0;i<res.data.length;i++){
+                res.data[i].faultDate=changeTime(res.data[i].faultDate)
+                res.data[i].createDate=changeTime(res.data[i].createDate)
+               if(res.data[i].isCommit===0){
+                            res.data[i].isCommit='未提交'
+                        }else{
+                            res.data[i].isCommit='已提交'
+                        }
+            }
              this.tableData3=res.data   
         })
         })
@@ -242,13 +270,47 @@ export default {
             for(var i=0; i<this.multipleSelection.length;i++){
                 a.push(this.multipleSelection[i].id)
             }
-           commitRepairRecord(a).then(res=>{
+           deleteRepairRecord(a).then(res=>{
              that.$message({
                     type:'success',
                     message:'删除成功'
                 })
            listRepairRecord(this.activeName).then(res=>{
+                 for(var i=0;i<res.data.length;i++){
+                res.data[i].faultDate=changeTime(res.data[i].faultDate)
+                res.data[i].createDate=changeTime(res.data[i].createDate)
+               if(res.data[i].isCommit===0){
+                            res.data[i].isCommit='未提交'
+                        }else{
+                            res.data[i].isCommit='已提交'
+                        }
+            }
              this.tableData3=res.data   
+        })
+        })
+        }, updatacommitRepairRecord(){
+            var that=this
+            var a=new Array()
+            for(var i=0; i<this.multipleSelection.length;i++){
+                a.push(this.multipleSelection[i].id)
+            }
+            console.log(a)
+           commitRepairRecord(a).then(res=>{
+             that.$message({
+                    type:'success',
+                    message:'提交成功'
+                })
+           listRepairRecord(this.activeName).then(res=>{
+                 for(var i=0;i<res.data.length;i++){
+                res.data[i].faultDate=changeTime(res.data[i].faultDate)
+                res.data[i].createDate=changeTime(res.data[i].createDate)
+               if(res.data[i].isCommit===0){
+                            res.data[i].isCommit='未提交'
+                        }else{
+                            res.data[i].isCommit='已提交'
+                        }
+            }
+             that.tableData3=res.data   
         })
         })
         },
@@ -272,7 +334,17 @@ export default {
                 })
                 this.dialogFormVisible = false
                 // that.tableData3.push(that.form)
-               listRepairRecord(this.activeName).then(res=>{
+               listRepairRecord().then(res=>{
+
+                    for(var i=0;i<res.data.length;i++){
+                        res.data[i].faultDate=changeTime(res.data[i].faultDate)
+                        res.data[i].createDate=changeTime(res.data[i].createDate)
+                        if(res.data[i].isCommit===0){
+                            res.data[i].isCommit='未提交'
+                        }else{
+                            res.data[i].isCommit='已提交'
+                        }
+                    }
                     this.tableData3=res.data   
                 })
             })
