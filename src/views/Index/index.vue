@@ -128,7 +128,7 @@
   </div>
 </template>
 <script>
-import { login, register } from '@/api/login'
+import { login, register, logout } from '@/api/login'
 export default {
   name: 'index',
   data: function () {
@@ -164,7 +164,7 @@ export default {
       }
     };
     return {
-      isLogin: true,
+      isLogin: false,
       loginOperation: "登录",
       loginFormVisible: false,
       registerFormVisible: false,
@@ -213,13 +213,15 @@ export default {
         if(valid){
           login(this.form.username, this.form.password).then((res)=>{
             console.log(res, '登录返回信息')
-            if(res.code){ // 成功
+            if(res.data){ // 成功
               // 重新写入session,并且记录时间
               window.localStorage.setItem("username", this.form.username);
-              widnow.localStorage.setItem("password", this.form.password);
+              window.localStorage.setItem("password", this.form.password);
               const loginDate = new Date();
               window.localStorage.setItem("loginDate", loginDate);
-
+              this.loginFormVisible = false
+              this.isLogin = true
+              this.username = this.form.username
            } else { // 登录失败
               this.$message({
                 showClose: true,
@@ -239,9 +241,20 @@ export default {
       console.log(this.isLogin)
       console.log("登出")
       // 清除token
-      window.localStorage.removeItem("username");
-      widnow.localStorage.removeItem("password");
-      window.localStorage.removeItem("loginDate");
+      logout(this.form.username, this.form.password).then((res)=>{
+          console.log(res, '登录返回信息')
+          if(res.data){ // 成功
+            window.localStorage.removeItem("username");
+            window.localStorage.removeItem("password");
+            window.localStorage.removeItem("loginDate");
+          } else { // 登chu失败
+            this.$message({
+              showClose: true,
+              message: res
+            });
+            // console.log(err);
+          }
+        })
     },
     // 注册
     handleRegister () {
@@ -270,8 +283,11 @@ export default {
   created () {
     // 检查是否有登录信息
     if(window.localStorage.getItem("username") && window.localStorage.getItem("password")) {
+      console.log("create2222222222222222222")
       this.isLogin = true
       this.username = window.localStorage.getItem("password")
+      this.form.username = window.localStorage.getItem("username")
+      this.form.password = window.localStorage.getItem("password")
     }
   }
 }

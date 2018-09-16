@@ -29,9 +29,12 @@ export function register (username, password) {
     }
   })
 }
-export function logout () {
+export function logout (username, password) {
+  console.log(username, password)
   return request({
     url: '/api/login/Logout',
-    method: 'post'
+    method: 'post',
+    params: {
+    }
   })
 }
