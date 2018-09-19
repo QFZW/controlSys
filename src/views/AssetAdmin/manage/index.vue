@@ -150,7 +150,7 @@
     </div>
 </template>
 <script>
-import {listRepairRecord,addOrUpdateRepairRecord,deleteRepairRecord,changeTime,commitRepairRecord} from '@/api/AssetAdmin.js'
+import {listRepairRecord,addOrUpdateRepairRecord,deleteRepairRecord,changeTime,commitRepairRecord,getRepairRecord} from '@/api/AssetAdmin.js'
 export default {
     name:'',
     data(){
@@ -235,7 +235,10 @@ export default {
         })
       },
       handleEdit(index,row){
-
+          console.log(row.id)
+          getRepairRecord(row.id).then(res=>{
+              console.log(res.data)
+          })
       },
       handleDelete(index,row){
          var  a=[]

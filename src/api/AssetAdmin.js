@@ -313,3 +313,17 @@ export function addWordOrder(id,serialNumber,classify,nnlightctlWorkflowerId,pri
     }
   })
 }
+
+
+
+//   维修管理 编辑
+
+export function getRepairRecord(id){
+  return request({
+    uel:'/api/propertyManager/getRepairRecord',
+    method:'post',
+    data:{
+      id
+    }
+  })
+}
