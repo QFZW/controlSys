@@ -366,6 +366,13 @@ export const constantRouterMap = [
       name: 'inventoryIndex3',
       meta: { title: '变更记录', icon: '' }
 
+    },
+    {
+      path: 'approval',
+          component: () => import('@/views/AssetAdmin/approval/index'),
+        name: 'inventoryIndex5',
+      meta: { title: '资产审批', icon: '' }
+
     }
   ]
   }

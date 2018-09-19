@@ -320,10 +320,24 @@ export function addWordOrder(id,serialNumber,classify,nnlightctlWorkflowerId,pri
 
 export function getRepairRecord(id){
   return request({
-    uel:'/api/propertyManager/getRepairRecord',
+    url:'/api/propertyManager/getRepairRecord',
     method:'post',
     data:{
       id
     }
   })
+}
+
+
+
+//   资产审批 
+
+export function listApplyInApprovePending(){
+  return request({
+    url:'/api/propertyManager/listApplyInApprovePending',
+    method:'post',
+    data:{
+
+    }
+})
 }
