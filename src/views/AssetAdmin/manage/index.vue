@@ -30,7 +30,7 @@
             <div class="buttonList">
                 <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">增加</el-button>
                 <el-button type="primary" plain icon="el-icon-delete" @click="alldelte">批量删除</el-button>
-                <el-button type="primary" plain icon="el-icon-setting">设置</el-button>
+                <el-button type="primary" plain icon="el-icon-setting" @click="seact">设置</el-button>
                 <el-button type="primary" plain icon="el-icon-check" @click="updatacommitRepairRecord">提交</el-button>
             </div>
             <template>
@@ -95,7 +95,7 @@
                 </template>
 
                 <!--    添加   -->
-                 <el-dialog title="添加资产" :visible.sync="dialogFormVisible">
+            <el-dialog title="添加资产" :visible.sync="dialogFormVisible">
             <el-form :model="form" style="margin:0 auto" :rules="rules" ref="form" class="demo-ruleForm" >
                 <el-form-item label="资产名称" label-width="100px" prop="propertyName">
                 <el-input v-model="form.propertyName" auto-complete="off"></el-input>
@@ -147,10 +147,89 @@
                 <el-button type="primary" @click="linkmanAdd('form')">确 定</el-button>
             </div>
             </el-dialog>
+
+                <!-- 编辑 -->
+
+            <el-dialog title="编辑资产" :visible.sync="dialogFormVisible2">
+            <el-form :model="form2" style="margin:0 auto"  ref="form2" class="demo-ruleForm" >
+                <el-form-item label="资产名称" label-width="100px" >
+                <el-input v-model="form2.propertyName" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="资产数量" label-width="100px" >
+                <el-input v-model="form2.propertyCount" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="故障日期" label-width="100px" >
+                <el-date-picker
+                    v-model="form2.faultDate"
+                    type="date"
+                    placeholder="选择日期">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="创建日期" label-width="100px" >
+               
+                <el-date-picker
+                    v-model="form2.createDate"
+                    type="date"
+                    placeholder="选择日期">
+                    </el-date-picker>
+                </el-form-item>
+               
+                <el-form-item label="创建人" label-width="100px" >
+                <el-input v-model="form2.nnlightctlUserId" auto-complete="off"></el-input>
+                </el-form-item>
+                 <el-form-item label="资产目录" label-width="100px" >
+                <el-input v-model="form2.nnlightctlPropertyClassifyCatalogId" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="状态" label-width="100px" >
+                
+
+                <el-select v-model="form2.isCommit" placeholder="请选择" auto-complete="off">
+                    <el-option
+                    v-for="item in isCommit"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+                </el-form-item>
+                 <el-form-item label="所属控制柜" label-width="100px" >
+                <el-input v-model="form2.nnlightctlEleboxId" auto-complete="off"></el-input>
+                </el-form-item>
+                
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+                <el-button type="primary" @click="linkmanAddData('form')">确 定</el-button>
+            </div>
+            </el-dialog>
+
+
+            <!--   设置定时  -->
+
+                 <el-dialog title="编辑资产" :visible.sync="dialogFormVisible3">
+            <el-form :model="form3" style="margin:0 auto"  ref="form3" class="demo-ruleForm" >
+                
+                <el-form-item label="自动提交时间" label-width="100px" >
+                <el-date-picker
+                    v-model="form3.faultDate"
+                    type="date"
+                    placeholder="选择日期">
+                    </el-date-picker>
+                </el-form-item>
+                
+                
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible3 = false">取 消</el-button>
+                <el-button type="primary" @click="linkmanAddData2()">确 定</el-button>
+            </div>
+            </el-dialog>
+
+
     </div>
 </template>
 <script>
-import {listRepairRecord,addOrUpdateRepairRecord,deleteRepairRecord,changeTime,commitRepairRecord,getRepairRecord} from '@/api/AssetAdmin.js'
+import {listRepairRecord,addOrUpdateRepairRecord,deleteRepairRecord,changeTime,commitRepairRecord,getRepairRecord,configAutoCommitRepairRecord} from '@/api/AssetAdmin.js'
 export default {
     name:'',
     data(){
@@ -184,6 +263,8 @@ export default {
         tableData3:[
             ],
         dialogFormVisible:false,
+        dialogFormVisible2:false,
+        dialogFormVisible3:false,
          form: {
              nnlightctlEleboxId:'',
              nnlightctlPropertyClassifyCatalogId:'',
@@ -193,6 +274,19 @@ export default {
              createDate:'',
              nnlightctlUserId:'',
              isCommit:''
+        },
+        form2: {
+             nnlightctlEleboxId:'',
+             nnlightctlPropertyClassifyCatalogId:'',
+             propertyName:'',
+             propertyCount:'',
+             faultDate:'',
+             createDate:'',
+             nnlightctlUserId:'',
+             isCommit:''
+        },
+        form3:{
+            faultDate:''
         },
         rules: {
           propertyName: [
@@ -235,9 +329,10 @@ export default {
         })
       },
       handleEdit(index,row){
+          this.dialogFormVisible=true
           console.log(row.id)
           getRepairRecord(row.id).then(res=>{
-              console.log(res.data)
+              this.form2=res.data[0]
           })
       },
       handleDelete(index,row){
@@ -266,6 +361,36 @@ export default {
       },
       handleSelectionChange(val) {
             this.multipleSelection = val;
+        },
+        seact(){
+            this.dialogFormVisible3=true
+            var that=this
+            var a=[]
+            for(var i=0; i<this.multipleSelection.length;i++){
+                a.push(this.multipleSelection[i].id)
+            }
+            console.log(a)
+        },
+        linkmanAddData2(){
+            var that=this
+             var a=[]
+            for(var i=0; i<this.multipleSelection.length;i++){
+                a.push(this.multipleSelection[i].id)
+            }
+             var faultDate
+            var d = new Date(that.form3.faultDate); 
+            faultDate=d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+            console.log(faultDate)
+
+            configAutoCommitRepairRecord(a,faultDate).then(res=>{
+                // console.log(res.data)
+                that.$message({
+                    type:'success',
+                    message:'设置成功'
+                })
+                that.dialogFormVisible3=false
+            })
+            
         },
       alldelte(){
             var that=this
@@ -357,6 +482,23 @@ export default {
           }
         });
       },
+      linkmanAddData(){
+          var that=this
+           var faultDate
+        var createDate
+        var d = new Date(that.form.faultDate); 
+        var c=new Date(that.form.createDate) 
+         faultDate=d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+         createDate=c.getFullYear() + '/' + (c.getMonth() + 1) + '/' + c.getDate() + ' ' + c.getHours() + ':' + c.getMinutes() + ':' + c.getSeconds();
+         console.log(faultDate)
+             addOrUpdateRepairRecord(that.form2.id,that.form2.nnlightctlEleboxId,that.form2.nnlightctlPropertyClassifyCatalogId,that.form2.propertyName,that.form2.propertyCount,faultDate,createDate,that.form2.nnlightctlUserId,Number(that.form2.isCommit)).then(res=>{
+                that.$message({
+                    type:'success',
+                    message:'添加成功'
+                })
+                this.dialogFormVisible = false
+             })
+      }
     }
 }
 </script>

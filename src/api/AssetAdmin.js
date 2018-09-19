@@ -88,12 +88,12 @@ export function listDeviceRepaireStatistic (startDate,endDate) {
 
   //   新增
 
-  export function addOrUpdateRepairRecord(nnlightctlEleboxId,nnlightctlPropertyClassifyCatalogId,propertyName,propertyCount,faultDate,createDate,nnlightctlUserId,isCommit){
+  export function addOrUpdateRepairRecord(id,nnlightctlEleboxId,nnlightctlPropertyClassifyCatalogId,propertyName,propertyCount,faultDate,createDate,nnlightctlUserId,isCommit){
     return request({
       url:'/api/propertyManager/addOrUpdateRepairRecord',
       method:'post',
       data:{
-        nnlightctlEleboxId,nnlightctlPropertyClassifyCatalogId,propertyName,propertyCount,faultDate,createDate,nnlightctlUserId,isCommit
+        id,nnlightctlEleboxId,nnlightctlPropertyClassifyCatalogId,propertyName,propertyCount,faultDate,createDate,nnlightctlUserId,isCommit
       }
     })
   }
@@ -340,4 +340,25 @@ export function listApplyInApprovePending(){
 
     }
 })
+}
+
+export function listApplyInHistory(){
+  return request({
+    url:'/api/propertyManager/listApplyInHistory',
+    method:'post',
+    data:{
+
+    }
+})
+}
+
+
+export function configAutoCommitRepairRecord(repairRecordIds,commitDate){
+  return request({
+    url:'/api/propertyManager/configAutoCommitRepairRecord',
+    method:'post',
+    data:{
+      repairRecordIds,commitDate
+    }
+  })
 }
