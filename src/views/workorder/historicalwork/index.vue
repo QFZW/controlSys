@@ -19,35 +19,85 @@
                 tooltip-effect="dark"
                 style="width: 100%"
                 @selection-change="handleSelectionChange">
-                <el-table-column
+                 <el-table-column
                 prop="gmtCreated"
                 label="创建时间"
-               >
+                >
                 </el-table-column>
                 <el-table-column
                 prop="gmtUpdated"
                 label="修改时间"
+                >
+                </el-table-column>
+                <el-table-column
+                prop="nnlightctlWorkflowerId"
+                label="工单流ID"
+                >
+                </el-table-column>
+                <el-table-column
+                prop="serialNumber"
+                label="编号"
                >
                 </el-table-column>
                 <el-table-column
-                prop="id"
-                label="ID"
+                prop="address"
+                label="地址"
                >
                 </el-table-column>
                 <el-table-column
-                prop="mem"
-                label="备注"
-                >
+                prop="content"
+                label="内容"
+               >
+                </el-table-column>
+                <el-table-column
+                prop="nnlightctlMaskerId"
+                label="当前处理人"
+               >
+                </el-table-column>
+                <el-table-column
+                prop="nnlightctlProjectId"
+                label="项目ID"
+               >
+                </el-table-column>
+                <el-table-column
+                prop="nnlightctlRegionId"
+                label="地区"
+               >
+                </el-table-column>
+                <el-table-column
+                prop="nnlightctlWorkflowerId"
+                label="工作流"
+               >
                 </el-table-column>
                  <el-table-column
-                prop="nnlightctlWorkOrderId"
-                label="工单信息ID"
-                >
+                prop="nnlightctlWorkflowerMoveRecordId"
+                label="当前工作流状态"
+               >
                 </el-table-column>
                  <el-table-column
-                prop="recordDate"
-                label="记录时间"
-                >
+                prop="priority"
+                label="优先级"
+               >
+                </el-table-column>
+                 <el-table-column
+                prop="serialNumber"
+                label="编号"
+               >
+                </el-table-column>
+                 <el-table-column
+                prop="state"
+                label="状态"
+               >
+                </el-table-column>
+                 <el-table-column
+                prop="workSource"
+                label="来源"
+               >
+                </el-table-column>
+                 <el-table-column
+                prop="workCreated"
+                label="工单创建时间"
+               >
                 </el-table-column>
                 
             </el-table>
@@ -64,6 +114,7 @@ export default {
                 user:''
             },
              tableData3: [
+                
                
              ],
         multipleSelection: []
