@@ -34,7 +34,7 @@ export default {
           legend: {
               orient: 'vertical',
               x: 'center',
-              data:['灯具','灯杆']
+              data:['故障个数','灯杆']
           },
           series: [
               {
@@ -59,9 +59,8 @@ export default {
                     
                   },
                   data:[
-                      {value:235, name:'灯具'},
-                      {value:110, name:'灯杆'},
-                      {value:634, name:'全部'},
+                      {value:10, name:'灯具'},
+                      
                     
                   ]
               }

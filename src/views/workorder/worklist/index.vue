@@ -120,7 +120,7 @@
                 >
                 <template slot-scope="scope">
                    
-                    <el-button type="text" @click="handleClick(scope.row)" size="small">下载附件</el-button>
+                    <el-button type="text"  size="small">下载附件</el-button>
                 </template>
                 </el-table-column>
             </el-table>
@@ -216,7 +216,7 @@
                 >
                 <template slot-scope="scope">
                     <el-button @click="handleClick(scope.row)" type="text" size="small" >认领</el-button>
-                    <el-button type="text" @click="handleClick(scope.row)" size="small">下载附件</el-button>
+                    <el-button type="text" size="small">下载附件</el-button>
                 </template>
                 </el-table-column>
             </el-table>
@@ -298,7 +298,7 @@
 <script>
 import Allwork from './allwork.vue'
 import Listwork from './listwork.vue'
-import {countWorkOrderState,addWordOrder,listWorkOrder,changeTime} from '@/api/AssetAdmin.js'
+import {countWorkOrderState,addWordOrder,listWorkOrder,listWorkOrderA,changeTime} from '@/api/AssetAdmin.js'
 export default {
     name:'',
     data(){
@@ -335,10 +335,20 @@ export default {
         tabchange(tab, event) {
             if(tab.name=='first'){
                 this.tabledataShow=true  
+                this.tabledataShow2=false 
+                 listWorkOrderA().then(res=>{
+            for(var i=0;i<res.data.length;i++){
+                  res.data[i].gmtCreated=changeTime(res.data[i].gmtCreated)
+                   res.data[i].gmtUpdated=changeTime(res.data[i].gmtUpdated)
+              }
+            this.tableData=res.data
+        
+        })
+                   
             }else if(tab.name=='second') {
                  this.tabledataShow=false
                   this.tabledataShow2=true 
-                  listWorkOrder().then(res=>{
+                  listWorkOrdera().then(res=>{
                     for(var i=0;i<res.data.length;i++){
                         res.data[i].gmtCreated=changeTime(res.data[i].gmtCreated)
                         res.data[i].gmtUpdated=changeTime(res.data[i].gmtUpdated)
@@ -375,7 +385,7 @@ export default {
           addWordOrder(this.formdata.serialNumber,this.formdata.classify,this.formdata.nnlightctlWorkflowerId,this.formdata.priority,this.formdata.nnlightctlRegionId,this.formdata.address,this.formdata.nnlightctlMaskerId,this.formdata.content,this.formdata.attachFilePath).then(res=>{
               console.log(res.data)
                this.formdatahide = false
-            listWorkOrder().then(res=>{
+            listWorkOrderA().then(res=>{
             for(var i=0;i<res.data.length;i++){
                   res.data[i].gmtCreated=changeTime(res.data[i].gmtCreated)
                    res.data[i].gmtUpdated=changeTime(res.data[i].gmtUpdated)

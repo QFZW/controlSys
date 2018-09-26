@@ -9,7 +9,18 @@ export function listMasker () {
 }
 export function listDeviceRepaireStatistic (startDate,endDate) {
     return request({
-      url: '/api/propertyManager/listMasker',
+      url: '/api/propertyManager/listDeviceRepairStatistic',
+      method: 'post',
+      data: {
+        startDate,
+        endDate
+      }
+    })
+  }
+
+export function listDeviceDamageCountByMonth (startDate,endDate) {
+    return request({
+      url: '/api/propertyManager/listDeviceDamageCountByMonth',
       method: 'post',
       data: {
         startDate,
@@ -301,6 +312,15 @@ export function listWorkOrder(state){
     }
   })
 }
+export function listWorkOrderA(){
+  return request({
+    url:'/api/workOrder/listWorkOrder',
+    method:'post',
+    data:{
+      
+    }
+  })
+}
 
 //   新增工单 
 
@@ -362,3 +382,6 @@ export function configAutoCommitRepairRecord(repairRecordIds,commitDate){
     }
   })
 }
+
+
+

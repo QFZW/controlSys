@@ -4,8 +4,6 @@
                 <el-tab-pane label="待审批" name="0"></el-tab-pane>
                 <el-tab-pane label="审批记录" name="1"></el-tab-pane>
         </el-tabs>
-
-
          <el-table
             :data="tableData"
             style="width: 100%"

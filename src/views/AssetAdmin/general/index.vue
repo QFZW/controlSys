@@ -58,15 +58,17 @@
 // import echarts from 'echarts'
 import Aboutbj from './aboutObj.vue'
 import Allobj from './allobj.vue'
+
+import {listDeviceRepaireStatistic,listDeviceDamageCountByMonth} from '@/api/AssetAdmin.js'
   export default {
     data() {
       return {
-        activeName: 'second',
+        activeName: 'first',
          tabPosition: 'top',
         
           dateChange:'',
-          endDate:'',
-          startDate:'',
+          endDate:'2018-09-01',
+          startDate:'2018-01-01',
            options: [{
           value: '选项1',
           label: '黄金糕'
@@ -92,19 +94,36 @@ import Allobj from './allobj.vue'
       handleClick(tab, event) {
         // console.log(tab, event);
         // console.log(tab.index)
-
+        var faultDate
+        var faultDateA
+        var d = new Date(this.startDate); 
+        faultDate=d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+        var c = new Date(this.endDate); 
+        faultDateA=c.getFullYear() + '/' + (c.getMonth() + 1) + '/' + c.getDate() + ' ' + c.getHours() + ':' + c.getMinutes() + ':' + c.getSeconds();
+      console.log(this.startDate)
+      console.log(this.endDate)
         switch(tab.index){
           case '0' :
-            alert('0')
+           listDeviceRepaireStatistic(faultDate,faultDateA).then(res=>{
+             for(var i=0;i<res.data.length;i++){
+               console.log(res.data[i].listDeviceRepairStatisticCount)
+             }
+           })
+
+            listDeviceDamageCountByMonth(faultDate,faultDateA).then(res=>{
+             for(var i=0;i<res.data.length;i++){
+               console.log(res.data[i].listDeviceRepairStatisticCount)
+             }
+           })
           break;
           case '1':
-          alert('1')
+          
           break;
           case '2' :
-          alert('2')
+         
           break ;
           case '3' :
-          alert('3')
+          
           break;
         }
       },
